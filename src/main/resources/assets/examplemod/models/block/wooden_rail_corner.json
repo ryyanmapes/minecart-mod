@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/rail_curved",
+  "textures": {
+    "rail": "examplemod:block/wooden_rail_corner"
+  }
+}
