@@ -7,7 +7,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.MovementInput;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 
@@ -22,8 +26,6 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
     public AbstractPushcart(EntityType<?> type, World worldIn, double x, double y, double z) {
         super(type, worldIn, x, y, z);
     }
-
-    // todo somehow make player control more effective? where is that even done in the code?
 
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         ActionResultType ret = super.processInitialInteract(player, hand);
@@ -70,15 +72,39 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
     }
 
     // todo should this be higher? so it's closer to actual standing?
-    @Override
-    public double getMountedYOffset() {
-        return 0.2875D;
-    }
+    // sure but requires some modeling modification to look good
+    //@Override
+    //public double getMountedYOffset() {
+        //return 0.2875D;
+    //}
 
 
     @Override
     public IPacket<?> createSpawnPacket() {
-
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    // Input Stuff
+
+
+    @Override
+    public void tick() {
+
+        Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+        if (entity instanceof PlayerEntity) {
+            Vector3d motion = entity.getMotion();
+            double speed = Math.sqrt((motion.x*motion.x) + (motion.z*motion.z));
+            if (speed <= 0.0001) {
+                entity.setMotion(Vector3d.ZERO);
+
+                Vector3d our_motion = this.getMotion();
+                this.setMotion(our_motion.x * 0.1, our_motion.y, our_motion.z * 0.1);
+            }
+            else {
+                entity.setMotion(motion.scale(10));
+            }
+        }
+
+        super.tick();
     }
 }
