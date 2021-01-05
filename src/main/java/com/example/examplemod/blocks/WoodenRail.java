@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 
 public class WoodenRail extends RailBlock {
 
-    public float maxSpeed = 0.4f;
+    public float maxSpeed = 0.3f;
 
 
     public WoodenRail(Properties builder) {
@@ -34,17 +34,18 @@ public class WoodenRail extends RailBlock {
         return maxSpeed;
     }
 
+    // this seems jank right now so I'm not going to worry about it
     @Override
     public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
 
-        if (!worldIn.isRemote) {
-            List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (Predicate<Entity>)null);
+        //if (!worldIn.isRemote) {
+        //    List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (Predicate<Entity>)null);
 
-            for (AbstractMinecartEntity minecart : list) {
-                // todo how do we want to cap velocity?
-                //minecart.setVelocity(0, 0,0);
-            }
-        }
+        //    for (AbstractMinecartEntity minecart : list) {
+        //        // todo how do we want to cap velocity?
+        //        //minecart.setVelocity(0, 0,0);
+        //    }
+        //}
 
         super.onEntityCollision(state, worldIn, pos, entityIn);
     }
