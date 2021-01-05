@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class WoodenRail extends PoweredRailBlock {
+public class WoodenRail extends RailBlock {
 
     public float maxSpeed = 0.4f;
 
