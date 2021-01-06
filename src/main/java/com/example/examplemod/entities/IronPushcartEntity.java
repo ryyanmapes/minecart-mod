@@ -9,37 +9,31 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder("examplemod")
-public class WoodenPushcartEntity extends AbstractPushcart {
+public class IronPushcartEntity extends AbstractPushcart {
 
-    public static final Item wooden_pushcart = null;
+    public static final Item iron_pushcart = null;
 
-    public WoodenPushcartEntity(EntityType<?> type, World world) {
+    public IronPushcartEntity(EntityType<?> type, World world) {
         super(type, world);
     }
 
-    public WoodenPushcartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public IronPushcartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
         super(type, worldIn, x, y, z);
     }
+
+    public double getControlSpeed() { return 50; }
+    public double getUphillSpeed() { return 5; }
+    public double getBrakeSpeed() { return 0; }
 
     @Override
     public void killMinecart(DamageSource source) {
         this.remove();
         if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            ItemStack stack = new ItemStack(wooden_pushcart);
+            ItemStack stack = new ItemStack(iron_pushcart, 1);
             if (this.hasCustomName()) {
                 stack.setDisplayName(this.getCustomName());
             }
             this.entityDropItem(stack);
         }
-    }
-
-    public double getControlSpeed() { return 10; }
-    public double getUphillSpeed() { return 4.25; }
-    public double getBrakeSpeed() { return 0.25; }
-
-    // Wooden cart speed is capped at half that of a normal cart
-    @Override
-    protected double getMaximumSpeed() {
-        return 0.3D;
     }
 }

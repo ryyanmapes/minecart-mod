@@ -1,0 +1,11 @@
+{
+  "block.examplemod.wooden_rail": "Wooden Rail",
+
+  "item.examplemod.minecart_with_net": "Minecart with Spider",
+  "item.examplemod.wooden_pushcart": "Wooden Pushcart",
+  "item.examplemod.iron_pushcart": "Iron Pushcart",
+
+  "entity.examplemod.minecart_with_net": "Minecart with Spider",
+  "entity.examplemod.wooden_pushcart": "Wooden Pushcart",
+  "entity.examplemod.iron_pushcart": "Iron Pushcart"
+}
