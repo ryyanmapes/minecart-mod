@@ -1,5 +1,7 @@
 package com.example.examplemod;
 
+import com.example.examplemod.blocks.ColorDetectorRailBlock;
+import com.example.examplemod.blocks.RailTurn;
 import com.example.examplemod.blocks.WoodenRail;
 import com.example.examplemod.entities.IronPushcartEntity;
 import com.example.examplemod.entities.MinecartWithNet;
@@ -20,6 +22,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemGroup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -65,12 +68,23 @@ public class ExampleMod
 
 
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
-    public static final Block wooden_rail = null;
+    private static final RegistryObject<Block> RAIL_TURN_RIGHT = BLOCKS.register("rail_turn_right", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), false));
+    private static final RegistryObject<Block> RAIL_TURN_LEFT = BLOCKS.register("rail_turn_left", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), true));
+    private static final RegistryObject<Block> COLOR_DETECTOR_RAIL = BLOCKS.register("color_detector_rail", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
 
-    private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties()));
-    private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().maxStackSize(1)));
-    private static final RegistryObject<Item> WOODEN_PUSHCART_ITEM = ITEMS.register("wooden_pushcart", () -> new WoodenPushcartItem(new Item.Properties().maxStackSize(1)));
-    private static final RegistryObject<Item> IRON_PUSHCART_ITEM = ITEMS.register("iron_pushcart", () -> new IronPushcartItem(new Item.Properties().maxStackSize(1)));
+
+    public static final Block wooden_rail = null;
+    public static final Block rail_turn_right = null;
+    public static final Block rail_turn_left = null;
+    public static final Block color_detector_rail = null;
+
+    private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> RAIL_TURN_RIGHT_ITEM = ITEMS.register("rail_turn_right", () -> new BlockItem(rail_turn_right, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> RAIL_TURN_LEFT_ITEM = ITEMS.register("rail_turn_left", () -> new BlockItem(rail_turn_left, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM = ITEMS.register("color_detector_rail", () -> new BlockItem(color_detector_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> WOODEN_PUSHCART_ITEM = ITEMS.register("wooden_pushcart", () -> new WoodenPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> IRON_PUSHCART_ITEM = ITEMS.register("iron_pushcart", () -> new IronPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
 
     public ExampleMod() {
         // Register the setup method for modloading
@@ -104,6 +118,9 @@ public class ExampleMod
 
         RenderType cutout = RenderType.getCutout();
         RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
+        RenderTypeLookup.setRenderLayer(rail_turn_right, cutout);
+        RenderTypeLookup.setRenderLayer(rail_turn_left, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail, cutout);
 
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(wooden_pushcart, WoodenPushcartRenderer::new);

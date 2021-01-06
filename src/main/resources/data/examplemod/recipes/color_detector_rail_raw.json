@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GTG",
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "forge:glass"
+    },
+    "T": {
+      "item": "minecraft:rails"
+    }
+  },
+  "result": {
+    "item": "examplemod:color_detector_rail"
+  }
+}

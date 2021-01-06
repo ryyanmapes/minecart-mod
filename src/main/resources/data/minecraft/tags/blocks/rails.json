@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "examplemod:wooden_rail"
+    "examplemod:wooden_rail",
+    "examplemod:rail_turn_right",
+    "examplemod:rail_turn_left",
+    "examplemod:color_detector_rail"
   ]
 }

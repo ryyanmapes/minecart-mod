@@ -1,5 +1,8 @@
 {
   "block.examplemod.wooden_rail": "Wooden Rail",
+  "block.examplemod.rail_turn_right": "Rail Turn (Right)",
+  "block.examplemod.rail_turn_left": "Rail Turn (Left)",
+  "block.examplemod.color_detector_rail": "Color Detector Rail",
 
   "item.examplemod.minecart_with_net": "Minecart with Spider",
   "item.examplemod.wooden_pushcart": "Wooden Pushcart",

@@ -76,7 +76,7 @@ public class MinecartWithNet extends AbstractMinecartEntity {
         super.tick();
 
         if (this.world.isRemote) return;
-        if (this.world.rand.nextInt(30) != 0) return;
+        if (this.ticksExisted % 20 != 0) return;
 
         int radius = this.getRadius();
         int radSq = radius * radius;
