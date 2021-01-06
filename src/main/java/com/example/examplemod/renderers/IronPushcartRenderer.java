@@ -12,6 +12,6 @@ public class IronPushcartRenderer extends MinecartRenderer {
 
     @Override
     public ResourceLocation getEntityTexture(AbstractMinecartEntity entity) {
-        return new ResourceLocation("examplemod:textures/entity/wooden_pushcart.png");
+        return new ResourceLocation("examplemod:textures/entity/iron_pushcart.png");
     }
 }
