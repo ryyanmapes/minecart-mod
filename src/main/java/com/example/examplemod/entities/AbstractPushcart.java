@@ -103,7 +103,7 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
         if (entity instanceof PlayerEntity) {
             Vector3d motion = entity.getMotion();
             double speed = Math.sqrt((motion.x * motion.x) + (motion.z * motion.z));
-            if (((PlayerEntity)entity).isSprinting()) {
+            if (speed <= 0.0001) {
                 entity.setMotion(Vector3d.ZERO);
 
                 Vector3d our_motion = this.getMotion();
@@ -127,9 +127,12 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
 
                 }
             }
+
         }
 
 
         super.tick();
+
+        if (entity instanceof PlayerEntity) entity.setMotion(Vector3d.ZERO);
     }
 }

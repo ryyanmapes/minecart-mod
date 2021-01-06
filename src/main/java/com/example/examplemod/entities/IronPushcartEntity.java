@@ -21,8 +21,8 @@ public class IronPushcartEntity extends AbstractPushcart {
         super(type, worldIn, x, y, z);
     }
 
-    public double getControlSpeed() { return 50; }
-    public double getUphillSpeed() { return 5; }
+    public double getControlSpeed() { return 100; }
+    public double getUphillSpeed() { return 5.5; }
     public double getBrakeSpeed() { return 0; }
 
     @Override
