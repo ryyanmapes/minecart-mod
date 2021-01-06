@@ -127,9 +127,12 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
 
                 }
             }
+
         }
 
 
         super.tick();
+
+        if (entity instanceof PlayerEntity) entity.setMotion(Vector3d.ZERO);
     }
 }
