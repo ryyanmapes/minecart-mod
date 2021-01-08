@@ -74,42 +74,29 @@ public class RailTurn extends AbstractRailBlock {
         RailShape railshape = state.get(SHAPE);
         boolean is_powered = state.get(POWERED);
         Direction facing = state.get(FACING);
-        if (is_powered && cart != null) {
+        if (cart != null) {
+            boolean turn_approach = facing.getAxis() == Direction.Axis.X? Math.abs(cart.getMotion().z) > 0.001 : Math.abs(cart.getMotion().x) > 0.001;
 
-            boolean backwards_approach = false;
-            boolean backwards = false;
-            switch (facing) {
-                case NORTH:
-                    backwards_approach = cart.getMotion().x <= 0;
-                    break;
-                case EAST:
-                    backwards_approach = cart.getMotion().z <= 0;
-                    break;
-                case SOUTH:
-                    backwards_approach = cart.getMotion().x >= 0;
-                    backwards = true;
-                    break;
-                case WEST:
-                    backwards_approach = cart.getMotion().z >= 0;
-                    backwards = true;
-                    break;
-            }
+            if (is_powered || turn_approach) {
 
-            if (backwards_approach){}
-            else if (this.is_left) {
-                switch (railshape) {
-                    case NORTH_SOUTH:
-                        return backwards? RailShape.NORTH_EAST : RailShape.SOUTH_WEST;
-                    case EAST_WEST:
-                        return backwards? RailShape.NORTH_WEST : RailShape.SOUTH_EAST;
-                }
-            }
-            else {
-                switch (railshape) {
-                    case NORTH_SOUTH:
-                        return backwards? RailShape.NORTH_WEST : RailShape.SOUTH_EAST;
-                    case EAST_WEST:
-                        return backwards? RailShape.NORTH_EAST : RailShape.SOUTH_WEST;
+                boolean backwards_approach = (facing.getAxis() == Direction.Axis.X? cart.getMotion().x : cart.getMotion().z) <= 0 && !turn_approach;
+                boolean backwards = facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE;
+
+                if (backwards_approach) {
+                } else if (this.is_left) {
+                    switch (railshape) {
+                        case NORTH_SOUTH:
+                            return backwards ? RailShape.NORTH_EAST : RailShape.SOUTH_WEST;
+                        case EAST_WEST:
+                            return backwards ? RailShape.NORTH_WEST : RailShape.SOUTH_EAST;
+                    }
+                } else {
+                    switch (railshape) {
+                        case NORTH_SOUTH:
+                            return backwards ? RailShape.NORTH_WEST : RailShape.SOUTH_EAST;
+                        case EAST_WEST:
+                            return backwards ? RailShape.NORTH_EAST : RailShape.SOUTH_WEST;
+                    }
                 }
             }
         }

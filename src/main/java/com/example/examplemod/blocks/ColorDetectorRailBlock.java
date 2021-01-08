@@ -12,12 +12,14 @@ import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -42,17 +44,16 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
         time_since_last_activation = 0;
     }
 
+
     @Override
     public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
         if (worldIn.isRemote) return;
-
-        if (state.get(POWERED)) time_since_last_activation = MAX_ACTIVATION_TIME;
-
+        this.updatePoweredState(worldIn, pos, state);
     }
 
     @Override
     public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        if (time_since_last_activation > 0) time_since_last_activation -= 1;
+        this.updatePoweredState(worldIn, pos, state);
     }
 
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
@@ -67,15 +68,18 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
             boolean activate = false;
             List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (Predicate<Entity>)null);
             if (!list.isEmpty()) {
-                if (time_since_last_activation > 0) activate = true;
+                if (was_powered) activate = true;
                 else {
                     for (AbstractMinecartEntity minecart : list) {
                         if (minecart.getMinecartType() != AbstractMinecartEntity.Type.RIDEABLE) continue;
-                        Entity entity = minecart.getRidingEntity();
+                        List<Entity> passengers = minecart.getPassengers();
+                        if (passengers.isEmpty()) continue;
+                        Entity entity = passengers.get(0);
                         if (!(entity instanceof PlayerEntity)) continue;
                         PlayerEntity player = (PlayerEntity)entity;
                         if (player.getHeldItem(Hand.MAIN_HAND).getItem() == Items.STICK
                           || player.getHeldItem(Hand.OFF_HAND).getItem() == Items.STICK) {
+                            LOGGER.info("here");
                             activate = true;
                             time_since_last_activation = MAX_ACTIVATION_TIME;
                         }
@@ -132,6 +136,22 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     private AxisAlignedBB getDectectionBox(BlockPos pos) {
         double d0 = 0.2D;
         return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
+    }
+
+    public boolean canProvidePower(BlockState state) {
+        return true;
+    }
+
+    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        return blockState.get(POWERED) ? 15 : 0;
+    }
+
+    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        if (!blockState.get(POWERED)) {
+            return 0;
+        } else {
+            return side == Direction.UP ? 15 : 0;
+        }
     }
 
     public BlockState rotate(BlockState state, Rotation rot) {

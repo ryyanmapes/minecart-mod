@@ -3,12 +3,15 @@ package com.example.examplemod;
 import com.example.examplemod.blocks.ColorDetectorRailBlock;
 import com.example.examplemod.blocks.RailTurn;
 import com.example.examplemod.blocks.WoodenRail;
+import com.example.examplemod.entities.CouplerEntity;
 import com.example.examplemod.entities.IronPushcartEntity;
 import com.example.examplemod.entities.MinecartWithNet;
 import com.example.examplemod.entities.WoodenPushcartEntity;
+import com.example.examplemod.items.CouplerItem;
 import com.example.examplemod.items.IronPushcartItem;
 import com.example.examplemod.items.MinecartWithNetItem;
 import com.example.examplemod.items.WoodenPushcartItem;
+import com.example.examplemod.renderers.CouplerRenderer;
 import com.example.examplemod.renderers.IronPushcartRenderer;
 import com.example.examplemod.renderers.VanillaMinecartRenderer;
 import com.example.examplemod.renderers.WoodenPushcartRenderer;
@@ -61,10 +64,13 @@ public class ExampleMod
     private static final RegistryObject<EntityType<MinecartWithNet>> MINECART_WITH_NET_ENTITY = ENTITIES.register("minecart_with_net", () -> EntityType.Builder.<MinecartWithNet>create(MinecartWithNet::new, EntityClassification.MISC ).size(0.98F, 0.7F).build("minecart_with_net"));
     private static final RegistryObject<EntityType<WoodenPushcartEntity>> WOODEN_PUSHCART_ENTITY = ENTITIES.register("wooden_pushcart", () -> EntityType.Builder.<WoodenPushcartEntity>create(WoodenPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.3F).build("wooden_pushcart"));
     private static final RegistryObject<EntityType<IronPushcartEntity>> IRON_PUSHCART_ENTITY = ENTITIES.register("iron_pushcart", () -> EntityType.Builder.<IronPushcartEntity>create(IronPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.3F).build("iron_pushcart"));
+    private static final RegistryObject<EntityType<CouplerEntity>> COUPLER_ENTITY = ENTITIES.register("coupler", () -> EntityType.Builder.<CouplerEntity>create(CouplerEntity::new, EntityClassification.MISC ).size(0.3F, 0.3F).build("coupler"));
+
 
     public static final EntityType<WoodenPushcartEntity> minecart_with_net = null;
     public static final EntityType<WoodenPushcartEntity> wooden_pushcart = null;
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
+    public static final EntityType<CouplerEntity> coupler = null;
 
 
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
@@ -85,6 +91,8 @@ public class ExampleMod
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_PUSHCART_ITEM = ITEMS.register("wooden_pushcart", () -> new WoodenPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> IRON_PUSHCART_ITEM = ITEMS.register("iron_pushcart", () -> new IronPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
 
     public ExampleMod() {
         // Register the setup method for modloading
@@ -125,6 +133,7 @@ public class ExampleMod
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(iron_pushcart, IronPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(coupler, CouplerRenderer::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
