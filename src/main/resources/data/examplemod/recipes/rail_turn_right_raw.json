@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "T"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "T": {
+      "item": "minecraft:rails"
+    }
+  },
+  "result": {
+    "item": "examplemod:rail_turn_right"
+  }
+}

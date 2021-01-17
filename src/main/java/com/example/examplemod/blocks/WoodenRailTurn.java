@@ -1,8 +1,6 @@
 package com.example.examplemod.blocks;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DetectorRailBlock;
-import net.minecraft.block.PoweredRailBlock;
 import net.minecraft.block.RailBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -15,12 +13,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class WoodenRail extends RailBlock {
+public class WoodenRailTurn extends RailTurn {
 
     public float maxSpeed = 0.2f;
 
 
-    public WoodenRail(Properties builder) {
+    public WoodenRailTurn(Properties builder) {
         super(builder);
     }
 
