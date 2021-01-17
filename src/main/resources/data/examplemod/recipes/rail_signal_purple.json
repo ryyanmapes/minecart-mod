@@ -10,10 +10,10 @@
       "item": "minecraft:stick"
     },
     "P": {
-      "tag": "minecraft:paper"
+      "item": "minecraft:paper"
     },
 	"D": {
-      "tag": "minecraft:purple_dye"
+      "item": "minecraft:purple_dye"
     }
   },
   "result": {

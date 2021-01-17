@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -23,11 +24,15 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.Random;
 
+@ObjectHolder("examplemod")
 public class CampfireCartEntity extends AbstractMinecartEntity {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.createKey(FurnaceMinecartEntity.class, DataSerializers.BOOLEAN);
+
+    public static final Item campfire_cart = null;
 
     public double pushX = 0;
     public double pushZ = 0;
@@ -92,7 +97,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     public void killMinecart(DamageSource source) {
         this.remove();
         if (!source.isExplosion() && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            this.entityDropItem(Blocks.CAMPFIRE);
+            this.entityDropItem(campfire_cart);
         }
 
     }

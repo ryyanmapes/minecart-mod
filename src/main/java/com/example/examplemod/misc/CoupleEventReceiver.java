@@ -33,7 +33,7 @@ public class CoupleEventReceiver {
     @SubscribeEvent
     public static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
 
-        if (event.getWorld().isRemote()) return;
+
 
         Hand hand = event.getHand();
         PlayerEntity player = event.getPlayer();
@@ -46,6 +46,7 @@ public class CoupleEventReceiver {
 
         if (using.getItem() == coupler || using_secondary.getItem() == coupler) {
             event.setCanceled(true);
+            if (event.getWorld().isRemote()) return;
 
             if (using.getItem() == coupler) {
                 if (entity instanceof AbstractMinecartEntity

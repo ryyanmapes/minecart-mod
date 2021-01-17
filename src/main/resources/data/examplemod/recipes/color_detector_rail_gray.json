@@ -13,7 +13,7 @@
       "item": "minecraft:glass"
     },
 	"D": {
-      "tag": "minecraft:gray_dye"
+      "item": "minecraft:gray_dye"
     }
   },
   "result": {

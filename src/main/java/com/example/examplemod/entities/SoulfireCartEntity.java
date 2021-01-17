@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -21,11 +22,14 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.Random;
 
+@ObjectHolder("examplemod")
 public class SoulfireCartEntity extends CampfireCartEntity {
 
+    public static final Item soulfire_cart = null;
 
     public SoulfireCartEntity(EntityType<?> furnaceCart, World world) {
         super(furnaceCart, world);
@@ -39,7 +43,7 @@ public class SoulfireCartEntity extends CampfireCartEntity {
     public void killMinecart(DamageSource source) {
         this.remove();
         if (!source.isExplosion() && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            this.entityDropItem(Blocks.SOUL_CAMPFIRE);
+            this.entityDropItem(soulfire_cart);
         }
 
     }

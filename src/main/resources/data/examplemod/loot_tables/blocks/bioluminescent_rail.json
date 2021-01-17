@@ -6,11 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-<<<<<<< HEAD:src/main/resources/data/examplemod/loot_tables/blocks/bioluminescent_rail.json
-          "name": "examplemod:wooden_rail"
-=======
-          "name": "examplemod:color_detector_rail_red"
->>>>>>> 8d95f34c74b8bdef3e38a3b1cdd5eef30e54e0bb:src/main/resources/data/examplemod/loot_tables/blocks/color_detector_rail_red.json
+          "name": "examplemod:bioluminescent_rail"
         }
       ]
     }
