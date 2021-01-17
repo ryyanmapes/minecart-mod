@@ -61,11 +61,11 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     public void tick() {
         super.tick();
 
-        if (Math.abs(this.getMotion().getX()*3) > pushX) {
+        if (Math.abs(this.getMotion().getX()*5) > pushX) {
             pushX = this.getMotion().getX();
         }
 
-        if (Math.abs(this.getMotion().getZ()*3) > pushZ) {
+        if (Math.abs(this.getMotion().getZ()*5) > pushZ) {
             pushZ = this.getMotion().getZ();
         }
 
@@ -131,7 +131,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
             double new_z = (Math.abs(this.pushZ/speed_coeff) > Math.abs(min_motion.z))? this.pushZ/speed_coeff : min_motion.z;
             this.setMotion(new_x, min_motion.y, new_z);
         } else {
-            this.setMotion(this.getMotion().mul(0.8D, 0.0D, 0.8D));
+            this.setMotion(this.getMotion().mul(0.95D, 0.0D, 0.95D));
         }
 
         super.applyDrag();
@@ -172,11 +172,11 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
 
         Vector3d pos = this.getPositionVec();
         if (isMinecartPowered()) {
-            world.playSound((double)pos.getX(), (double)pos.getY() + 0.4D, (double)pos.getZ(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCKS, 0.5F, 1.0F, false);
+            world.playSound((double)pos.getX(), (double)pos.getY() + 0.4D, (double)pos.getZ(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCKS, 0.3F, 1.0F, false);
             spawnSmokeParticles(world, this.getPositionVec(), false, true);
         }
         else {
-            world.playSound((double)pos.getX(), (double)pos.getY() + 0.4D, (double)pos.getZ(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 0.8F, world.getRandom().nextFloat() * 0.4F + 0.8F, false);
+            world.playSound((double)pos.getX(), (double)pos.getY() + 0.4D, (double)pos.getZ(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 0.3F, world.getRandom().nextFloat() * 0.4F + 0.8F, false);
         }
 
         setMinecartPowered(!isMinecartPowered());

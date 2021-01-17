@@ -4,6 +4,7 @@ import com.example.examplemod.items.AbstractMinecartItem;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -25,8 +26,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class ColorDetectorRailBlock extends AbstractRailBlock {
@@ -72,16 +75,25 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
                 if (was_powered) activate = true;
                 else {
                     for (AbstractMinecartEntity minecart : list) {
-                        if (minecart.getMinecartType() != AbstractMinecartEntity.Type.RIDEABLE) continue;
-                        List<Entity> passengers = minecart.getPassengers();
-                        if (passengers.isEmpty()) continue;
-                        Entity entity = passengers.get(0);
-                        if (!(entity instanceof PlayerEntity)) continue;
-                        PlayerEntity player = (PlayerEntity)entity;
-                        if (player.getHeldItem(Hand.MAIN_HAND).getItem() == detected_item.get()
-                          || player.getHeldItem(Hand.OFF_HAND).getItem() == detected_item.get()) {
-                            LOGGER.info("here");
-                            activate = true;
+                        if (minecart.getMinecartType() == AbstractMinecartEntity.Type.RIDEABLE) {
+                            List<Entity> passengers = minecart.getPassengers();
+                            if (passengers.isEmpty()) continue;
+                            Entity entity = passengers.get(0);
+                            if (!(entity instanceof PlayerEntity)) continue;
+                            PlayerEntity player = (PlayerEntity) entity;
+                            if (player.getHeldItem(Hand.MAIN_HAND).getItem() == detected_item.get()
+                                    || player.getHeldItem(Hand.OFF_HAND).getItem() == detected_item.get()) {
+                                activate = true;
+                            }
+                        }
+                        else if (minecart.getMinecartType() == AbstractMinecartEntity.Type.CHEST
+                            || minecart.getMinecartType() == AbstractMinecartEntity.Type.HOPPER) {
+                            ContainerMinecartEntity container = (ContainerMinecartEntity)minecart;
+                            HashSet<Item> set = new HashSet<>();
+                            set.add(detected_item.get());
+                            if (container.hasAny(set)) {
+                                activate = true;
+                            }
                         }
                     }
                 }
