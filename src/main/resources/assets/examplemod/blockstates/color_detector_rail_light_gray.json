@@ -1,0 +1,19 @@
+
+{
+  "variants": {
+    "powered=false,shape=north_south": {
+      "model": "examplemod:block/color_detector_rail_off_light_gray"
+    },
+    "powered=false,shape=east_west": {
+      "model": "examplemod:block/color_detector_rail_off_light_gray",
+      "y": 90
+    },
+    "powered=true,shape=north_south": {
+      "model": "examplemod:block/color_detector_rail_on_light_gray"
+    },
+    "powered=true,shape=east_west": {
+      "model": "examplemod:block/color_detector_rail_on_light_gray",
+      "y": 90
+    }
+  }
+}
