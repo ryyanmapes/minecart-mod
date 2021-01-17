@@ -5,6 +5,7 @@ import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
@@ -36,12 +37,14 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     public static final int MAX_ACTIVATION_TIME = 15;
 
     public int time_since_last_activation;
+    public Item detected_item;
 
 
-    public ColorDetectorRailBlock(Properties builder) {
+    public ColorDetectorRailBlock(Properties builder, Item detect_item) {
         super(true, builder);
         this.setDefaultState(this.stateContainer.getBaseState().with(POWERED, Boolean.valueOf(false)).with(SHAPE, RailShape.NORTH_SOUTH));
         time_since_last_activation = 0;
+        this.detected_item = detect_item;
     }
 
 
@@ -77,8 +80,8 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
                         Entity entity = passengers.get(0);
                         if (!(entity instanceof PlayerEntity)) continue;
                         PlayerEntity player = (PlayerEntity)entity;
-                        if (player.getHeldItem(Hand.MAIN_HAND).getItem() == Items.STICK
-                          || player.getHeldItem(Hand.OFF_HAND).getItem() == Items.STICK) {
+                        if (player.getHeldItem(Hand.MAIN_HAND).getItem() == detected_item
+                          || player.getHeldItem(Hand.OFF_HAND).getItem() == detected_item) {
                             LOGGER.info("here");
                             activate = true;
                             time_since_last_activation = MAX_ACTIVATION_TIME;

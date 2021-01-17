@@ -8,6 +8,8 @@
   "item.examplemod.wooden_pushcart": "Wooden Pushcart",
   "item.examplemod.iron_pushcart": "Iron Pushcart",
 
+  "item.examplemod.rail_signal_white": "Rail Signal (White)",
+
   "entity.examplemod.minecart_with_net": "Minecart with Spider",
   "entity.examplemod.wooden_pushcart": "Wooden Pushcart",
   "entity.examplemod.iron_pushcart": "Iron Pushcart"
