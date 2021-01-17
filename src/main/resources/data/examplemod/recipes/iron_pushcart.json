@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "III",
-    "NIN"
+    "SIS"
   ],
   "key": {
     "I": {
       "tag": "forge:ingots/iron"
     },
-    "N": {
-      "item": "minecraft:quartz"
+    "S": {
+      "item": "minecraft:stick"
     }
   },
   "result": {

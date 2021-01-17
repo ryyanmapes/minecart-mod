@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "MMM",
+    "SMS"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:soul_campfire"
+    },
+    "M": {
+      "item": "minecraft:smooth_blackstone"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "examplemod:soulfire_cart"
+  }
+}

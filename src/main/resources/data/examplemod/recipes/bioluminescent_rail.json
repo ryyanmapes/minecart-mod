@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "RGR",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "examplemod:wooden_rail"
+    },
+    "W": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "result": {
+    "item": "examplemod:bioluminescent_rail",
+    "count": 8
+  }
+}

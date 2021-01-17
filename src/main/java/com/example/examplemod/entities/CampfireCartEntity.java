@@ -67,7 +67,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         if (this.isMinecartPowered()){
             Vector3d pos = this.getPositionVec();
             if (rand.nextInt(10) == 0) {
-                world.playSound((double)pos.getX(), (double)pos.getY() + 0.4D, (double)pos.getZ(), SoundEvents.BLOCK_CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.5F + rand.nextFloat(), rand.nextFloat() * 0.7F + 0.6F, false);
+                world.playSound((double)pos.getX(), (double)pos.getY() + 0.4D, (double)pos.getZ(), SoundEvents.BLOCK_CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.2F + rand.nextFloat()/3, rand.nextFloat() * 0.7F + 0.6F, false);
             }
 
             if (rand.nextInt(10) == 0) {
@@ -151,8 +151,9 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
 
             return is_uphill;
         }
-
-        return false;
+        else {
+            return true;
+        }
     }
 
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
