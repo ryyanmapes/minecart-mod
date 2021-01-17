@@ -7,8 +7,24 @@
   "item.examplemod.minecart_with_net": "Minecart with Spider",
   "item.examplemod.wooden_pushcart": "Wooden Pushcart",
   "item.examplemod.iron_pushcart": "Iron Pushcart",
-
   "item.examplemod.rail_signal_white": "Rail Signal (White)",
+  "item.examplemod.rail_signal_light_gray": "Rail Signal (Light Gray)",
+  "item.examplemod.rail_signal_orange": "Rail Signal (Orange)",
+  "item.examplemod.rail_signal_cyan": "Rail Signal (Cyan)",
+  "item.examplemod.rail_signal_magenta": "Rail Signal (Magenta)",
+  "item.examplemod.rail_signal_purple": "Rail Signal (Purple)",
+  "item.examplemod.rail_signal_light_blue": "Rail Signal (Light Blue)",
+  "item.examplemod.rail_signal_blue": "Rail Signal (Blue)",
+  "item.examplemod.rail_signal_yellow": "Rail Signal (Yellow)",
+  "item.examplemod.rail_signal_brown": "Rail Signal (Brown)",
+  "item.examplemod.rail_signal_lime": "Rail Signal (Lime)",
+  "item.examplemod.rail_signal_green": "Rail Signal (Green)",
+  "item.examplemod.rail_signal_pink": "Rail Signal (Pink)",
+  "item.examplemod.rail_signal_red": "Rail Signal (Red)",
+  "item.examplemod.rail_signal_gray": "Rail Signal (Gray)",
+  "item.examplemod.rail_signal_black": "Rail Signal (Black)",
+
+
 
   "entity.examplemod.minecart_with_net": "Minecart with Spider",
   "entity.examplemod.wooden_pushcart": "Wooden Pushcart",
