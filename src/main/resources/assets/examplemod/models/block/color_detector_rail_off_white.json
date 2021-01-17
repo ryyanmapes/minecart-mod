@@ -1,10 +1,6 @@
 {
   "parent": "minecraft:block/rail_flat",
   "textures": {
-<<<<<<< HEAD:src/main/resources/assets/examplemod/models/block/color_detector_rail_off_black.json
-    "rail": "examplemod:block/black_detector"
-=======
-    "rail": "examplemod:block/???"
->>>>>>> 5b4c5cd2f36b98ebcd447a377a968bb358586765:src/main/resources/assets/examplemod/models/block/color_detector_rail_off_white.json
+    "rail": "examplemod:block/white_detector"
   }
 }

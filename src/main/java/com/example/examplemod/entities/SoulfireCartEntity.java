@@ -37,7 +37,7 @@ public class SoulfireCartEntity extends CampfireCartEntity {
 
     @Override
     public void killMinecart(DamageSource source) {
-        super.killMinecart(source);
+        this.remove();
         if (!source.isExplosion() && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
             this.entityDropItem(Blocks.SOUL_CAMPFIRE);
         }
@@ -51,7 +51,7 @@ public class SoulfireCartEntity extends CampfireCartEntity {
 
     @Override
     public double getSpeedCoeff() {
-        return 6;
+        return 7;
     }
 
     public boolean isGoingUphill() {

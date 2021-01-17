@@ -2,8 +2,24 @@
   "replace": false,
   "values": [
     "examplemod:wooden_rail",
+    "examplemod:bioluminescent_rail",
     "examplemod:rail_turn",
     "examplemod:wooden_rail_turn",
-    "examplemod:color_detector_rail"
+    "examplemod:color_detector_rail_white",
+    "examplemod:color_detector_rail_orange",
+    "examplemod:color_detector_rail_magenta",
+    "examplemod:color_detector_rail_light_blue",
+    "examplemod:color_detector_rail_yellow",
+    "examplemod:color_detector_rail_lime",
+    "examplemod:color_detector_rail_pink",
+    "examplemod:color_detector_rail_gray",
+    "examplemod:color_detector_rail_light_gray",
+    "examplemod:color_detector_rail_cyan",
+    "examplemod:color_detector_rail_purple",
+    "examplemod:color_detector_rail_blue",
+    "examplemod:color_detector_rail_brown",
+    "examplemod:color_detector_rail_green",
+    "examplemod:color_detector_rail_red",
+    "examplemod:color_detector_rail_black"
   ]
 }

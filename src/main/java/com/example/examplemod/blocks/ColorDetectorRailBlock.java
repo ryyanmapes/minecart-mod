@@ -36,15 +36,13 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
 
     public static final int MAX_ACTIVATION_TIME = 15;
 
-    public int time_since_last_activation;
-    public Item detected_item;
+    public java.util.function.Supplier<Item> detected_item;
 
 
-    public ColorDetectorRailBlock(Properties builder, Item detect_item) {
+    public ColorDetectorRailBlock(Properties builder,  java.util.function.Supplier<Item> det) {
         super(true, builder);
         this.setDefaultState(this.stateContainer.getBaseState().with(POWERED, Boolean.valueOf(false)).with(SHAPE, RailShape.NORTH_SOUTH));
-        time_since_last_activation = 0;
-        this.detected_item = detect_item;
+        this.detected_item = det;
     }
 
 
@@ -80,11 +78,10 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
                         Entity entity = passengers.get(0);
                         if (!(entity instanceof PlayerEntity)) continue;
                         PlayerEntity player = (PlayerEntity)entity;
-                        if (player.getHeldItem(Hand.MAIN_HAND).getItem() == detected_item
-                          || player.getHeldItem(Hand.OFF_HAND).getItem() == detected_item) {
+                        if (player.getHeldItem(Hand.MAIN_HAND).getItem() == detected_item.get()
+                          || player.getHeldItem(Hand.OFF_HAND).getItem() == detected_item.get()) {
                             LOGGER.info("here");
                             activate = true;
-                            time_since_last_activation = MAX_ACTIVATION_TIME;
                         }
                     }
                 }

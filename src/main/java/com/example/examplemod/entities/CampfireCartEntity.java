@@ -90,7 +90,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     }
 
     public void killMinecart(DamageSource source) {
-        super.killMinecart(source);
+        this.remove();
         if (!source.isExplosion() && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
             this.entityDropItem(Blocks.CAMPFIRE);
         }
@@ -126,7 +126,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
             double new_z = (Math.abs(this.pushZ/speed_coeff) > Math.abs(min_motion.z))? this.pushZ/speed_coeff : min_motion.z;
             this.setMotion(new_x, min_motion.y, new_z);
         } else {
-            this.setMotion(this.getMotion().mul(0.98D, 0.0D, 0.98D));
+            this.setMotion(this.getMotion().mul(0.8D, 0.0D, 0.8D));
         }
 
         super.applyDrag();
