@@ -3,14 +3,11 @@ package com.example.examplemod;
 import com.example.examplemod.blocks.ColorDetectorRailBlock;
 import com.example.examplemod.blocks.RailTurn;
 import com.example.examplemod.blocks.WoodenRail;
-import com.example.examplemod.entities.CouplerEntity;
-import com.example.examplemod.entities.IronPushcartEntity;
-import com.example.examplemod.entities.MinecartWithNet;
-import com.example.examplemod.entities.WoodenPushcartEntity;
-import com.example.examplemod.items.CouplerItem;
-import com.example.examplemod.items.IronPushcartItem;
-import com.example.examplemod.items.MinecartWithNetItem;
-import com.example.examplemod.items.WoodenPushcartItem;
+import com.example.examplemod.blocks.WoodenRailTurn;
+import com.example.examplemod.entities.*;
+import com.example.examplemod.items.*;
+import com.example.examplemod.misc.CouplerClientFactory;
+import com.example.examplemod.misc.CouplerPacketHandler;
 import com.example.examplemod.renderers.CouplerRenderer;
 import com.example.examplemod.renderers.IronPushcartRenderer;
 import com.example.examplemod.renderers.VanillaMinecartRenderer;
@@ -38,6 +35,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
@@ -62,39 +60,45 @@ public class ExampleMod
 
 
     private static final RegistryObject<EntityType<MinecartWithNet>> MINECART_WITH_NET_ENTITY = ENTITIES.register("minecart_with_net", () -> EntityType.Builder.<MinecartWithNet>create(MinecartWithNet::new, EntityClassification.MISC ).size(0.98F, 0.7F).build("minecart_with_net"));
+    private static final RegistryObject<EntityType<CampfireCartEntity>> CAMPFIRE_CART_ENTITY = ENTITIES.register("campfire_cart", () -> EntityType.Builder.<CampfireCartEntity>create(CampfireCartEntity::new, EntityClassification.MISC ).size(0.98F, 0.5F).build("campfire_cart"));
     private static final RegistryObject<EntityType<WoodenPushcartEntity>> WOODEN_PUSHCART_ENTITY = ENTITIES.register("wooden_pushcart", () -> EntityType.Builder.<WoodenPushcartEntity>create(WoodenPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.3F).build("wooden_pushcart"));
     private static final RegistryObject<EntityType<IronPushcartEntity>> IRON_PUSHCART_ENTITY = ENTITIES.register("iron_pushcart", () -> EntityType.Builder.<IronPushcartEntity>create(IronPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.3F).build("iron_pushcart"));
-    private static final RegistryObject<EntityType<CouplerEntity>> COUPLER_ENTITY = ENTITIES.register("coupler", () -> EntityType.Builder.<CouplerEntity>create(CouplerEntity::new, EntityClassification.MISC ).size(0.3F, 0.3F).build("coupler"));
+    private static final RegistryObject<EntityType<CouplerEntity>> COUPLER_ENTITY = ENTITIES.register("coupler", () -> EntityType.Builder.<CouplerEntity>create(CouplerEntity::new, EntityClassification.MISC ).size(0.3F, 0.3F).setCustomClientFactory(CouplerClientFactory.get()).build("coupler"));
 
 
     public static final EntityType<WoodenPushcartEntity> minecart_with_net = null;
+    public static final EntityType<CampfireCartEntity> campfire_cart = null;
     public static final EntityType<WoodenPushcartEntity> wooden_pushcart = null;
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<CouplerEntity> coupler = null;
 
 
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> RAIL_TURN_RIGHT = BLOCKS.register("rail_turn_right", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), false));
-    private static final RegistryObject<Block> RAIL_TURN_LEFT = BLOCKS.register("rail_turn_left", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), true));
+    private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> COLOR_DETECTOR_RAIL = BLOCKS.register("color_detector_rail", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
 
 
     public static final Block wooden_rail = null;
-    public static final Block rail_turn_right = null;
-    public static final Block rail_turn_left = null;
+    public static final Block rail_turn = null;
+    public static final Block wooden_rail_turn = null;
     public static final Block color_detector_rail = null;
 
     private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
-    private static final RegistryObject<Item> RAIL_TURN_RIGHT_ITEM = ITEMS.register("rail_turn_right", () -> new BlockItem(rail_turn_right, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
-    private static final RegistryObject<Item> RAIL_TURN_LEFT_ITEM = ITEMS.register("rail_turn_left", () -> new BlockItem(rail_turn_left, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> WOODEN_RAIL_TURN_ITEM = ITEMS.register("wooden_rail_turn", () -> new BlockItem(wooden_rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM = ITEMS.register("color_detector_rail", () -> new BlockItem(color_detector_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> CAMPFIRE_CART_ITEM = ITEMS.register("campfire_cart", () -> new CampfireCartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_PUSHCART_ITEM = ITEMS.register("wooden_pushcart", () -> new WoodenPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> IRON_PUSHCART_ITEM = ITEMS.register("iron_pushcart", () -> new IronPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
 
 
     public ExampleMod() {
+
+        CouplerPacketHandler.Init();
+
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
@@ -106,6 +110,8 @@ public class ExampleMod
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+
 
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -126,11 +132,12 @@ public class ExampleMod
 
         RenderType cutout = RenderType.getCutout();
         RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
-        RenderTypeLookup.setRenderLayer(rail_turn_right, cutout);
-        RenderTypeLookup.setRenderLayer(rail_turn_left, cutout);
+        RenderTypeLookup.setRenderLayer(rail_turn, cutout);
+        RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail, cutout);
 
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(campfire_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(coupler, CouplerRenderer::new);

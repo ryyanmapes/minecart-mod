@@ -1,25 +1,41 @@
 package com.example.examplemod.entities;
 
+import com.example.examplemod.misc.CouplerPacketHandler;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.LeadItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SMountEntityPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ObjectHolder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.UUID;
 
 @ObjectHolder("examplemod")
 public class CouplerEntity extends Entity {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final String COUPLED_COMPOUND = "Couples";
     private static final String TAG_COUPLED_UUID_1 = "coupled_UUID_1";
     private static final String TAG_COUPLED_UUID_2 = "coupled_UUID_2";
@@ -30,7 +46,9 @@ public class CouplerEntity extends Entity {
     public static final Item coupler = null;
 
     public Entity vehicle1;
+    public int vehicle1_id;
     public Entity vehicle2;
+    public int vehicle2_id;
     public double lastForceX = 0;
     public double lastForceY = 0;
     public double lastForceZ = 0;
@@ -39,7 +57,9 @@ public class CouplerEntity extends Entity {
     public CouplerEntity(EntityType<?> type, World worldIn, Entity vehicle1, Entity vehicle2) {
         super(type, worldIn);
         this.vehicle1 = vehicle1;
+        this.vehicle1_id = vehicle1.getEntityId();
         this.vehicle2 = vehicle2;
+        this.vehicle2_id = vehicle2.getEntityId();
         this.updateDisplay();
     }
 
@@ -50,11 +70,27 @@ public class CouplerEntity extends Entity {
     @Override
     protected void registerData() { }
 
+    @Nullable
+    public Entity getFirstVehicle() {
+        if (this.vehicle1 == null && this.vehicle1_id != 0 && this.world.isRemote) {
+            this.vehicle1 = this.world.getEntityByID(this.vehicle1_id);
+        }
+        return this.vehicle1;
+    }
+
+    @Nullable
+    public Entity getSecondVehicle() {
+        if (this.vehicle2 == null && this.vehicle2_id != 0 && this.world.isRemote) {
+            this.vehicle2 = this.world.getEntityByID(this.vehicle2_id);
+        }
+        return this.vehicle2;
+    }
+
     @Override
     public void tick() {
 
         if (world instanceof ClientWorld) {
-            if (vehicle1 != null && vehicle2 != null) updateDisplay();
+            updateDisplay();
             return;
         }
 
@@ -66,13 +102,13 @@ public class CouplerEntity extends Entity {
         if (!vehicle1.isAlive() || !vehicle2.isAlive()) {
             if (vehicle1.isAlive()) releaseTensionToOne(true);
             if (vehicle2.isAlive()) releaseTensionToOne(false);
-            this.onBroken();
+            this.onBroken(true);
         }
 
         double distance = vehicle1.getDistance(vehicle2);
 
         if (distance > 6.0F) {
-            this.onBroken();
+            this.onBroken(true);
         }
         else {
             Vector3d motion1 = vehicle1.getMotion();
@@ -110,21 +146,33 @@ public class CouplerEntity extends Entity {
     }
 
     private void recreateCouple() {
-        if (this.vehicleNBTTag != null && this.world instanceof ServerWorld) {
+        if (this.vehicleNBTTag == null) return;
+
+        if (this.world instanceof ServerWorld) {
 
             if (this.vehicleNBTTag.hasUniqueId(TAG_COUPLED_UUID_1)) {
                 UUID uuid = this.vehicleNBTTag.getUniqueId(TAG_COUPLED_UUID_1);
                 Entity entity = ((ServerWorld)this.world).getEntityByUuid(uuid);
-                if (entity != null) this.vehicle1 = entity;
+                if (entity != null) {
+                    this.vehicle1 = entity;
+                    this.vehicle1_id = vehicle1.getEntityId();
+                }
             }
             if (this.vehicleNBTTag.hasUniqueId(TAG_COUPLED_UUID_2)) {
                 UUID uuid = this.vehicleNBTTag.getUniqueId(TAG_COUPLED_UUID_2);
                 Entity entity = ((ServerWorld)this.world).getEntityByUuid(uuid);
-                if (entity != null) this.vehicle2 = entity;
+                if (entity != null) {
+                    this.vehicle2 = entity;
+                    this.vehicle2_id = vehicle2.getEntityId();
+                }
+            }
+
+            if (this.vehicle1 != null && this.vehicle2 != null && !this.world.isRemote) {
+                CouplerPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(()->this), new CouplerPacketHandler.CouplePacket(this.getEntityId(), this.vehicle1_id , this.vehicle2_id));
             }
 
             if (this.ticksExisted > 100) {
-                this.onBroken();
+                this.onBroken(true);
                 this.vehicleNBTTag = null;
             }
 
@@ -157,9 +205,9 @@ public class CouplerEntity extends Entity {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (!this.isAlive() && !this.world.isRemote) {
-                releaseTensionToBoth();
-                this.onBroken();
+            if (this.isAlive() && !this.world.isRemote) {
+                this.releaseTensionToBoth();
+                this.onBroken(!source.isCreativePlayer());
                 this.markVelocityChanged();
             }
 
@@ -167,9 +215,9 @@ public class CouplerEntity extends Entity {
         }
     }
 
-    public void onBroken() {
+    public void onBroken(boolean drop_item) {
         this.playSound(SoundEvents.BLOCK_CHAIN_BREAK, 1.0F, 1.0F);
-        this.entityDropItem(coupler);
+        if (drop_item) entityDropItem(coupler);
         this.remove();
     }
 
@@ -194,9 +242,11 @@ public class CouplerEntity extends Entity {
     }
 
     protected void updateDisplay() {
-        double x = (vehicle1.getPosX() + vehicle2.getPosX())/2;
-        double y = (vehicle1.getPosY() + vehicle2.getPosY())/2;
-        double z = (vehicle1.getPosZ() + vehicle2.getPosZ())/2;
+        Vector3d v1 = getFirstVehicle().getPositionVec();
+        Vector3d v2 = getSecondVehicle().getPositionVec();
+        double x = (v1.x+ v2.x)/2;
+        double y = (v1.y + v2.y)/2;
+        double z = (v1.z + v2.z)/2;
         this.setPosition(x,y,z);
     }
 
@@ -204,9 +254,28 @@ public class CouplerEntity extends Entity {
         return true;
     }
 
+
+
+
     @Override
     public IPacket<?> createSpawnPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        IPacket<?> packet = NetworkHooks.getEntitySpawningPacket(this);
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer() );
+        try {
+            packet.writePacketData(buf);
+        } catch (IOException e) {
+            LOGGER.info("UNABLE TO WRITE TO BUFFER!");
+        }
+        buf.writeInt(vehicle1_id);
+        buf.writeInt(vehicle2_id);
+        try {
+            packet.readPacketData(buf);
+        } catch (IOException e) {
+            LOGGER.info("UNABLE TO READ FROM BUFFER!");
+        }
+        return packet;
     }
+
+
 
 }

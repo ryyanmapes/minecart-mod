@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "examplemod:rail_turn_right"
+          "name": "examplemod:rail_turn"
         }
       ]
     }

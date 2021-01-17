@@ -7,10 +7,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ObjectHolder;
@@ -36,10 +39,21 @@ public class CouplerItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 
-        if (! ( worldIn instanceof ServerWorld) ) return;
+        CompoundNBT tag = stack.getOrCreateTag();
+        if (!tag.hasUniqueId(TAG_COUPLED_UUID_1) && tag.hasUniqueId(TAG_COUPLED_UUID_2) && entityIn instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entityIn;
+            player.playSound(SoundEvents.BLOCK_CHAIN_PLACE, 0.7F, 1.0F);
+            if (!player.abilities.isCreativeMode) {
+                stack.shrink(1);
+            }
+            clearCoupler(stack);
+            return;
+        }
+
+        if (! (worldIn instanceof  ServerWorld)) return;
+
         ServerWorld world = (ServerWorld)worldIn;
 
-        CompoundNBT tag = stack.getOrCreateTag();
         if (tag.hasUniqueId(TAG_COUPLED_UUID_1) && tag.hasUniqueId(TAG_COUPLED_UUID_2)){
             UUID uuid1 = tag.getUniqueId(TAG_COUPLED_UUID_1);
             Entity ent1 = world.getEntityByUuid(uuid1);
@@ -49,9 +63,11 @@ public class CouplerItem extends Item {
             if (ent1 != null && ent2 != null && ent1 != ent2) {
 
                 double distance = ent1.getDistance(ent2);
-                if (distance < 5) {
+                if (distance < 2.5) {
                     CouplerEntity coupler_ent = new CouplerEntity(coupler, worldIn, ent1, ent2);
                     worldIn.addEntity(coupler_ent);
+                    tag.remove(TAG_COUPLED_UUID_1);
+                    return;
                 }
             }
 
@@ -60,8 +76,9 @@ public class CouplerItem extends Item {
 
     }
 
-    public static void hookIn(World worldIn, ItemStack used, Entity vehicle) {
+    public static void hookIn(PlayerEntity player, World worldIn, ItemStack used, Entity vehicle) {
         CompoundNBT tag = used.getOrCreateTag();
+        //player.playSound(SoundEvents.BLOCK_CHAIN_PLACE, 0.7F, 1.0F);
         if (tag.hasUniqueId(TAG_COUPLED_UUID_2)){}
         if (tag.hasUniqueId(TAG_COUPLED_UUID_1)) {
             UUID uuid = vehicle.getUniqueID();
@@ -70,6 +87,7 @@ public class CouplerItem extends Item {
         else {
             UUID uuid = vehicle.getUniqueID();
             tag.putUniqueId(TAG_COUPLED_UUID_1, uuid);
+            tag.putInt("CustomModelData", 1);
         }
     }
 
@@ -77,5 +95,6 @@ public class CouplerItem extends Item {
         CompoundNBT tag = used.getOrCreateTag();
         tag.remove(TAG_COUPLED_UUID_1);
         tag.remove(TAG_COUPLED_UUID_2);
+        tag.putInt("CustomModelData", 0);
     }
 }
