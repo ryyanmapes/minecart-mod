@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "D",
+    "G",
+	"R"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:detector_rail"
+    },
+	"G": {
+      "item": "minecraft:glass"
+    },
+	"D": {
+      "tag": "minecraft:light_gray_dye"
+    }
+  },
+  "result": {
+    "item": "examplemod:color_detector_rail_light_gray",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "D",
+    "P",
+    "S"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "P": {
+      "tag": "minecraft:paper"
+    },
+	"D": {
+      "tag": "minecraft:white_dye"
+    }
+  },
+  "result": {
+    "item": "examplemod:rail_signal_white",
+    "count": 1
+  }
+}
