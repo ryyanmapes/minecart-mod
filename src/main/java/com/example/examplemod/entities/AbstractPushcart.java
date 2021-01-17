@@ -119,10 +119,10 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
                 if (AbstractRailBlock.isRail(state)) {
                     RailShape railshape = ((AbstractRailBlock) state.getBlock()).getRailDirection(state, this.world, pos, this);
 
-                    boolean is_uphill = (railshape != RailShape.ASCENDING_EAST && railshape != RailShape.ASCENDING_WEST
-                            && railshape != RailShape.ASCENDING_NORTH && railshape != RailShape.ASCENDING_SOUTH);
+                    boolean is_uphill = (railshape == RailShape.ASCENDING_EAST || railshape == RailShape.ASCENDING_WEST
+                            || railshape == RailShape.ASCENDING_NORTH || railshape == RailShape.ASCENDING_SOUTH);
 
-                    double controlSpeed = is_uphill? this.getControlSpeed() : this.getUphillSpeed();
+                    double controlSpeed = is_uphill? this.getUphillSpeed() : this.getControlSpeed();
                     entity.setMotion(motion.scale(controlSpeed));
 
                 }

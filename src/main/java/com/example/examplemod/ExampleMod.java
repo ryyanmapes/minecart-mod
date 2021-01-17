@@ -61,6 +61,7 @@ public class ExampleMod
 
     private static final RegistryObject<EntityType<MinecartWithNet>> MINECART_WITH_NET_ENTITY = ENTITIES.register("minecart_with_net", () -> EntityType.Builder.<MinecartWithNet>create(MinecartWithNet::new, EntityClassification.MISC ).size(0.98F, 0.7F).build("minecart_with_net"));
     private static final RegistryObject<EntityType<CampfireCartEntity>> CAMPFIRE_CART_ENTITY = ENTITIES.register("campfire_cart", () -> EntityType.Builder.<CampfireCartEntity>create(CampfireCartEntity::new, EntityClassification.MISC ).size(0.98F, 0.5F).build("campfire_cart"));
+    private static final RegistryObject<EntityType<SoulfireCartEntity>> SOULFIRE_CART_ENTITY = ENTITIES.register("soulfire_cart", () -> EntityType.Builder.<SoulfireCartEntity>create(SoulfireCartEntity::new, EntityClassification.MISC ).size(0.98F, 0.5F).build("soulfire_cart"));
     private static final RegistryObject<EntityType<WoodenPushcartEntity>> WOODEN_PUSHCART_ENTITY = ENTITIES.register("wooden_pushcart", () -> EntityType.Builder.<WoodenPushcartEntity>create(WoodenPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.3F).build("wooden_pushcart"));
     private static final RegistryObject<EntityType<IronPushcartEntity>> IRON_PUSHCART_ENTITY = ENTITIES.register("iron_pushcart", () -> EntityType.Builder.<IronPushcartEntity>create(IronPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.3F).build("iron_pushcart"));
     private static final RegistryObject<EntityType<CouplerEntity>> COUPLER_ENTITY = ENTITIES.register("coupler", () -> EntityType.Builder.<CouplerEntity>create(CouplerEntity::new, EntityClassification.MISC ).size(0.3F, 0.3F).setCustomClientFactory(CouplerClientFactory.get()).build("coupler"));
@@ -68,6 +69,7 @@ public class ExampleMod
 
     public static final EntityType<WoodenPushcartEntity> minecart_with_net = null;
     public static final EntityType<CampfireCartEntity> campfire_cart = null;
+    public static final EntityType<CampfireCartEntity> soulfire_cart = null;
     public static final EntityType<WoodenPushcartEntity> wooden_pushcart = null;
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<CouplerEntity> coupler = null;
@@ -76,23 +78,106 @@ public class ExampleMod
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> COLOR_DETECTOR_RAIL = BLOCKS.register("color_detector_rail", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
 
 
     public static final Block wooden_rail = null;
     public static final Block rail_turn = null;
     public static final Block wooden_rail_turn = null;
-    public static final Block color_detector_rail = null;
 
     private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_RAIL_TURN_ITEM = ITEMS.register("wooden_rail_turn", () -> new BlockItem(wooden_rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
-    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM = ITEMS.register("color_detector_rail", () -> new BlockItem(color_detector_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> CAMPFIRE_CART_ITEM = ITEMS.register("campfire_cart", () -> new CampfireCartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SOULFIRE_CART_ITEM = ITEMS.register("soulfire_cart", () -> new SoulfireCartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_PUSHCART_ITEM = ITEMS.register("wooden_pushcart", () -> new WoodenPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> IRON_PUSHCART_ITEM = ITEMS.register("iron_pushcart", () -> new IronPushcartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    private static final RegistryObject<Item> SIGNAL_WHITE = ITEMS.register("rail_signal_white", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_ORANGE = ITEMS.register("rail_signal_orange", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_MAGENTA = ITEMS.register("rail_signal_magenta", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_LIGHT_BLUE = ITEMS.register("rail_signal_light_blue", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_YELLOW = ITEMS.register("rail_signal_yellow", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_LIGHT_GREEN = ITEMS.register("rail_signal_light_green", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_PINK = ITEMS.register("rail_signal_pink", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_GRAY = ITEMS.register("rail_signal_gray", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_LIGHT_GRAY = ITEMS.register("rail_signal_light_gray", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_CYAN = ITEMS.register("rail_signal_cyan", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_PURPLE = ITEMS.register("rail_signal_purple", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_BLUE = ITEMS.register("rail_signal_blue", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_BROWN = ITEMS.register("rail_signal_brown", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_GREEN = ITEMS.register("rail_signal_green", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_RED = ITEMS.register("rail_signal_red", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_BLACK = ITEMS.register("rail_signal_black", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final Item rail_signal_white = null;
+    public static final Item rail_signal_orange = null;
+    public static final Item rail_signal_magenta = null;
+    public static final Item rail_signal_light_blue = null;
+    public static final Item rail_signal_yellow = null;
+    public static final Item rail_signal_light_green = null;
+    public static final Item rail_signal_pink = null;
+    public static final Item rail_signal_gray = null;
+    public static final Item rail_signal_light_grey = null;
+    public static final Item rail_signal_cyan = null;
+    public static final Item rail_signal_purple = null;
+    public static final Item rail_signal_blue = null;
+    public static final Item rail_signal_brown = null;
+    public static final Item rail_signal_green = null;
+    public static final Item rail_signal_red = null;
+    public static final Item rail_signal_black = null;
+
+    private static final RegistryObject<Block> DETECTOR_RAIL_WHITE = BLOCKS.register("color_detector_rail_white", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_white));
+    private static final RegistryObject<Block> DETECTOR_RAIL_ORANGE = BLOCKS.register("color_detector_rail_orange", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_orange));
+    private static final RegistryObject<Block> DETECTOR_RAIL_MAGENTA = BLOCKS.register("color_detector_rail_magenta", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_magenta));
+    private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_BLUE = BLOCKS.register("color_detector_rail_light_blue", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_light_blue));
+    private static final RegistryObject<Block> DETECTOR_RAIL_YELLOW = BLOCKS.register("color_detector_rail_yellow", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_yellow));
+    private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_GREEN = BLOCKS.register("color_detector_rail_light_green", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_light_green));
+    private static final RegistryObject<Block> DETECTOR_RAIL_PINK = BLOCKS.register("color_detector_rail_pink", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_pink));
+    private static final RegistryObject<Block> DETECTOR_RAIL_GRAY = BLOCKS.register("color_detector_rail_gray", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_gray));
+    private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_GRAY = BLOCKS.register("color_detector_rail_light_gray", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_light_grey));
+    private static final RegistryObject<Block> DETECTOR_RAIL_CYAN = BLOCKS.register("color_detector_rail_cyan", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_cyan));
+    private static final RegistryObject<Block> DETECTOR_RAIL_PURPLE = BLOCKS.register("color_detector_rail_purple", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_purple));
+    private static final RegistryObject<Block> DETECTOR_RAIL_BLUE = BLOCKS.register("color_detector_rail_blue", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_blue));
+    private static final RegistryObject<Block> DETECTOR_RAIL_BROWN = BLOCKS.register("color_detector_rail_brown", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_brown));
+    private static final RegistryObject<Block> DETECTOR_RAIL_GREEN = BLOCKS.register("color_detector_rail_green", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_green));
+    private static final RegistryObject<Block> DETECTOR_RAIL_RED = BLOCKS.register("color_detector_rail_red", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_red));
+    private static final RegistryObject<Block> DETECTOR_RAIL_BLACK = BLOCKS.register("color_detector_rail_black", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_black));
+
+    public static final Block color_detector_rail_white = null;
+    public static final Block color_detector_rail_orange = null;
+    public static final Block color_detector_rail_magenta = null;
+    public static final Block color_detector_rail_light_blue = null;
+    public static final Block color_detector_rail_yellow = null;
+    public static final Block color_detector_rail_light_green = null;
+    public static final Block color_detector_rail_pink = null;
+    public static final Block color_detector_rail_gray = null;
+    public static final Block color_detector_rail_light_gray = null;
+    public static final Block color_detector_rail_cyan = null;
+    public static final Block color_detector_rail_purple = null;
+    public static final Block color_detector_rail_blue = null;
+    public static final Block color_detector_rail_brown = null;
+    public static final Block color_detector_rail_green = null;
+    public static final Block color_detector_rail_red = null;
+    public static final Block color_detector_rail_black = null;
+
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_WHITE = ITEMS.register("color_detector_rail_white", () -> new BlockItem(color_detector_rail_white, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_ORANGE = ITEMS.register("color_detector_rail_orange", () -> new BlockItem(color_detector_rail_orange, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_MAGENTA = ITEMS.register("color_detector_rail_magenta", () -> new BlockItem(color_detector_rail_magenta, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_LIGHT_BLUE = ITEMS.register("color_detector_rail_light_blue", () -> new BlockItem(color_detector_rail_light_blue, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_YELLOW = ITEMS.register("color_detector_rail_yellow", () -> new BlockItem(color_detector_rail_yellow, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_LIGHT_GREEN = ITEMS.register("color_detector_rail_light_green", () -> new BlockItem(color_detector_rail_light_green, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_PINK = ITEMS.register("color_detector_rail_pink", () -> new BlockItem(color_detector_rail_pink, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_GRAY = ITEMS.register("color_detector_rail_gray", () -> new BlockItem(color_detector_rail_gray, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_LIGHT_GRAY = ITEMS.register("color_detector_rail_light_gray", () -> new BlockItem(color_detector_rail_light_gray, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_CYAN = ITEMS.register("color_detector_rail_cyan", () -> new BlockItem(color_detector_rail_cyan, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_PURPLE = ITEMS.register("color_detector_rail_purple", () -> new BlockItem(color_detector_rail_purple, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_BLUE = ITEMS.register("color_detector_rail_blue", () -> new BlockItem(color_detector_rail_blue, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_BROWN = ITEMS.register("color_detector_rail_brown", () -> new BlockItem(color_detector_rail_brown, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_GREEN = ITEMS.register("color_detector_rail_green", () -> new BlockItem(color_detector_rail_green, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_RED = ITEMS.register("color_detector_rail_red", () -> new BlockItem(color_detector_rail_red, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_BLACK = ITEMS.register("color_detector_rail_black", () -> new BlockItem(color_detector_rail_black, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
 
 
     public ExampleMod() {
@@ -134,10 +219,27 @@ public class ExampleMod
         RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
-        RenderTypeLookup.setRenderLayer(color_detector_rail, cutout);
+
+        RenderTypeLookup.setRenderLayer(color_detector_rail_white, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_orange, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_magenta, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_light_blue, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_yellow, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_light_green, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_pink, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_gray, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_light_gray, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_cyan, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_purple, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_blue, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_brown, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_green, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_red, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_black, cutout);
 
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(campfire_cart, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(soulfire_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(coupler, CouplerRenderer::new);
