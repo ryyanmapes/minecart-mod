@@ -1,9 +1,6 @@
 package com.example.examplemod.entities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.FurnaceBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
@@ -18,6 +15,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -117,20 +115,44 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
 
     protected void applyDrag() {
         double d0 = this.pushX * this.pushX + this.pushZ * this.pushZ;
-        if (isMinecartPowered() && d0 > 1.0E-7D && isMinecartPowered()) {
+        if (isMinecartPowered() && d0 > 1.0E-7D && isMinecartPowered() && !isGoingUphill()) {
             d0 = (double)MathHelper.sqrt(d0);
             this.pushX /= d0;
             this.pushZ /= d0;
             // Four times slower than a furnace cart.
             Vector3d min_motion = this.getMotion().mul(0.8D, 0.0D, 0.8D);
-            double new_x = (Math.abs(this.pushX/11) > Math.abs(min_motion.x))? this.pushX/11 : min_motion.x;
-            double new_z = (Math.abs(this.pushZ/11) > Math.abs(min_motion.z))? this.pushZ/11 : min_motion.z;
+            double speed_coeff = this.getSpeedCoeff();
+            double new_x = (Math.abs(this.pushX/speed_coeff) > Math.abs(min_motion.x))? this.pushX/speed_coeff : min_motion.x;
+            double new_z = (Math.abs(this.pushZ/speed_coeff) > Math.abs(min_motion.z))? this.pushZ/speed_coeff : min_motion.z;
             this.setMotion(new_x, min_motion.y, new_z);
         } else {
             this.setMotion(this.getMotion().mul(0.98D, 0.0D, 0.98D));
         }
 
         super.applyDrag();
+    }
+
+    public double getSpeedCoeff() {
+        return 11;
+    }
+
+    public boolean isGoingUphill() {
+        int i = MathHelper.floor(this.getPosX());
+        int j = MathHelper.floor(this.getPosY());
+        int k = MathHelper.floor(this.getPosZ());
+
+        BlockPos pos = new BlockPos(i, j, k);
+        BlockState state = this.world.getBlockState(pos);
+        if (AbstractRailBlock.isRail(state)) {
+            RailShape railshape = ((AbstractRailBlock) state.getBlock()).getRailDirection(state, this.world, pos, this);
+
+            boolean is_uphill = (railshape == RailShape.ASCENDING_EAST || railshape == RailShape.ASCENDING_WEST
+                    || railshape == RailShape.ASCENDING_NORTH || railshape == RailShape.ASCENDING_SOUTH);
+
+            return is_uphill;
+        }
+
+        return false;
     }
 
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
