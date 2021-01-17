@@ -99,7 +99,7 @@ public class ExampleMod
     private static final RegistryObject<Item> SIGNAL_MAGENTA = ITEMS.register("rail_signal_magenta", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> SIGNAL_LIGHT_BLUE = ITEMS.register("rail_signal_light_blue", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> SIGNAL_YELLOW = ITEMS.register("rail_signal_yellow", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
-    private static final RegistryObject<Item> SIGNAL_LIGHT_GREEN = ITEMS.register("rail_signal_light_green", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> SIGNAL_LIME = ITEMS.register("rail_signal_lime", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> SIGNAL_PINK = ITEMS.register("rail_signal_pink", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> SIGNAL_GRAY = ITEMS.register("rail_signal_gray", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> SIGNAL_LIGHT_GRAY = ITEMS.register("rail_signal_light_gray", () -> new Item(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
@@ -116,7 +116,7 @@ public class ExampleMod
     public static final Item rail_signal_magenta = null;
     public static final Item rail_signal_light_blue = null;
     public static final Item rail_signal_yellow = null;
-    public static final Item rail_signal_light_green = null;
+    public static final Item rail_signal_lime = null;
     public static final Item rail_signal_pink = null;
     public static final Item rail_signal_gray = null;
     public static final Item rail_signal_light_grey = null;
@@ -133,7 +133,7 @@ public class ExampleMod
     private static final RegistryObject<Block> DETECTOR_RAIL_MAGENTA = BLOCKS.register("color_detector_rail_magenta", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_magenta));
     private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_BLUE = BLOCKS.register("color_detector_rail_light_blue", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_light_blue));
     private static final RegistryObject<Block> DETECTOR_RAIL_YELLOW = BLOCKS.register("color_detector_rail_yellow", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_yellow));
-    private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_GREEN = BLOCKS.register("color_detector_rail_light_green", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_light_green));
+    private static final RegistryObject<Block> DETECTOR_RAIL_LIME = BLOCKS.register("color_detector_rail_lime", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_lime));
     private static final RegistryObject<Block> DETECTOR_RAIL_PINK = BLOCKS.register("color_detector_rail_pink", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_pink));
     private static final RegistryObject<Block> DETECTOR_RAIL_GRAY = BLOCKS.register("color_detector_rail_gray", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_gray));
     private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_GRAY = BLOCKS.register("color_detector_rail_light_gray", () -> new ColorDetectorRailBlock(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL), rail_signal_light_grey));
@@ -150,7 +150,7 @@ public class ExampleMod
     public static final Block color_detector_rail_magenta = null;
     public static final Block color_detector_rail_light_blue = null;
     public static final Block color_detector_rail_yellow = null;
-    public static final Block color_detector_rail_light_green = null;
+    public static final Block color_detector_rail_lime = null;
     public static final Block color_detector_rail_pink = null;
     public static final Block color_detector_rail_gray = null;
     public static final Block color_detector_rail_light_gray = null;
@@ -167,7 +167,7 @@ public class ExampleMod
     private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_MAGENTA = ITEMS.register("color_detector_rail_magenta", () -> new BlockItem(color_detector_rail_magenta, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_LIGHT_BLUE = ITEMS.register("color_detector_rail_light_blue", () -> new BlockItem(color_detector_rail_light_blue, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_YELLOW = ITEMS.register("color_detector_rail_yellow", () -> new BlockItem(color_detector_rail_yellow, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
-    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_LIGHT_GREEN = ITEMS.register("color_detector_rail_light_green", () -> new BlockItem(color_detector_rail_light_green, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_LIME = ITEMS.register("color_detector_rail_lime", () -> new BlockItem(color_detector_rail_lime, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_PINK = ITEMS.register("color_detector_rail_pink", () -> new BlockItem(color_detector_rail_pink, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_GRAY = ITEMS.register("color_detector_rail_gray", () -> new BlockItem(color_detector_rail_gray, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> COLOR_DETECTOR_RAIL_ITEM_LIGHT_GRAY = ITEMS.register("color_detector_rail_light_gray", () -> new BlockItem(color_detector_rail_light_gray, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
@@ -225,7 +225,7 @@ public class ExampleMod
         RenderTypeLookup.setRenderLayer(color_detector_rail_magenta, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_light_blue, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_yellow, cutout);
-        RenderTypeLookup.setRenderLayer(color_detector_rail_light_green, cutout);
+        RenderTypeLookup.setRenderLayer(color_detector_rail_lime, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_pink, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_gray, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_light_gray, cutout);
