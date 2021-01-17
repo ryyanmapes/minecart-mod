@@ -8,10 +8,7 @@ import com.example.examplemod.entities.*;
 import com.example.examplemod.items.*;
 import com.example.examplemod.misc.CouplerClientFactory;
 import com.example.examplemod.misc.CouplerPacketHandler;
-import com.example.examplemod.renderers.CouplerRenderer;
-import com.example.examplemod.renderers.IronPushcartRenderer;
-import com.example.examplemod.renderers.VanillaMinecartRenderer;
-import com.example.examplemod.renderers.WoodenPushcartRenderer;
+import com.example.examplemod.renderers.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MaterialColor;
@@ -76,15 +73,17 @@ public class ExampleMod
 
 
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO).setLightLevel((state)->2)));
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
 
-
     public static final Block wooden_rail = null;
+    public static final Block bioluminescent_rail = null;
     public static final Block rail_turn = null;
     public static final Block wooden_rail_turn = null;
 
     private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_RAIL_TURN_ITEM = ITEMS.register("wooden_rail_turn", () -> new BlockItem(wooden_rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
@@ -217,6 +216,7 @@ public class ExampleMod
 
         RenderType cutout = RenderType.getCutout();
         RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
+        RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
 
@@ -238,8 +238,8 @@ public class ExampleMod
         RenderTypeLookup.setRenderLayer(color_detector_rail_black, cutout);
 
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(campfire_cart, VanillaMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(soulfire_cart, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(campfire_cart, CampfireCartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(soulfire_cart, SoulfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(coupler, CouplerRenderer::new);
