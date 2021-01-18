@@ -70,7 +70,7 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
         if (this.isValidPosition(state, worldIn, pos)) {
             boolean was_powered = state.get(POWERED);
             boolean activate = false;
-            List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (Predicate<Entity>)null);
+            List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (entity) -> true);
             if (!list.isEmpty()) {
                 if (was_powered) activate = true;
                 else {

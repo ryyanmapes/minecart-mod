@@ -14,14 +14,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.function.Predicate;
 
 @ObjectHolder("examplemod")
 public class CouplerItem extends Item {
@@ -64,10 +68,31 @@ public class CouplerItem extends Item {
 
                 double distance = ent1.getDistance(ent2);
                 if (distance < 2.5) {
-                    CouplerEntity coupler_ent = new CouplerEntity(coupler, worldIn, ent1, ent2);
-                    worldIn.addEntity(coupler_ent);
-                    tag.remove(TAG_COUPLED_UUID_1);
-                    return;
+
+                    Vector3d center_pos = new Vector3d(
+                            (ent1.getPosX() + ent2.getPosX())/2,
+                            (ent1.getPosY() + ent2.getPosY())/2,
+                            (ent1.getPosZ() + ent2.getPosZ())/2);
+
+                    List<CouplerEntity> list = worldIn.getEntitiesWithinAABB(coupler,
+                            new AxisAlignedBB(center_pos.x + 0.5, center_pos.y + 0.5, center_pos.z + 0.5,
+                                            center_pos.x - 0.5, center_pos.y - 0.5, center_pos.z - 0.5), (entity) -> true);
+
+                    boolean is_duplicate = false;
+                    for (CouplerEntity ent : list) {
+                        if ((ent.getFirstVehicle() == ent1 && ent.getSecondVehicle() == ent2)
+                            || (ent.getSecondVehicle() == ent1 && ent.getFirstVehicle() == ent2)) {
+                            is_duplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (!is_duplicate) {
+                        CouplerEntity coupler_ent = new CouplerEntity(coupler, worldIn, ent1, ent2);
+                        worldIn.addEntity(coupler_ent);
+                        tag.remove(TAG_COUPLED_UUID_1);
+                        return;
+                    }
                 }
             }
 
