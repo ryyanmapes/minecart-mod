@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,7 +53,9 @@ public class CoupleEventReceiver {
             if (using.getItem() == coupler) {
                 if (entity instanceof AbstractMinecartEntity
                     || entity instanceof BoatEntity
-                    || entity instanceof MobEntity){
+                    || entity instanceof MobEntity
+                    || entity instanceof EnderDragonEntity
+                    || entity instanceof ArmorStandEntity){
                     World world = event.getWorld();
                     player.playSound(SoundEvents.BLOCK_CHAIN_PLACE, 0.9F, 1.0F);
                     CouplerItem.hookIn(player, world, using, entity);

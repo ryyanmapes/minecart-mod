@@ -65,6 +65,7 @@ public class RailTurn extends AbstractRailBlock {
         if (!oldState.isIn(state.getBlock())) {
             this.updateState(state, worldIn, pos, state.getBlock());
         }
+        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
     }
 
     @Override
@@ -83,6 +84,7 @@ public class RailTurn extends AbstractRailBlock {
         if (!worldIn.isRemote && worldIn.getBlockState(pos).isIn(this)) {
             this.updateState(state, worldIn, pos, blockIn);
         }
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
     }
 
     @Override
