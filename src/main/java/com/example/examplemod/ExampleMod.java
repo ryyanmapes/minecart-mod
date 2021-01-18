@@ -10,6 +10,8 @@ import com.example.examplemod.misc.CouplerClientFactory;
 import com.example.examplemod.misc.CouplerPacketHandler;
 import com.example.examplemod.renderers.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FireBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.RenderType;
@@ -200,6 +202,8 @@ public class ExampleMod
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+        FireBlock fireblock = (FireBlock) Blocks.FIRE;
 
     }
 

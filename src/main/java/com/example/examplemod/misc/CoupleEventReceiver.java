@@ -35,8 +35,6 @@ public class CoupleEventReceiver {
     @SubscribeEvent
     public static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
 
-
-
         Hand hand = event.getHand();
         PlayerEntity player = event.getPlayer();
         ItemStack using = player.getHeldItem(hand);

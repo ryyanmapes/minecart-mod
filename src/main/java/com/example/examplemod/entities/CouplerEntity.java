@@ -242,8 +242,16 @@ public class CouplerEntity extends Entity {
     }
 
     protected void updateDisplay() {
-        Vector3d v1 = getFirstVehicle().getPositionVec();
-        Vector3d v2 = getSecondVehicle().getPositionVec();
+        Entity ent1 = getFirstVehicle();
+        Entity ent2 = getSecondVehicle();
+
+        if (ent1 == null || ent2 == null) {
+            onBroken(true);
+            return;
+        }
+
+        Vector3d v1 = ent1.getPositionVec();
+        Vector3d v2 = ent2.getPositionVec();
         double x = (v1.x+ v2.x)/2;
         double y = (v1.y + v2.y)/2;
         double z = (v1.z + v2.z)/2;
