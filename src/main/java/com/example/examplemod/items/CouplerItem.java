@@ -67,7 +67,7 @@ public class CouplerItem extends Item {
             if (ent1 != null && ent2 != null && ent1 != ent2) {
 
                 double distance = ent1.getDistance(ent2);
-                if (distance < 2.5) {
+                if (distance < 3) {
 
                     Vector3d center_pos = new Vector3d(
                             (ent1.getPosX() + ent2.getPosX())/2,
