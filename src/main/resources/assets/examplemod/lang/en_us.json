@@ -3,6 +3,8 @@
   "block.examplemod.bioluminescent_rail": "Bioluminescent Rail",
   "block.examplemod.rail_turn": "Rail Turn",
   "block.examplemod.wooden_rail_turn": "Wooden Rail Turn",
+  "block.examplemod.parallel_rail": "Parallel Rail",
+  "block.examplemod.wooden_parallel_rail": "Wooden Parallel Rail",
   "block.examplemod.color_detector_rail": "Color Detector Rail",
 
   "block.examplemod.color_detector_rail_white": "Color Detector Rail (White)",

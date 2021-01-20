@@ -1,9 +1,6 @@
 package com.example.examplemod;
 
-import com.example.examplemod.blocks.ColorDetectorRailBlock;
-import com.example.examplemod.blocks.RailTurn;
-import com.example.examplemod.blocks.WoodenRail;
-import com.example.examplemod.blocks.WoodenRailTurn;
+import com.example.examplemod.blocks.*;
 import com.example.examplemod.entities.*;
 import com.example.examplemod.items.*;
 import com.example.examplemod.misc.CouplerClientFactory;
@@ -73,21 +70,26 @@ public class ExampleMod
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<CouplerEntity> coupler = null;
 
-
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO).setLightLevel((state)->10)));
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> PARALLEL_RAIL_BLOCK = BLOCKS.register("parallel_rail", () -> new ParallelRail(create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> WOODEN_PARALLEL_RAIL_BLOCK = BLOCKS.register("wooden_parallel_rail", () -> new WoodenParallelRail(create(Material.WOOD, MaterialColor.WOOD).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.BAMBOO)));
 
     public static final Block wooden_rail = null;
     public static final Block bioluminescent_rail = null;
     public static final Block rail_turn = null;
     public static final Block wooden_rail_turn = null;
+    public static final Block parallel_rail = null;
+    public static final Block wooden_parallel_rail = null;
 
     private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
-    private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
-    private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_RAIL_TURN_ITEM = ITEMS.register("wooden_rail_turn", () -> new BlockItem(wooden_rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> WOODEN_PARALLEL_RAIL_ITEM = ITEMS.register("wooden_parallel_rail", () -> new BlockItem(wooden_parallel_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> PARALLEL_RAIL_ITEM = ITEMS.register("parallel_rail", () -> new BlockItem(parallel_rail, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
+    private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> CAMPFIRE_CART_ITEM = ITEMS.register("campfire_cart", () -> new CampfireCartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
     private static final RegistryObject<Item> SOULFIRE_CART_ITEM = ITEMS.register("soulfire_cart", () -> new SoulfireCartItem(new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
@@ -223,6 +225,8 @@ public class ExampleMod
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
+        RenderTypeLookup.setRenderLayer(parallel_rail, cutout);
+        RenderTypeLookup.setRenderLayer(wooden_parallel_rail, cutout);
 
         RenderTypeLookup.setRenderLayer(color_detector_rail_white, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_orange, cutout);

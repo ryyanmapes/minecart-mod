@@ -5,6 +5,8 @@
     "examplemod:bioluminescent_rail",
     "examplemod:rail_turn",
     "examplemod:wooden_rail_turn",
+    "examplemod:parallel_rail",
+    "examplemod:wooden_parallel_rail",
     "examplemod:color_detector_rail_white",
     "examplemod:color_detector_rail_orange",
     "examplemod:color_detector_rail_magenta",

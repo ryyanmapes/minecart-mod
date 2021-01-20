@@ -21,6 +21,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -37,8 +39,6 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    public static final int MAX_ACTIVATION_TIME = 15;
-
     public java.util.function.Supplier<Item> detected_item;
 
 
@@ -48,6 +48,10 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
         this.detected_item = det;
     }
 
+    @Override
+    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+        return false;
+    }
 
     @Override
     public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {

@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "examplemod:color_detector_rail_red"
+          "name": "examplemod:parallel_rail"
         }
       ]
     }

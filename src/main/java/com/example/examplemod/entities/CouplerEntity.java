@@ -4,7 +4,6 @@ import com.example.examplemod.misc.CouplerPacketHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -89,7 +88,7 @@ public class CouplerEntity extends Entity {
     @Override
     public void tick() {
 
-        if (world instanceof ClientWorld) {
+        if (world.isRemote()) {
             updateDisplay();
             return;
         }

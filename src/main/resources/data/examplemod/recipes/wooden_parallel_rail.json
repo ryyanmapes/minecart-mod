@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+	"CRC"
+  ],
+  "key": {
+    "C": {
+      "tag": "minecraft:cobblestone"
+    },
+	"R": {
+      "item": "examplemod:wooden_rail"
+    }
+  },
+  "result": {
+    "item": "examplemod:wooden_parallel_rail",
+    "count": 1
+  }
+}

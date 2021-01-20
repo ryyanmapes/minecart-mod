@@ -52,8 +52,7 @@ public class CoupleEventReceiver {
                 if (entity instanceof AbstractMinecartEntity
                     || entity instanceof BoatEntity
                     || entity instanceof MobEntity
-                    || entity instanceof EnderDragonEntity
-                    || entity instanceof ArmorStandEntity){
+                    || entity instanceof EnderDragonEntity){
                     World world = event.getWorld();
                     player.playSound(SoundEvents.BLOCK_CHAIN_PLACE, 0.9F, 1.0F);
                     CouplerItem.hookIn(player, world, using, entity);

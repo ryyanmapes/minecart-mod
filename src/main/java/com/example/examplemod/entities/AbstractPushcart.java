@@ -4,6 +4,7 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
@@ -101,10 +102,11 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
 
         Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
         if (entity instanceof PlayerEntity) {
+
             Vector3d motion = entity.getMotion();
             double speed = Math.sqrt((motion.x * motion.x) + (motion.z * motion.z));
             if (speed <= 0.0001) {
-                entity.setMotion(Vector3d.ZERO);
+
 
                 Vector3d our_motion = this.getMotion();
                 this.setMotion(our_motion.x * this.getBrakeSpeed(), our_motion.y, our_motion.z * this.getBrakeSpeed());
@@ -133,6 +135,8 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
 
         super.tick();
 
-        if (entity instanceof PlayerEntity) entity.setMotion(Vector3d.ZERO);
+        if (entity instanceof PlayerEntity)  {
+            entity.setMotion(Vector3d.ZERO);
+        }
     }
 }

@@ -6,6 +6,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -60,17 +63,19 @@ public class CouplerPacketHandler {
             return packet;
         }
 
+
         public static void handle(CouplePacket msg, Supplier<NetworkEvent.Context> ctx) {
-            LogManager.getLogger().info("HERE!!!");
+            //LogManager.getLogger().info("HERE!!!");
             ctx.get().enqueueWork(() -> {
-                World world = Minecraft.getInstance().world;
+                /*
+                ClientWorld world = Minecraft.getInstance().world;
 
                 Entity ent = world.getEntityByID(msg.coupler_id);
                 if (ent != null && ent instanceof CouplerEntity) {
                     CouplerEntity coupler_ent = (CouplerEntity) ent;
                     coupler_ent.vehicle1_id = msg.v1;
                     coupler_ent.vehicle2_id = msg.v2;
-                }
+                }*/
             });
             ctx.get().setPacketHandled(true);
         }
