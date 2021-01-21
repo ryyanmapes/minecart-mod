@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/template_rail_raised_sw",
   "textures": {
-    "rail": "examplemod:block/wooden_rail"
+    "rail": "examplemod:block/wood_straight_rail"
   }
 }

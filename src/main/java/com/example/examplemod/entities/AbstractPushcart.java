@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -50,7 +51,7 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
 
     @Override
     protected boolean canFitPassenger(Entity passenger) {
-        return false;
+        return this.getPassengers().size() < 1 && passenger instanceof PlayerEntity;
     }
 
     /**

@@ -49,6 +49,11 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     }
 
     @Override
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        return;
+    }
+
+    @Override
     public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
         return false;
     }

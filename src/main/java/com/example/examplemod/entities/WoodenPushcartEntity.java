@@ -34,7 +34,7 @@ public class WoodenPushcartEntity extends AbstractPushcart {
     }
 
     public double getControlSpeed() { return 40; }
-    public double getUphillSpeed() { return 4.5; }
+    public double getUphillSpeed() { return 4.8; }
     public double getBrakeSpeed() { return 0.25; }
 
     // Wooden cart speed is capped at half that of a normal cart

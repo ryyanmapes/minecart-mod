@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/rail_flat",
   "textures": {
-	"rail": "examplemod:block/wooden_rail"
+	"rail": "examplemod:block/wood_straight_rail"
   }
 }

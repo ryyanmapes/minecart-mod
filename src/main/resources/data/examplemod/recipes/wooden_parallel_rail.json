@@ -5,7 +5,7 @@
   ],
   "key": {
     "C": {
-      "tag": "minecraft:cobblestone"
+      "tag": "minecraft:stone_crafting_materials"
     },
 	"R": {
       "item": "examplemod:wooden_rail"
