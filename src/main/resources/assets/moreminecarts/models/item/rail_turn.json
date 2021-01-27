@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "moreminecarts:block/rail_turn_off_right"
+  }
+}

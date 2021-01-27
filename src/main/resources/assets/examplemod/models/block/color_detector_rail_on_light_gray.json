@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/rail_flat",
-  "textures": {
-    "rail": "examplemod:block/light_gray_detector_on"
-  }
-}

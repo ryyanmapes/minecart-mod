@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "D",
+    "G",
+	"R"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:detector_rail"
+    },
+	"G": {
+      "item": "minecraft:glass"
+    },
+	"D": {
+      "item": "minecraft:black_dye"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:color_detector_rail_black",
+    "count": 1
+  }
+}

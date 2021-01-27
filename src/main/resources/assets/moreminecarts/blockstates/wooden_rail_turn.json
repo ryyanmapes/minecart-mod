@@ -1,0 +1,66 @@
+
+{
+  "variants": {
+    "flipped=true,powered=false,facing=north": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_left"
+    },
+    "flipped=true,powered=false,facing=south": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_left",
+      "y": 180
+    },
+    "flipped=true,powered=false,facing=east": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_left",
+      "y": 90
+    },
+    "flipped=true,powered=false,facing=west": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_left",
+      "y": 270
+    },
+    "flipped=true,powered=true,facing=north": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_left"
+    },
+    "flipped=true,powered=true,facing=south": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_left",
+      "y": 180
+    },
+    "flipped=true,powered=true,facing=east": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_left",
+      "y": 90
+    },
+    "flipped=true,powered=true,facing=west": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_left",
+      "y": 270
+    },
+
+    "flipped=false,powered=false,facing=north": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_right"
+    },
+    "flipped=false,powered=false,facing=south": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_right",
+      "y": 180
+    },
+    "flipped=false,powered=false,facing=east": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_right",
+      "y": 90
+    },
+    "flipped=false,powered=false,facing=west": {
+      "model": "moreminecarts:block/wooden_rail_turn_off_right",
+      "y": 270
+    },
+    "flipped=false,powered=true,facing=north": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_right"
+    },
+    "flipped=false,powered=true,facing=south": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_right",
+      "y": 180
+    },
+    "flipped=false,powered=true,facing=east": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_right",
+      "y": 90
+    },
+    "flipped=false,powered=true,facing=west": {
+      "model": "moreminecarts:block/wooden_rail_turn_on_right",
+      "y": 270
+    }
+  }
+}

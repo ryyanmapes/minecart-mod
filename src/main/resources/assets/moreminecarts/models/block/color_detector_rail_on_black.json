@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/rail_flat",
+  "textures": {
+    "rail": "moreminecarts:block/black_detector_on"
+  }
+}

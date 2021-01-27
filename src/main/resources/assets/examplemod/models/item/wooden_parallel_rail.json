@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "examplemod:block/wood_straight_rail"
-  }
-}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "D",
+    "P",
+    "S"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+	"D": {
+      "item": "minecraft:pink_dye"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:rail_signal_pink",
+    "count": 1
+  }
+}

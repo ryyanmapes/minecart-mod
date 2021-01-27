@@ -1,0 +1,19 @@
+
+{
+  "variants": {
+    "powered=false,shape=north_south": {
+      "model": "moreminecarts:block/color_detector_rail_off_green"
+    },
+    "powered=false,shape=east_west": {
+      "model": "moreminecarts:block/color_detector_rail_off_green",
+      "y": 90
+    },
+    "powered=true,shape=north_south": {
+      "model": "moreminecarts:block/color_detector_rail_on_green"
+    },
+    "powered=true,shape=east_west": {
+      "model": "moreminecarts:block/color_detector_rail_on_green",
+      "y": 90
+    }
+  }
+}
