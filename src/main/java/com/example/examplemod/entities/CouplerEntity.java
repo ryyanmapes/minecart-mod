@@ -167,7 +167,7 @@ public class CouplerEntity extends Entity {
             }
 
             if (this.vehicle1 != null && this.vehicle2 != null && !this.world.isRemote) {
-                CouplerPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(()->this), new CouplerPacketHandler.CouplePacket(this.getEntityId(), this.vehicle1_id , this.vehicle2_id));
+                //CouplerPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(()->this), new CouplerPacketHandler.CouplePacket(this.getEntityId(), this.vehicle1_id , this.vehicle2_id));
             }
 
             if (this.ticksExisted > 100) {

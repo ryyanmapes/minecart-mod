@@ -43,7 +43,7 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
         else if (this.isBeingRidden()) {
             return ActionResultType.PASS; }
         else if (!this.world.isRemote) {
-            return player.startRiding(this, true) ? ActionResultType.CONSUME : ActionResultType.PASS;
+            return player.startRiding(this, false) ? ActionResultType.CONSUME : ActionResultType.PASS;
         } else {
             return ActionResultType.SUCCESS;
         }

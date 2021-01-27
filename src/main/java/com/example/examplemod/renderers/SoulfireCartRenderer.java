@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class SoulfireCartRenderer extends MinecartRenderer {
+public class SoulfireCartRenderer extends FixedBlockMinecart {
     public SoulfireCartRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
     }
