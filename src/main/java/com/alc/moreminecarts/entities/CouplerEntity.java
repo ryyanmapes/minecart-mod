@@ -103,7 +103,7 @@ public class CouplerEntity extends Entity {
             Vector3d motion1 = vehicle1.getMotion();
             Vector3d motion2 = vehicle2.getMotion();
 
-            double distance_diff = distance - PREFERRED_DISTANCE;
+            double distance_diff = Math.abs( distance - PREFERRED_DISTANCE );
             lastDiff = distance_diff;
 
             Vector3d between = vehicle1.getPositionVec().subtract(vehicle2.getPositionVec());
@@ -124,13 +124,13 @@ public class CouplerEntity extends Entity {
 
     public static double getSpringForce(double distance) {
         boolean is_neg = distance < 0;
-        double unsigned = Math.pow( Math.abs(distance), 6) * 0.003;
+        double unsigned = Math.pow( Math.abs(distance), 6) * 0.02;
         return is_neg? -1*unsigned : unsigned;
     }
 
     public static double getIntegratedSpringForce(double distance) {
         boolean is_neg = distance < 0;
-        double unsigned = (1.0/7.0) * Math.pow( Math.abs(distance), 7) * 0.003;
+        double unsigned = (1.0/7.0) * Math.pow( Math.abs(distance), 7) * 0.02;
         return is_neg? -1*unsigned : unsigned;
     }
 
