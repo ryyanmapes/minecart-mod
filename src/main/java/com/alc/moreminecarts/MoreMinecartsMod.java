@@ -61,7 +61,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<EntityType<SoulfireCartEntity>> SOULFIRE_CART_ENTITY = ENTITIES.register("soulfire_cart", () -> EntityType.Builder.<SoulfireCartEntity>create(SoulfireCartEntity::new, EntityClassification.MISC ).size(0.98F, 0.7F).build("soulfire_cart"));
     private static final RegistryObject<EntityType<WoodenPushcartEntity>> WOODEN_PUSHCART_ENTITY = ENTITIES.register("wooden_pushcart", () -> EntityType.Builder.<WoodenPushcartEntity>create(WoodenPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.7F).build("wooden_pushcart"));
     private static final RegistryObject<EntityType<IronPushcartEntity>> IRON_PUSHCART_ENTITY = ENTITIES.register("iron_pushcart", () -> EntityType.Builder.<IronPushcartEntity>create(IronPushcartEntity::new, EntityClassification.MISC ).size(0.98F, 0.7F).build("iron_pushcart"));
-    private static final RegistryObject<EntityType<CouplerEntity>> COUPLER_ENTITY = ENTITIES.register("coupler", () -> EntityType.Builder.<CouplerEntity>create(CouplerEntity::new, EntityClassification.MISC ).size(0.3F, 0.3F).setCustomClientFactory(CouplerClientFactory.get()).build("coupler"));
+    private static final RegistryObject<EntityType<CouplerEntity>> COUPLER_ENTITY = ENTITIES.register("coupler", () -> EntityType.Builder.<CouplerEntity>create(CouplerEntity::new, EntityClassification.MISC ).size(0.3F, 0.3F).disableSummoning().setCustomClientFactory(CouplerClientFactory.get()).build("coupler"));
 
 
     public static final EntityType<WoodenPushcartEntity> minecart_with_net = null;

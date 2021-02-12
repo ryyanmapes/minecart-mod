@@ -25,6 +25,8 @@ public class RailTurn extends AbstractRailBlock {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+
+
     public RailTurn(Properties builder) {
         super(true, builder);
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(SHAPE, RailShape.NORTH_SOUTH).with(POWERED, Boolean.valueOf(false)).with(FLIPPED, Boolean.valueOf(false)));

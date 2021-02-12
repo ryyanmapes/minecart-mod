@@ -1,8 +1,11 @@
 package com.alc.moreminecarts.entities;
 
 import io.netty.buffer.Unpooled;
+import net.minecraft.block.material.PushReaction;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -28,7 +31,7 @@ public class CouplerEntity extends Entity {
     private static final String COUPLED_COMPOUND = "Couples";
     private static final String TAG_COUPLED_UUID_1 = "coupled_UUID_1";
     private static final String TAG_COUPLED_UUID_2 = "coupled_UUID_2";
-    private static final double PREFERRED_DISTANCE = 1.6;
+    private static final double PREFERRED_DISTANCE = 2;
 
     private CompoundNBT vehicleNBTTag;
 
@@ -103,7 +106,9 @@ public class CouplerEntity extends Entity {
             Vector3d motion1 = vehicle1.getMotion();
             Vector3d motion2 = vehicle2.getMotion();
 
-            double distance_diff = Math.abs( distance - PREFERRED_DISTANCE );
+            double distance_diff = distance - PREFERRED_DISTANCE;
+            //if (distance_diff < 0) distance_diff = 0;
+
             lastDiff = distance_diff;
 
             Vector3d between = vehicle1.getPositionVec().subtract(vehicle2.getPositionVec());
@@ -112,9 +117,12 @@ public class CouplerEntity extends Entity {
             lastForceZ = between.getZ();
             Vector3d force = between.normalize().scale(getSpringForce(distance_diff));
 
+            vehicle1.setMotion(motion1.add(force.scale(-1 * getEntityForceScale(vehicle1) )));
+            vehicle2.setMotion(motion2.add(force.scale( 1 * getEntityForceScale(vehicle2) )));
 
-            vehicle1.setMotion(motion1.add(force.scale(-1)));
-            vehicle2.setMotion(motion2.add(force.scale(1)));
+            vehicle1.setMotion(vehicle1.getMotion().scale(0.95));
+            vehicle2.setMotion(vehicle2.getMotion().scale(0.95));
+
         }
 
         super.tick();
@@ -122,17 +130,46 @@ public class CouplerEntity extends Entity {
         updateDisplay();
     }
 
+    @Override
+    public boolean canBeCollidedWith() {
+        return false;
+    }
+
+    @Override
+    public boolean canBePushed() {
+        return false;
+    }
+
+    @Override
+    public boolean canCollide(Entity entity) {
+        return false;
+    }
+
+    @Override
+    public PushReaction getPushReaction() {
+        return PushReaction.IGNORE;
+    }
+
+    public static double getEntityForceScale(Entity ent) {
+        if (ent instanceof AbstractMinecartEntity) {
+            if ( ((AbstractMinecartEntity) ent).getMinecartType() == AbstractMinecartEntity.Type.FURNACE) return 0.1;
+        }
+        return 1;
+    }
+
     public static double getSpringForce(double distance) {
         boolean is_neg = distance < 0;
-        double unsigned = Math.pow( Math.abs(distance), 6) * 0.02;
+        double unsigned = Math.abs(Math.pow( Math.abs(distance), 3) * 0.3);
         return is_neg? -1*unsigned : unsigned;
     }
 
     public static double getIntegratedSpringForce(double distance) {
         boolean is_neg = distance < 0;
-        double unsigned = (1.0/7.0) * Math.pow( Math.abs(distance), 7) * 0.02;
+        double unsigned = Math.abs((1.0/3.0) * Math.pow( Math.abs(distance), 4) * 0.3);
         return is_neg? -1*unsigned : unsigned;
     }
+
+
 
     private void recreateCouple() {
         if (this.vehicleNBTTag == null) return;
@@ -241,14 +278,10 @@ public class CouplerEntity extends Entity {
 
         Vector3d v1 = ent1.getPositionVec();
         Vector3d v2 = ent2.getPositionVec();
-        double x = (v1.x+ v2.x)/2;
+        double x = (v1.x + v2.x)/2;
         double y = (v1.y + v2.y)/2;
         double z = (v1.z + v2.z)/2;
         this.setPosition(x,y,z);
-    }
-
-    public boolean canBeCollidedWith() {
-        return true;
     }
 
 
