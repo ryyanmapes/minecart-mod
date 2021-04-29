@@ -1,30 +1,24 @@
 package com.alc.moreminecarts.entities;
 
-import net.minecraft.advancements.criterion.MinMaxBounds;
-import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FurnaceBlock;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.IPacket;
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 // Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
@@ -45,24 +39,17 @@ public class MinecartWithNet extends AbstractMinecartEntity {
     }
 
     @Override
-    public void killMinecart(DamageSource source) {
-        super.killMinecart(source);
-        if (!source.isExplosion() && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            this.entityDropItem(Items.STRING);
-            this.entityDropItem(Items.STRING);
-            this.entityDropItem(Items.STRING);
-            this.entityDropItem(Items.STRING);
-            this.entityDropItem(Items.FERMENTED_SPIDER_EYE);
+    public void destroy(DamageSource source) {
+        super.destroy(source);
+        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.spawnAtLocation(Items.STRING);
+            this.spawnAtLocation(Items.STRING);
+            this.spawnAtLocation(Items.STRING);
+            this.spawnAtLocation(Items.STRING);
+            this.spawnAtLocation(Items.FERMENTED_SPIDER_EYE);
         }
 
     }
-
-
-    @Override
-    public IPacket<?> createSpawnPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
 
     // Special Stuff
 
@@ -75,36 +62,44 @@ public class MinecartWithNet extends AbstractMinecartEntity {
     public void tick() {
         super.tick();
 
-        if (this.world.isRemote) return;
-        if (this.ticksExisted % 20 != 0) return;
+        if (this.level.isClientSide()) return;
+        if (this.tickCount % 20 != 0) return;
 
         int radius = this.getRadius();
         int radSq = radius * radius;
 
-        AxisAlignedBB area = new AxisAlignedBB(this.getPosition().add(-radius, -radius, -radius), this.getPosition().add(radius, radius, radius));
-        List<ItemEntity> all_items = this.world.getEntitiesWithinAABB(ItemEntity.class, area, EntityPredicates.IS_ALIVE);
+        AxisAlignedBB area = new AxisAlignedBB(this.position().add(-radius, -radius, -radius), this.position().add(radius, radius, radius));
+        List<ItemEntity> all_items = this.level.getLoadedEntitiesOfClass(ItemEntity.class, area, EntityPredicates.ENTITY_STILL_ALIVE); // TODO Is this the correct method?
         List<ItemEntity> filtered_items = new ArrayList<ItemEntity>();
         for (ItemEntity ie:all_items) {
-            if (!ie.getPosition().withinDistance(this.getPosition(), getInnerRadius())) {
+            if (!ie.position().closerThan(this.position(), getInnerRadius())) {
                 filtered_items.add(ie);
             }
         }
-        //ItemEntity[] filtered_items = (ItemEntity[]) possible_items.stream().filter(item -> !item.getPosition().withinDistance(this.getPosition(), getInnerRadius())).toArray();
+        //ItemEntity[] filtered_items = (ItemEntity[]) possible_items.stream().filter(item -> !item.getPosition().setValueinDistance(this.getPosition(), getInnerRadius())).toArray();
 
         if (filtered_items.size() == 0) return;
-        int rand_index = this.world.rand.nextInt(filtered_items.size());
+        int rand_index = this.level.random.nextInt(filtered_items.size());
 
         ItemEntity selected_item = filtered_items.get(rand_index);
-        double d0 = this.getPosX() - selected_item.getPosX();
-        double d1 = this.getPosY() - selected_item.getPosY();
-        double d2 = this.getPosZ() - selected_item.getPosZ();
+        double d0 = this.position().x - selected_item.position().x;
+        double d1 = this.position().y - selected_item.position().y;
+        double d2 = this.position().z - selected_item.position().z;
         double d3 = 0.1D;
-        selected_item.setMotion(d0 * 0.1D, d1 * 0.1D + Math.sqrt(Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
+        selected_item.setDeltaMovement(d0 * 0.1D, d1 * 0.1D + Math.sqrt(Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
 
-        this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_FISHING_BOBBER_RETRIEVE, SoundCategory.NEUTRAL, 0.8F, 0.4F / (this.world.rand.nextFloat() * 0.4F + 0.8F));
+        this.level.playSound((PlayerEntity)null, this.position().x, this.position().y, this.position().z, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundCategory.NEUTRAL, 0.8F, 0.4F / (this.level.random.nextFloat() * 0.4F + 0.8F));
     }
 
-    public BlockState getDefaultDisplayTile() {
-        return Blocks.COBWEB.getDefaultState();
+    @Override
+    public BlockState getDefaultDisplayBlockState() {
+        return Blocks.COBWEB.defaultBlockState();
+    }
+
+
+
+    @Override
+    public IPacket<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

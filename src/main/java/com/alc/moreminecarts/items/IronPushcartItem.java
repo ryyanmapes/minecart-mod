@@ -19,9 +19,9 @@ public class IronPushcartItem extends AbstractMinecartItem {
     void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
 
         IronPushcartEntity minecart = new IronPushcartEntity(iron_pushcart, world, posX, posY, posZ);
-        if (stack.hasDisplayName()) {
+        if (stack.hasCustomHoverName()) {
             minecart.setCustomName(stack.getDisplayName());
         }
-        world.addEntity(minecart);
+        world.addFreshEntity(minecart);
     }
 }

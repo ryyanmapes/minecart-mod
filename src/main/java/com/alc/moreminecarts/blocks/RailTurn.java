@@ -29,25 +29,25 @@ public class RailTurn extends AbstractRailBlock {
 
     public RailTurn(Properties builder) {
         super(true, builder);
-        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(SHAPE, RailShape.NORTH_SOUTH).with(POWERED, Boolean.valueOf(false)).with(FLIPPED, Boolean.valueOf(false)));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(POWERED, false).setValue(FLIPPED, false));
     }
 
 
     @Override
     protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
-        boolean flag = state.get(POWERED);
-        boolean flag1 = worldIn.isBlockPowered(pos);
-        if (flag1 != flag) {
-            worldIn.setBlockState(pos, state.with(POWERED, Boolean.valueOf(flag1)), 3);
-            worldIn.notifyNeighborsOfStateChange(pos.down(), this);
+        boolean flag1 = state.getValue(POWERED);
+        boolean flag2 = worldIn.hasNeighborSignal(pos);
+        if (flag1 != flag2) {
+            worldIn.setBlock(pos, state.setValue(POWERED, flag2), 3);
+            worldIn.updateNeighborsAt(pos.below(), this);
         }
 
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        Direction direction = context.getPlacementHorizontalFacing();
-        return this.getDefaultState().with(FACING, direction);
+        Direction direction = context.getHorizontalDirection();
+        return this.defaultBlockState().setValue(FACING, direction);
     }
 
     // Unused
@@ -57,34 +57,25 @@ public class RailTurn extends AbstractRailBlock {
     }
 
     @Override
-    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (!oldState.isIn(state.getBlock())) {
+    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (!oldState.is(state.getBlock())) {
             this.updateState(state, worldIn, pos, state.getBlock());
         }
-        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
+        super.onPlace(state, worldIn, pos, oldState, isMoving);
     }
 
     @Override
-    protected BlockState updateRailState(BlockState state, World world, BlockPos pos, boolean isMoving) {
+    protected BlockState updateState(BlockState state, World world, BlockPos pos, boolean isMoving) {
         return state;
     }
 
     @Override
-    protected BlockState getUpdatedState(World worldIn, BlockPos pos, BlockState state, boolean placing) {
+    protected BlockState updateDir(World worldIn, BlockPos pos, BlockState state, boolean placing) {
         return state;
-
     }
 
     @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (!worldIn.isRemote && worldIn.getBlockState(pos).isIn(this)) {
-            this.updateState(state, worldIn, pos, blockIn);
-        }
-        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
-    }
-
-    @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING, SHAPE, POWERED, FLIPPED);
     }
 
@@ -97,17 +88,17 @@ public class RailTurn extends AbstractRailBlock {
     @Override
     public RailShape getRailDirection(BlockState state, IBlockReader world, BlockPos pos, @Nullable AbstractMinecartEntity cart) {
 
-        boolean is_powered = state.get(POWERED);
-        Direction facing = state.get(FACING);
+        boolean is_powered = state.getValue(POWERED);
+        Direction facing = state.getValue(FACING);
         boolean is_x_axis = facing == Direction.NORTH || facing == Direction.SOUTH;
         boolean backwards = facing == Direction.NORTH || facing == Direction.EAST;
-        boolean flipped = state.get(FLIPPED);
+        boolean flipped = state.getValue(FLIPPED);
         if (cart != null) {
-            boolean turn_approach = is_x_axis? Math.abs(cart.getMotion().x) > 0.05 : Math.abs(cart.getMotion().z) > 0.05;
+            boolean turn_approach = is_x_axis? Math.abs(cart.getDeltaMovement().x) > 0.05 : Math.abs(cart.getDeltaMovement().z) > 0.05;
 
             if (is_powered || turn_approach) {
 
-                boolean backwards_approach = (!is_x_axis? cart.getMotion().x : -cart.getMotion().z) * (backwards? 1 : -1) <= 0 && !turn_approach;
+                boolean backwards_approach = (!is_x_axis? cart.getDeltaMovement().x : -cart.getDeltaMovement().z) * (backwards? 1 : -1) <= 0 && !turn_approach;
                 
                 if (backwards_approach) {
                 } else if (flipped) {
@@ -129,34 +120,34 @@ public class RailTurn extends AbstractRailBlock {
         return is_x_axis? RailShape.NORTH_SOUTH : RailShape.EAST_WEST;
     }
 
-    public static boolean isXFacing(Direction facing) {
-        return facing == Direction.NORTH || facing == Direction.SOUTH;
-    }
-
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!worldIn.isRemote) {
-            worldIn.setBlockState(pos, state.with(FLIPPED, !state.get(FLIPPED)));
-            worldIn.playSound((PlayerEntity)null, pos, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (!worldIn.isClientSide()) {
+            worldIn.setBlockAndUpdate(pos, state.setValue(FLIPPED, !state.getValue(FLIPPED)));
+            worldIn.playSound((PlayerEntity)null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
-        return ActionResultType.func_233537_a_(worldIn.isRemote);
-    }
-
-    public static boolean getIsSimple(RailShape dir) {
-        return dir == RailShape.EAST_WEST || dir == RailShape.NORTH_SOUTH;
+        return ActionResultType.sidedSuccess(worldIn.isClientSide());
     }
 
 
     // Taken straight from PoweredRailBlock
     public BlockState rotate(BlockState state, Rotation rot) {
-        state = state.with(FACING, rot.rotate(state.get(FACING)));
+        state = state.setValue(FACING, rot.rotate(state.getValue(FACING)));
         return state;
     }
 
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
-        state = state.rotate(mirrorIn.toRotation(state.get(FACING)));
-        state = state.with(FLIPPED, !state.get(FLIPPED));
+        state = state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+        state = state.setValue(FLIPPED, !state.getValue(FLIPPED));
         return state;
+    }
+
+    // Not sure what these are for.
+    public static boolean isXFacing(Direction facing) {
+        return facing == Direction.NORTH || facing == Direction.SOUTH;
+    }
+    public static boolean getIsSimple(RailShape dir) {
+        return dir == RailShape.EAST_WEST || dir == RailShape.NORTH_SOUTH;
     }
 
 }

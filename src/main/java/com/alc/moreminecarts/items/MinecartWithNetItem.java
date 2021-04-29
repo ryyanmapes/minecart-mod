@@ -19,9 +19,9 @@ public class MinecartWithNetItem extends AbstractMinecartItem {
     void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
 
         MinecartWithNet minecart = new MinecartWithNet(minecart_with_net, world, posX, posY, posZ);
-        if (stack.hasDisplayName()) {
+        if (stack.hasCustomHoverName()) {
             minecart.setCustomName(stack.getDisplayName());
         }
-        world.addEntity(minecart);
+        world.addFreshEntity(minecart);
     }
 }

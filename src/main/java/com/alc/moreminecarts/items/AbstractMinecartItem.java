@@ -23,20 +23,20 @@ public abstract class AbstractMinecartItem extends Item {
 
     public AbstractMinecartItem(Properties properties) {
         super(properties);
-        DispenserBlock.registerDispenseBehavior(this, DISPENSER_BEHAVIOR);
+        DispenserBlock.registerBehavior(this, DISPENSER_BEHAVIOR);
     }
 
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
 
-        World world = context.getWorld();
-        BlockPos blockpos = context.getPos();
+        World world = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
         BlockState blockstate = world.getBlockState(blockpos);
 
-        if (!blockstate.isIn(BlockTags.RAILS)) {
+        if (!blockstate.is(BlockTags.RAILS)) {
             return ActionResultType.FAIL;
         }
-        ItemStack stack = context.getItem();
-        if (!world.isRemote) {
+        ItemStack stack = context.getItemInHand();
+        if (!world.isClientSide()) {
             RailShape railshape = blockstate.getBlock() instanceof AbstractRailBlock ? ((AbstractRailBlock) blockstate.getBlock()).getRailDirection(blockstate, world, blockpos, null) : RailShape.NORTH_SOUTH;
             double d0 = 0.0D;
             if (railshape.isAscending()) {
@@ -64,31 +64,31 @@ public abstract class AbstractMinecartItem extends Item {
         /**
          * Dispense the specified stack, play the dispense sound and spawn particles.
          */
-        public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+        public ItemStack execute(IBlockSource source, ItemStack stack) {
 
-            Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-            World world = source.getWorld();
+            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+            World world = source.getLevel();
 
-            double d0 = source.getX() + (double) direction.getXOffset() * 1.125D;
-            double d1 = Math.floor(source.getY()) + (double) direction.getYOffset();
-            double d2 = source.getZ() + (double) direction.getZOffset() * 1.125D;
+            double d0 = source.getPos().getX() + (double) direction.getStepX() * 1.125D;
+            double d1 = Math.floor(source.getPos().getY()) + (double) direction.getStepY();
+            double d2 = source.getPos().getZ() + (double) direction.getStepZ() * 1.125D;
 
-            BlockPos blockpos = source.getBlockPos().offset(direction);
+            BlockPos blockpos = source.getPos().offset(direction.getStepX(), direction.getStepY(), direction.getStepZ());
             BlockState blockstate = world.getBlockState(blockpos);
             RailShape railshape = blockstate.getBlock() instanceof AbstractRailBlock ? ((AbstractRailBlock) blockstate.getBlock()).getRailDirection(blockstate, world, blockpos, null) : RailShape.NORTH_SOUTH;
             double d3;
-            if (blockstate.isIn(BlockTags.RAILS)) {
+            if (blockstate.is(BlockTags.RAILS)) {
                 if (railshape.isAscending()) {
                     d3 = 0.6D;
                 } else {
                     d3 = 0.1D;
                 }
             } else {
-                if (!blockstate.isAir(world, blockpos) || !world.getBlockState(blockpos.down()).isIn(BlockTags.RAILS)) {
+                if (!blockstate.isAir(world, blockpos) || !world.getBlockState(blockpos.below()).is(BlockTags.RAILS)) {
                     return this.behaviourDefaultDispenseItem.dispense(source, stack);
                 }
-                BlockState state = world.getBlockState(blockpos.down());
-                RailShape shape = state.getBlock() instanceof AbstractRailBlock ? ((AbstractRailBlock) state.getBlock()).getRailDirection(state, world, blockpos.down(), null) : RailShape.NORTH_SOUTH;
+                BlockState state = world.getBlockState(blockpos.below());
+                RailShape shape = state.getBlock() instanceof AbstractRailBlock ? ((AbstractRailBlock) state.getBlock()).getRailDirection(state, world, blockpos.below(), null) : RailShape.NORTH_SOUTH;
                 if (direction != Direction.DOWN && shape.isAscending()) {
                     d3 = -0.4D;
                 } else {

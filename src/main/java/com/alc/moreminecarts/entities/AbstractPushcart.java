@@ -4,21 +4,16 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.NoteBlockEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 
@@ -34,40 +29,45 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
         super(type, worldIn, x, y, z);
     }
 
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
-        ActionResultType ret = super.processInitialInteract(player, hand);
-        if (ret.isSuccessOrConsume()) return ret;
+    public ActionResultType interact(PlayerEntity player, Hand hand) {
+        ActionResultType ret = super.interact(player, hand);
+        if (ret.consumesAction()) return ret;
         if (player.isSecondaryUseActive()) {
             return ActionResultType.PASS;
         }
-        else if (this.isBeingRidden()) {
+        else if (this.isVehicle()) {
             return ActionResultType.PASS; }
-        else if (!this.world.isRemote) {
+        else if (!this.level.isClientSide) {
             return player.startRiding(this, false) ? ActionResultType.CONSUME : ActionResultType.PASS;
         } else {
             return ActionResultType.SUCCESS;
         }
     }
 
+    /*
+    TODO is this needed?
     @Override
     protected boolean canFitPassenger(Entity passenger) {
         return this.getPassengers().size() < 1 && passenger instanceof PlayerEntity;
-    }
+    }*/
 
     /**
      * Called every tick the minecart is on an activator rail.
      */
-    public void onActivatorRailPass(int x, int y, int z, boolean receivingPower) {
+    @Override
+    public void activateMinecart(int x, int y, int z, boolean receivingPower) {
         if (receivingPower) {
-            if (this.isBeingRidden()) {
-                this.removePassengers();
+            if (this.isVehicle()) {
+                this.ejectPassengers();
             }
+
             // No clue what this is for
-            if (this.getRollingAmplitude() == 0) {
-                this.setRollingDirection(-this.getRollingDirection());
-                this.setRollingAmplitude(10);
+            // Actually, with these names, it makes a bit more sense.
+            if (this.getHurtTime() == 0) {
+                this.setHurtDir(-this.getHurtDir());
+                this.setHurtTime(10);
                 this.setDamage(50.0F);
-                this.markVelocityChanged();
+                this.markHurt();
             }
         }
 
@@ -85,12 +85,6 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
         //return 0.2875D;
     //}
 
-
-    @Override
-    public IPacket<?> createSpawnPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
     // Input Stuff
 
     public abstract double getControlSpeed() ;
@@ -100,44 +94,48 @@ public abstract class AbstractPushcart extends AbstractMinecartEntity {
     @Override
     public void tick() {
 
-
         Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
         if (entity instanceof PlayerEntity) {
 
-            Vector3d motion = entity.getMotion();
+            Vector3d motion = entity.getDeltaMovement();
             double speed = Math.sqrt((motion.x * motion.x) + (motion.z * motion.z));
             if (speed <= 0.0001) {
 
 
-                Vector3d our_motion = this.getMotion();
-                this.setMotion(our_motion.x * this.getBrakeSpeed(), our_motion.y, our_motion.z * this.getBrakeSpeed());
+                Vector3d our_motion = this.getDeltaMovement();
+                this.setDeltaMovement(our_motion.x * this.getBrakeSpeed(), our_motion.y, our_motion.z * this.getBrakeSpeed());
             } else {
 
-                int i = MathHelper.floor(this.getPosX());
-                int j = MathHelper.floor(this.getPosY());
-                int k = MathHelper.floor(this.getPosZ());
+                int i = MathHelper.floor(this.position().x);
+                int j = MathHelper.floor(this.position().y);
+                int k = MathHelper.floor(this.position().z);
 
                 BlockPos pos = new BlockPos(i, j, k);
-                BlockState state = this.world.getBlockState(pos);
+                BlockState state = this.level.getBlockState(pos);
                 if (AbstractRailBlock.isRail(state)) {
-                    RailShape railshape = ((AbstractRailBlock) state.getBlock()).getRailDirection(state, this.world, pos, this);
+                    RailShape railshape = ((AbstractRailBlock) state.getBlock()).getRailDirection(state, this.level, pos, this);
 
                     boolean is_uphill = (railshape == RailShape.ASCENDING_EAST || railshape == RailShape.ASCENDING_WEST
                             || railshape == RailShape.ASCENDING_NORTH || railshape == RailShape.ASCENDING_SOUTH);
 
                     double controlSpeed = is_uphill? this.getUphillSpeed() : this.getControlSpeed();
-                    entity.setMotion(motion.scale(controlSpeed));
+                    entity.setDeltaMovement(motion.scale(controlSpeed));
 
                 }
             }
 
         }
 
-
         super.tick();
 
         if (entity instanceof PlayerEntity)  {
-            entity.setMotion(Vector3d.ZERO);
+            entity.setDeltaMovement(Vector3d.ZERO);
         }
     }
+
+    @Override
+    public IPacket<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
 }

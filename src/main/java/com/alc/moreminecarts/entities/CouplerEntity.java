@@ -2,10 +2,11 @@ package com.alc.moreminecarts.entities;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.material.PushReaction;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.PaintingEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -47,11 +48,11 @@ public class CouplerEntity extends Entity {
     public double lastDiff = 0;
 
     public CouplerEntity(EntityType<?> type, World worldIn, Entity vehicle1, Entity vehicle2) {
-        super(type, worldIn);
+        super((EntityType<? extends PaintingEntity>) type, worldIn);
         this.vehicle1 = vehicle1;
-        this.vehicle1_id = vehicle1.getEntityId();
+        this.vehicle1_id = vehicle1.getId();
         this.vehicle2 = vehicle2;
-        this.vehicle2_id = vehicle2.getEntityId();
+        this.vehicle2_id = vehicle2.getId();
         this.updateDisplay();
     }
 
@@ -59,21 +60,22 @@ public class CouplerEntity extends Entity {
         super(type, world);
     }
 
+    // TODO what here?
     @Override
-    protected void registerData() { }
+    protected void defineSynchedData() { }
 
     @Nullable
     public Entity getFirstVehicle() {
-        if (this.vehicle1 == null && this.vehicle1_id != 0 && this.world.isRemote) {
-            this.vehicle1 = this.world.getEntityByID(this.vehicle1_id);
+        if (this.vehicle1 == null && this.vehicle1_id != 0 && this.level.isClientSide) {
+            this.vehicle1 = this.level.getEntity(this.vehicle1_id);
         }
         return this.vehicle1;
     }
 
     @Nullable
     public Entity getSecondVehicle() {
-        if (this.vehicle2 == null && this.vehicle2_id != 0 && this.world.isRemote) {
-            this.vehicle2 = this.world.getEntityByID(this.vehicle2_id);
+        if (this.vehicle2 == null && this.vehicle2_id != 0 && this.level.isClientSide) {
+            this.vehicle2 = this.level.getEntity(this.vehicle2_id);
         }
         return this.vehicle2;
     }
@@ -81,7 +83,7 @@ public class CouplerEntity extends Entity {
     @Override
     public void tick() {
 
-        if (world.isRemote()) {
+        if (level.isClientSide) {
             updateDisplay();
             return;
         }
@@ -97,31 +99,31 @@ public class CouplerEntity extends Entity {
             this.onBroken(true);
         }
 
-        double distance = vehicle1.getDistance(vehicle2);
+        double distance = vehicle1.distanceTo(vehicle2);
 
         if (distance > 6.0F) {
             this.onBroken(true);
         }
         else {
-            Vector3d motion1 = vehicle1.getMotion();
-            Vector3d motion2 = vehicle2.getMotion();
+            Vector3d motion1 = vehicle1.getDeltaMovement();
+            Vector3d motion2 = vehicle2.getDeltaMovement();
 
             double distance_diff = distance - PREFERRED_DISTANCE;
             //if (distance_diff < 0) distance_diff = 0;
 
             lastDiff = distance_diff;
 
-            Vector3d between = vehicle1.getPositionVec().subtract(vehicle2.getPositionVec());
-            lastForceX = between.getX();
-            lastForceY = between.getY();
-            lastForceZ = between.getZ();
+            Vector3d between = vehicle1.position().subtract(vehicle2.position());
+            lastForceX = between.x;
+            lastForceY = between.y;
+            lastForceZ = between.z;
             Vector3d force = between.normalize().scale(getSpringForce(distance_diff));
 
-            vehicle1.setMotion(motion1.add(force.scale(-1 * getEntityForceScale(vehicle1) )));
-            vehicle2.setMotion(motion2.add(force.scale( 1 * getEntityForceScale(vehicle2) )));
+            vehicle1.setDeltaMovement(motion1.add(force.scale(-1 * getEntityForceScale(vehicle1) )));
+            vehicle2.setDeltaMovement(motion2.add(force.scale( 1 * getEntityForceScale(vehicle2) )));
 
-            vehicle1.setMotion(vehicle1.getMotion().scale(0.95));
-            vehicle2.setMotion(vehicle2.getMotion().scale(0.95));
+            vehicle1.setDeltaMovement(vehicle1.getDeltaMovement().scale(0.95));
+            vehicle2.setDeltaMovement(vehicle2.getDeltaMovement().scale(0.95));
 
         }
 
@@ -136,19 +138,13 @@ public class CouplerEntity extends Entity {
     }
 
     @Override
-    public boolean canBePushed() {
-        return false;
-    }
+    public boolean isPushable() { return false; }
 
     @Override
-    public boolean canCollide(Entity entity) {
-        return false;
-    }
+    public boolean canCollideWith(Entity p_241849_1_) { return false; }
 
     @Override
-    public PushReaction getPushReaction() {
-        return PushReaction.IGNORE;
-    }
+    public PushReaction getPistonPushReaction() { return PushReaction.IGNORE; }
 
     public static double getEntityForceScale(Entity ent) {
         if (ent instanceof AbstractMinecartEntity) {
@@ -174,30 +170,30 @@ public class CouplerEntity extends Entity {
     private void recreateCouple() {
         if (this.vehicleNBTTag == null) return;
 
-        if (this.world instanceof ServerWorld) {
+        if (this.level instanceof ServerWorld) {
 
-            if (this.vehicleNBTTag.hasUniqueId(TAG_COUPLED_UUID_1)) {
-                UUID uuid = this.vehicleNBTTag.getUniqueId(TAG_COUPLED_UUID_1);
-                Entity entity = ((ServerWorld)this.world).getEntityByUuid(uuid);
+            if (this.vehicleNBTTag.hasUUID(TAG_COUPLED_UUID_1)) {
+                UUID uuid = this.vehicleNBTTag.getUUID(TAG_COUPLED_UUID_1);
+                Entity entity = ((ServerWorld)this.level).getEntity(uuid);
                 if (entity != null) {
                     this.vehicle1 = entity;
-                    this.vehicle1_id = vehicle1.getEntityId();
+                    this.vehicle1_id = vehicle1.getId();
                 }
             }
-            if (this.vehicleNBTTag.hasUniqueId(TAG_COUPLED_UUID_2)) {
-                UUID uuid = this.vehicleNBTTag.getUniqueId(TAG_COUPLED_UUID_2);
-                Entity entity = ((ServerWorld)this.world).getEntityByUuid(uuid);
+            if (this.vehicleNBTTag.hasUUID(TAG_COUPLED_UUID_2)) {
+                UUID uuid = this.vehicleNBTTag.getUUID(TAG_COUPLED_UUID_2);
+                Entity entity = ((ServerWorld)this.level).getEntity(uuid);
                 if (entity != null) {
                     this.vehicle2 = entity;
-                    this.vehicle2_id = vehicle2.getEntityId();
+                    this.vehicle2_id = vehicle2.getId();
                 }
             }
 
-            if (this.vehicle1 != null && this.vehicle2 != null && !this.world.isRemote) {
-                //CouplerPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(()->this), new CouplerPacketHandler.CouplePacket(this.getEntityId(), this.vehicle1_id , this.vehicle2_id));
+            if (this.vehicle1 != null && this.vehicle2 != null && !this.level.isClientSide) {
+                //CouplerPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.setValue(()->this), new CouplerPacketHandler.CouplePacket(this.getEntityId(), this.vehicle1_id , this.vehicle2_id));
             }
 
-            if (this.ticksExisted > 100) {
+            if (this.tickCount > 100) {
                 this.onBroken(true);
                 this.vehicleNBTTag = null;
             }
@@ -209,32 +205,42 @@ public class CouplerEntity extends Entity {
         Entity to = is_first? vehicle1 : vehicle2;
         int scalar = is_first? 1 : -1;
 
-        Vector3d motion = to.getMotion();
+        Vector3d motion = to.getDeltaMovement();
         Vector3d between = new Vector3d(lastForceX, lastForceY, lastForceZ);
         Vector3d force = between.normalize().scale(getIntegratedSpringForce(lastDiff));
-        to.setMotion(motion.add(force.scale(scalar)));
+        to.setDeltaMovement(motion.add(force.scale(scalar)));
     }
 
     private void releaseTensionToBoth() {
-        Vector3d motion1 = vehicle1.getMotion();
-        Vector3d motion2 = vehicle2.getMotion();
+        Vector3d motion1 = vehicle1.getDeltaMovement();
+        Vector3d motion2 = vehicle2.getDeltaMovement();
 
         Vector3d between = new Vector3d(lastForceX, lastForceY, lastForceZ);
         Vector3d force = between.normalize().scale(getIntegratedSpringForce(lastDiff));
 
-        vehicle1.setMotion(motion1.add(force.scale(0.5)));
-        vehicle2.setMotion(motion2.add(force.scale(-0.5)));
+        vehicle1.setDeltaMovement(motion1.add(force.scale(0.5)));
+        vehicle2.setDeltaMovement(motion2.add(force.scale(-0.5)));
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    public boolean skipAttackInteraction(Entity player) {
+        if (player instanceof PlayerEntity) {
+            PlayerEntity playerentity = (PlayerEntity)player;
+            return !this.level.mayInteract(playerentity, this.getOnPos()) ? true : this.hurt(DamageSource.playerAttack(playerentity), 0.0F);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (this.isAlive() && !this.world.isRemote) {
+            if (this.isAlive() && !this.level.isClientSide) {
                 this.releaseTensionToBoth();
                 this.onBroken(!source.isCreativePlayer());
-                this.markVelocityChanged();
+                this.markHurt();
             }
 
             return true;
@@ -242,24 +248,24 @@ public class CouplerEntity extends Entity {
     }
 
     public void onBroken(boolean drop_item) {
-        this.playSound(SoundEvents.BLOCK_CHAIN_BREAK, 1.0F, 1.0F);
-        if (drop_item) entityDropItem(coupler);
+        this.playSound(SoundEvents.CHAIN_BREAK, 1.0F, 1.0F);
+        if (drop_item) spawnAtLocation(coupler);
         this.remove();
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundNBT compound) {
         if (compound.contains(COUPLED_COMPOUND, 10)) {
             this.vehicleNBTTag = compound.getCompound(COUPLED_COMPOUND);
         }
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundNBT compound) {
         if (vehicle1 != null && vehicle2 != null) {
             CompoundNBT new_compound = new CompoundNBT();
-            new_compound.putUniqueId(TAG_COUPLED_UUID_1, vehicle1.getUniqueID());
-            new_compound.putUniqueId(TAG_COUPLED_UUID_2, vehicle2.getUniqueID());
+            new_compound.putUUID(TAG_COUPLED_UUID_1, vehicle1.getUUID());
+            new_compound.putUUID(TAG_COUPLED_UUID_2, vehicle2.getUUID());
             compound.put(COUPLED_COMPOUND, new_compound);
         }
         else if (this.vehicleNBTTag != null) {
@@ -276,30 +282,27 @@ public class CouplerEntity extends Entity {
             return;
         }
 
-        Vector3d v1 = ent1.getPositionVec();
-        Vector3d v2 = ent2.getPositionVec();
+        Vector3d v1 = ent1.position();
+        Vector3d v2 = ent2.position();
         double x = (v1.x + v2.x)/2;
         double y = (v1.y + v2.y)/2;
         double z = (v1.z + v2.z)/2;
-        this.setPosition(x,y,z);
+        this.setPos(x,y,z);
     }
 
-
-
-
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         IPacket<?> packet = NetworkHooks.getEntitySpawningPacket(this);
         PacketBuffer buf = new PacketBuffer(Unpooled.buffer() );
         try {
-            packet.writePacketData(buf);
+            packet.write(buf);
         } catch (IOException e) {
             LOGGER.info("UNABLE TO WRITE TO BUFFER!");
         }
         buf.writeInt(vehicle1_id);
         buf.writeInt(vehicle2_id);
         try {
-            packet.readPacketData(buf);
+            packet.read(buf);
         } catch (IOException e) {
             LOGGER.info("UNABLE TO READ FROM BUFFER!");
         }

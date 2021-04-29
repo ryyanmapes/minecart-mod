@@ -20,8 +20,8 @@ public class CouplerClientFactory {
 
     public static CouplerEntity getCouplerFromPacket(SpawnEntity packet, World world) {
         CouplerEntity ent = new CouplerEntity(coupler, world);
-        ent.setEntityId(packet.getEntityId());
-        ent.setUniqueId(packet.getUuid());
+        ent.setId(packet.getEntityId());
+        ent.setUUID(packet.getUuid());
 
         PacketBuffer buf = packet.getAdditionalData();
         ent.vehicle2_id = buf.readInt();

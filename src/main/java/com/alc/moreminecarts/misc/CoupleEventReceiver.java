@@ -29,16 +29,16 @@ public class CoupleEventReceiver {
 
         Hand hand = event.getHand();
         PlayerEntity player = event.getPlayer();
-        ItemStack using = player.getHeldItem(hand);
+        ItemStack using = player.getItemInHand(hand);
 
         Hand other_hand = hand == Hand.MAIN_HAND? Hand.OFF_HAND : Hand.MAIN_HAND;
-        ItemStack using_secondary = player.getHeldItem(other_hand);
+        ItemStack using_secondary = player.getItemInHand(other_hand);
 
         Entity entity = event.getTarget();
 
         if (using.getItem() == coupler || using_secondary.getItem() == coupler) {
             event.setCanceled(true);
-            if (event.getWorld().isRemote()) return;
+            if (event.getWorld().isClientSide()) return;
 
             if (using.getItem() == coupler) {
                 if (entity instanceof AbstractMinecartEntity
@@ -46,7 +46,7 @@ public class CoupleEventReceiver {
                     || entity instanceof MobEntity
                     || entity instanceof EnderDragonEntity){
                     World world = event.getWorld();
-                    player.playSound(SoundEvents.BLOCK_CHAIN_PLACE, 0.9F, 1.0F);
+                    player.playSound(SoundEvents.CHAIN_PLACE, 0.9F, 1.0F);
                     CouplerItem.hookIn(player, world, using, entity);
                 }
                 else {

@@ -11,7 +11,7 @@ public class VanillaMinecartRenderer extends MinecartRenderer {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(AbstractMinecartEntity entity) {
+    public ResourceLocation getTextureLocation(AbstractMinecartEntity entity) {
         return new ResourceLocation("minecraft:textures/entity/minecart.png");
     }
 }

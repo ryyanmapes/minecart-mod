@@ -38,13 +38,8 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
 
     public ColorDetectorRailBlock(Properties builder,  java.util.function.Supplier<Item> det) {
         super(true, builder);
-        this.setDefaultState(this.stateContainer.getBaseState().with(POWERED, Boolean.valueOf(false)).with(SHAPE, RailShape.NORTH_SOUTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, Boolean.valueOf(false)).setValue(SHAPE, RailShape.NORTH_SOUTH));
         this.detected_item = det;
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        return;
     }
 
     @Override
@@ -53,25 +48,25 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-        if (worldIn.isRemote) return;
-        this.updatePoweredState(worldIn, pos, state);
+    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+        if (worldIn.isClientSide()) return;
+        this.checkPressed(worldIn, pos, state);
     }
 
     @Override
     public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        this.updatePoweredState(worldIn, pos, state);
+        this.checkPressed(worldIn, pos, state);
     }
 
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(SHAPE, POWERED);
     }
 
     // Below is slightly modified from DetectorRailBlock
 
-    private void updatePoweredState(World worldIn, BlockPos pos, BlockState state) {
-        if (this.isValidPosition(state, worldIn, pos)) {
-            boolean was_powered = state.get(POWERED);
+    private void checkPressed(World worldIn, BlockPos pos, BlockState state) {
+        if (this.canSurvive(state, worldIn, pos)) {
+            boolean was_powered = state.getValue(POWERED);
             boolean activate = false;
             List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (entity) -> true);
             if (!list.isEmpty()) {
@@ -84,8 +79,8 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
                             Entity entity = passengers.get(0);
                             if (!(entity instanceof PlayerEntity)) continue;
                             PlayerEntity player = (PlayerEntity) entity;
-                            if (player.getHeldItem(Hand.MAIN_HAND).getItem() == detected_item.get()
-                                    || player.getHeldItem(Hand.OFF_HAND).getItem() == detected_item.get()) {
+                            if (player.getItemInHand(Hand.MAIN_HAND).getItem() == detected_item.get()
+                                    || player.getItemInHand(Hand.OFF_HAND).getItem() == detected_item.get()) {
                                 activate = true;
                             }
                         }
@@ -94,7 +89,7 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
                             ContainerMinecartEntity container = (ContainerMinecartEntity)minecart;
                             HashSet<Item> set = new HashSet<>();
                             set.add(detected_item.get());
-                            if (container.hasAny(set)) {
+                            if (container.hasAnyOf(set)) {
                                 activate = true;
                             }
                         }
@@ -103,49 +98,50 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
             }
 
             if (activate && !was_powered) {
-                BlockState blockstate = state.with(POWERED, Boolean.valueOf(true));
-                worldIn.setBlockState(pos, blockstate, 3);
-                this.updateConnectedRails(worldIn, pos, blockstate, true);
-                worldIn.notifyNeighborsOfStateChange(pos, this);
-                worldIn.notifyNeighborsOfStateChange(pos.down(), this);
-                worldIn.markBlockRangeForRenderUpdate(pos, state, blockstate);
+                BlockState blockstate = state.setValue(POWERED, Boolean.valueOf(true));
+                worldIn.setBlock(pos, blockstate, 3);
+                this.updatePowerToConnected(worldIn, pos, blockstate, true);
+                worldIn.updateNeighborsAt(pos, this);
+                worldIn.updateNeighborsAt(pos.below(), this);
+                worldIn.setBlocksDirty(pos, state, blockstate);
             }
 
             if (!activate && was_powered) {
-                BlockState blockstate1 = state.with(POWERED, Boolean.valueOf(false));
-                worldIn.setBlockState(pos, blockstate1, 3);
-                this.updateConnectedRails(worldIn, pos, blockstate1, false);
-                worldIn.notifyNeighborsOfStateChange(pos, this);
-                worldIn.notifyNeighborsOfStateChange(pos.down(), this);
-                worldIn.markBlockRangeForRenderUpdate(pos, state, blockstate1);
+                BlockState blockstate1 = state.setValue(POWERED, Boolean.valueOf(false));
+                worldIn.setBlock(pos, blockstate1, 3);
+                this.updatePowerToConnected(worldIn, pos, blockstate1, false);
+                worldIn.updateNeighborsAt(pos, this);
+                worldIn.updateNeighborsAt(pos.below(), this);
+                worldIn.setBlocksDirty(pos, state, blockstate1);
             }
 
             if (activate) {
-                worldIn.getPendingBlockTicks().scheduleTick(pos, this, 20);
+                worldIn.getBlockTicks().scheduleTick(pos, this, 20);
             }
 
-            worldIn.updateComparatorOutputLevel(pos, this);
+            worldIn.updateNeighbourForOutputSignal(pos, this);
         }
     }
 
-    protected void updateConnectedRails(World worldIn, BlockPos pos, BlockState state, boolean powered) {
+    protected void updatePowerToConnected(World worldIn, BlockPos pos, BlockState state, boolean powered) {
         RailState railstate = new RailState(worldIn, pos, state);
 
-        for(BlockPos blockpos : railstate.getConnectedRails()) {
+        for(BlockPos blockpos : railstate.getConnections()) {
             BlockState blockstate = worldIn.getBlockState(blockpos);
             blockstate.neighborChanged(worldIn, blockpos, blockstate.getBlock(), pos, false);
         }
 
     }
 
-    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (!oldState.isIn(state.getBlock())) {
-            this.updatePoweredState(worldIn, pos, this.updateRailState(state, worldIn, pos, isMoving));
+    @Override
+    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (!oldState.is(state.getBlock())) {
+            this.checkPressed(worldIn, pos, this.updateState(state, worldIn, pos, isMoving));
         }
     }
 
     protected <T extends AbstractMinecartEntity> List<T> findMinecarts(World worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
-        return worldIn.getEntitiesWithinAABB(cartType, this.getDectectionBox(pos), filter);
+        return worldIn.getEntitiesOfClass(cartType, this.getDectectionBox(pos), filter);
     }
 
     private AxisAlignedBB getDectectionBox(BlockPos pos) {
@@ -153,16 +149,24 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
         return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
     }
 
-    public boolean canProvidePower(BlockState state) {
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
-    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        return blockState.get(POWERED) ? 15 : 0;
+    @Override
+    public boolean isSignalSource(BlockState p_149744_1_) {
+        return true;
     }
 
-    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        if (!blockState.get(POWERED)) {
+    @Override
+    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        return blockState.getValue(POWERED) ? 15 : 0;
+    }
+
+    @Override
+    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        if (!blockState.getValue(POWERED)) {
             return 0;
         } else {
             return side == Direction.UP ? 15 : 0;
@@ -172,69 +176,69 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     public BlockState rotate(BlockState state, Rotation rot) {
         switch(rot) {
             case CLOCKWISE_180:
-                switch((RailShape)state.get(SHAPE)) {
+                switch(state.getValue(SHAPE)) {
                     case ASCENDING_EAST:
-                        return state.with(SHAPE, RailShape.ASCENDING_WEST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_WEST);
                     case ASCENDING_WEST:
-                        return state.with(SHAPE, RailShape.ASCENDING_EAST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_EAST);
                     case ASCENDING_NORTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_SOUTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_SOUTH);
                     case ASCENDING_SOUTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_NORTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_NORTH);
                     case SOUTH_EAST:
-                        return state.with(SHAPE, RailShape.NORTH_WEST);
+                        return state.setValue(SHAPE, RailShape.NORTH_WEST);
                     case SOUTH_WEST:
-                        return state.with(SHAPE, RailShape.NORTH_EAST);
+                        return state.setValue(SHAPE, RailShape.NORTH_EAST);
                     case NORTH_WEST:
-                        return state.with(SHAPE, RailShape.SOUTH_EAST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_EAST);
                     case NORTH_EAST:
-                        return state.with(SHAPE, RailShape.SOUTH_WEST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_WEST);
                 }
             case COUNTERCLOCKWISE_90:
-                switch((RailShape)state.get(SHAPE)) {
+                switch(state.getValue(SHAPE)) {
                     case ASCENDING_EAST:
-                        return state.with(SHAPE, RailShape.ASCENDING_NORTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_NORTH);
                     case ASCENDING_WEST:
-                        return state.with(SHAPE, RailShape.ASCENDING_SOUTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_SOUTH);
                     case ASCENDING_NORTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_WEST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_WEST);
                     case ASCENDING_SOUTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_EAST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_EAST);
                     case SOUTH_EAST:
-                        return state.with(SHAPE, RailShape.NORTH_EAST);
+                        return state.setValue(SHAPE, RailShape.NORTH_EAST);
                     case SOUTH_WEST:
-                        return state.with(SHAPE, RailShape.SOUTH_EAST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_EAST);
                     case NORTH_WEST:
-                        return state.with(SHAPE, RailShape.SOUTH_WEST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_WEST);
                     case NORTH_EAST:
-                        return state.with(SHAPE, RailShape.NORTH_WEST);
+                        return state.setValue(SHAPE, RailShape.NORTH_WEST);
                     case NORTH_SOUTH:
-                        return state.with(SHAPE, RailShape.EAST_WEST);
+                        return state.setValue(SHAPE, RailShape.EAST_WEST);
                     case EAST_WEST:
-                        return state.with(SHAPE, RailShape.NORTH_SOUTH);
+                        return state.setValue(SHAPE, RailShape.NORTH_SOUTH);
                 }
             case CLOCKWISE_90:
-                switch((RailShape)state.get(SHAPE)) {
+                switch(state.getValue(SHAPE)) {
                     case ASCENDING_EAST:
-                        return state.with(SHAPE, RailShape.ASCENDING_SOUTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_SOUTH);
                     case ASCENDING_WEST:
-                        return state.with(SHAPE, RailShape.ASCENDING_NORTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_NORTH);
                     case ASCENDING_NORTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_EAST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_EAST);
                     case ASCENDING_SOUTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_WEST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_WEST);
                     case SOUTH_EAST:
-                        return state.with(SHAPE, RailShape.SOUTH_WEST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_WEST);
                     case SOUTH_WEST:
-                        return state.with(SHAPE, RailShape.NORTH_WEST);
+                        return state.setValue(SHAPE, RailShape.NORTH_WEST);
                     case NORTH_WEST:
-                        return state.with(SHAPE, RailShape.NORTH_EAST);
+                        return state.setValue(SHAPE, RailShape.NORTH_EAST);
                     case NORTH_EAST:
-                        return state.with(SHAPE, RailShape.SOUTH_EAST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_EAST);
                     case NORTH_SOUTH:
-                        return state.with(SHAPE, RailShape.EAST_WEST);
+                        return state.setValue(SHAPE, RailShape.EAST_WEST);
                     case EAST_WEST:
-                        return state.with(SHAPE, RailShape.NORTH_SOUTH);
+                        return state.setValue(SHAPE, RailShape.NORTH_SOUTH);
                 }
             default:
                 return state;
@@ -242,43 +246,43 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     }
 
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
-        RailShape railshape = state.get(SHAPE);
+        RailShape railshape = state.getValue(SHAPE);
         switch(mirrorIn) {
             case LEFT_RIGHT:
                 switch(railshape) {
                     case ASCENDING_NORTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_SOUTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_SOUTH);
                     case ASCENDING_SOUTH:
-                        return state.with(SHAPE, RailShape.ASCENDING_NORTH);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_NORTH);
                     case SOUTH_EAST:
-                        return state.with(SHAPE, RailShape.NORTH_EAST);
+                        return state.setValue(SHAPE, RailShape.NORTH_EAST);
                     case SOUTH_WEST:
-                        return state.with(SHAPE, RailShape.NORTH_WEST);
+                        return state.setValue(SHAPE, RailShape.NORTH_WEST);
                     case NORTH_WEST:
-                        return state.with(SHAPE, RailShape.SOUTH_WEST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_WEST);
                     case NORTH_EAST:
-                        return state.with(SHAPE, RailShape.SOUTH_EAST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_EAST);
                     default:
                         return super.mirror(state, mirrorIn);
                 }
             case FRONT_BACK:
                 switch(railshape) {
                     case ASCENDING_EAST:
-                        return state.with(SHAPE, RailShape.ASCENDING_WEST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_WEST);
                     case ASCENDING_WEST:
-                        return state.with(SHAPE, RailShape.ASCENDING_EAST);
+                        return state.setValue(SHAPE, RailShape.ASCENDING_EAST);
                     case ASCENDING_NORTH:
                     case ASCENDING_SOUTH:
                     default:
                         break;
                     case SOUTH_EAST:
-                        return state.with(SHAPE, RailShape.SOUTH_WEST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_WEST);
                     case SOUTH_WEST:
-                        return state.with(SHAPE, RailShape.SOUTH_EAST);
+                        return state.setValue(SHAPE, RailShape.SOUTH_EAST);
                     case NORTH_WEST:
-                        return state.with(SHAPE, RailShape.NORTH_EAST);
+                        return state.setValue(SHAPE, RailShape.NORTH_EAST);
                     case NORTH_EAST:
-                        return state.with(SHAPE, RailShape.NORTH_WEST);
+                        return state.setValue(SHAPE, RailShape.NORTH_WEST);
                 }
         }
 

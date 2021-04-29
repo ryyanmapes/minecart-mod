@@ -26,14 +26,14 @@ public class IronPushcartEntity extends AbstractPushcart {
     public double getBrakeSpeed() { return 0; }
 
     @Override
-    public void killMinecart(DamageSource source) {
+    public void destroy(DamageSource source) {
         this.remove();
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            ItemStack stack = new ItemStack(iron_pushcart, 1);
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            ItemStack stack = new ItemStack(iron_pushcart);
             if (this.hasCustomName()) {
-                stack.setDisplayName(this.getCustomName());
+                stack.setHoverName(this.getCustomName());
             }
-            this.entityDropItem(stack);
+            this.spawnAtLocation(stack);
         }
     }
 }

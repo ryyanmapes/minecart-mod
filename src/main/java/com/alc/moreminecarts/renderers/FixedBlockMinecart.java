@@ -16,11 +16,11 @@ public class FixedBlockMinecart extends MinecartRenderer {
     }
 
     @Override
-    protected void renderBlockState(AbstractMinecartEntity entityIn, float partialTicks, BlockState stateIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        matrixStackIn.push();
+    protected void renderMinecartContents(AbstractMinecartEntity entityIn, float partialTicks, BlockState stateIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        matrixStackIn.pushPose();
         matrixStackIn.translate(0, -0.15, 0);
-        Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(stateIn, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
-        matrixStackIn.pop();
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(stateIn, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
+        matrixStackIn.popPose();
     }
 
 }

@@ -10,7 +10,7 @@ public class CampfireCartRenderer extends FixedBlockMinecart {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(AbstractMinecartEntity entity) {
+    public ResourceLocation getTextureLocation(AbstractMinecartEntity entity) {
         return new ResourceLocation("moreminecarts:textures/entity/campfire_cart.png");
     }
 

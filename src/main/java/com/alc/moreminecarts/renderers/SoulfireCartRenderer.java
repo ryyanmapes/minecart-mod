@@ -10,7 +10,7 @@ public class SoulfireCartRenderer extends FixedBlockMinecart {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(AbstractMinecartEntity entity) {
+    public ResourceLocation getTextureLocation(AbstractMinecartEntity entity) {
         return new ResourceLocation("moreminecarts:textures/entity/soul_campfire_cart.png");
     }
 }

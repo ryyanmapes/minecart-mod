@@ -36,10 +36,10 @@ public class CouplerItem extends Item {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 
         CompoundNBT tag = stack.getOrCreateTag();
-        if (!tag.hasUniqueId(TAG_COUPLED_UUID_1) && tag.hasUniqueId(TAG_COUPLED_UUID_2) && entityIn instanceof PlayerEntity) {
+        if (!tag.hasUUID(TAG_COUPLED_UUID_1) && tag.hasUUID(TAG_COUPLED_UUID_2) && entityIn instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityIn;
-            player.playSound(SoundEvents.BLOCK_CHAIN_PLACE, 0.7F, 1.0F);
-            if (!player.abilities.isCreativeMode) {
+            player.playSound(SoundEvents.CHAIN_PLACE, 0.7F, 1.0F);
+            if (!player.abilities.instabuild) {
                 stack.shrink(1);
             }
             clearCoupler(stack);
@@ -50,23 +50,23 @@ public class CouplerItem extends Item {
 
         ServerWorld world = (ServerWorld)worldIn;
 
-        if (tag.hasUniqueId(TAG_COUPLED_UUID_1) && tag.hasUniqueId(TAG_COUPLED_UUID_2)){
-            UUID uuid1 = tag.getUniqueId(TAG_COUPLED_UUID_1);
-            Entity ent1 = world.getEntityByUuid(uuid1);
-            UUID uuid2 = tag.getUniqueId(TAG_COUPLED_UUID_2);
-            Entity ent2 = world.getEntityByUuid(uuid2);
+        if (tag.hasUUID(TAG_COUPLED_UUID_1) && tag.hasUUID(TAG_COUPLED_UUID_2)){
+            UUID uuid1 = tag.getUUID(TAG_COUPLED_UUID_1);
+            Entity ent1 = world.getEntity(uuid1);
+            UUID uuid2 = tag.getUUID(TAG_COUPLED_UUID_2);
+            Entity ent2 = world.getEntity(uuid2);
 
             if (ent1 != null && ent2 != null && ent1 != ent2) {
 
-                double distance = ent1.getDistance(ent2);
+                double distance = ent1.distanceTo(ent2);
                 if (distance < 3) {
 
                     Vector3d center_pos = new Vector3d(
-                            (ent1.getPosX() + ent2.getPosX())/2,
-                            (ent1.getPosY() + ent2.getPosY())/2,
-                            (ent1.getPosZ() + ent2.getPosZ())/2);
+                            (ent1.position().x + ent2.position().x)/2,
+                            (ent1.position().y + ent2.position().y)/2,
+                            (ent1.position().z + ent2.position().z)/2);
 
-                    List<CouplerEntity> list = worldIn.getEntitiesWithinAABB(coupler,
+                    List<CouplerEntity> list = worldIn.getEntities(coupler,
                             new AxisAlignedBB(center_pos.x + 0.5, center_pos.y + 0.5, center_pos.z + 0.5,
                                             center_pos.x - 0.5, center_pos.y - 0.5, center_pos.z - 0.5), (entity) -> true);
 
@@ -81,7 +81,7 @@ public class CouplerItem extends Item {
 
                     if (!is_duplicate) {
                         CouplerEntity coupler_ent = new CouplerEntity(coupler, worldIn, ent1, ent2);
-                        worldIn.addEntity(coupler_ent);
+                        worldIn.addFreshEntity(coupler_ent);
                         tag.remove(TAG_COUPLED_UUID_1);
                         return;
                     }
@@ -96,14 +96,14 @@ public class CouplerItem extends Item {
     public static void hookIn(PlayerEntity player, World worldIn, ItemStack used, Entity vehicle) {
         CompoundNBT tag = used.getOrCreateTag();
         //player.playSound(SoundEvents.BLOCK_CHAIN_PLACE, 0.7F, 1.0F);
-        if (tag.hasUniqueId(TAG_COUPLED_UUID_2)){}
-        if (tag.hasUniqueId(TAG_COUPLED_UUID_1)) {
-            UUID uuid = vehicle.getUniqueID();
-            tag.putUniqueId(TAG_COUPLED_UUID_2, uuid);
+        if (tag.hasUUID(TAG_COUPLED_UUID_2)){}
+        if (tag.hasUUID(TAG_COUPLED_UUID_1)) {
+            UUID uuid = vehicle.getUUID();
+            tag.putUUID(TAG_COUPLED_UUID_2, uuid);
         }
         else {
-            UUID uuid = vehicle.getUniqueID();
-            tag.putUniqueId(TAG_COUPLED_UUID_1, uuid);
+            UUID uuid = vehicle.getUUID();
+            tag.putUUID(TAG_COUPLED_UUID_1, uuid);
             tag.putInt("CustomModelData", 1);
         }
     }

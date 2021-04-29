@@ -16,7 +16,7 @@ public class BreakSpeedEventReceiver {
     public static void getBreakSpeed(PlayerEvent.BreakSpeed event) {
 
         PlayerEntity player = event.getPlayer();
-        if (player.getRidingEntity() != null && !player.isOnGround()) {
+        if (player.getVehicle() != null && !player.isOnGround()) {
             // When a player is not grounded, the mining speed is always divided by 5.
             event.setNewSpeed(event.getOriginalSpeed() * 5);
         }

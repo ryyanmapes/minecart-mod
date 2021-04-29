@@ -19,9 +19,9 @@ public class CampfireCartItem extends AbstractMinecartItem {
     void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
 
         CampfireCartEntity minecart = new CampfireCartEntity(campfire_cart, world, posX, posY, posZ);
-        if (stack.hasDisplayName()) {
+        if (stack.hasCustomHoverName()) {
             minecart.setCustomName(stack.getDisplayName());
         }
-        world.addEntity(minecart);
+        world.addFreshEntity(minecart);
     }
 }

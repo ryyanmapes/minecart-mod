@@ -24,17 +24,17 @@ public class SoulfireCartEntity extends CampfireCartEntity {
     }
 
     @Override
-    public void killMinecart(DamageSource source) {
+    public void destroy(DamageSource source) {
         this.remove();
-        if (!source.isExplosion() && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            this.entityDropItem(soulfire_cart);
+        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.spawnAtLocation(soulfire_cart);
         }
 
     }
 
     @Override
-    public BlockState getDefaultDisplayTile() {
-        return Blocks.SOUL_CAMPFIRE.getDefaultState().with(CampfireBlock.LIT, Boolean.valueOf(isMinecartPowered()));
+    public BlockState getDefaultDisplayBlockState() {
+        return Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, Boolean.valueOf(isMinecartPowered()));
     }
 
     @Override

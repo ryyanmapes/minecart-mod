@@ -22,14 +22,14 @@ public class WoodenPushcartEntity extends AbstractPushcart {
     }
 
     @Override
-    public void killMinecart(DamageSource source) {
+    public void destroy(DamageSource source) {
         this.remove();
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             ItemStack stack = new ItemStack(wooden_pushcart);
             if (this.hasCustomName()) {
-                stack.setDisplayName(this.getCustomName());
+                stack.setHoverName(this.getCustomName());
             }
-            this.entityDropItem(stack);
+            this.spawnAtLocation(stack);
         }
     }
 
@@ -39,7 +39,7 @@ public class WoodenPushcartEntity extends AbstractPushcart {
 
     // Wooden cart speed is capped at half that of a normal cart
     @Override
-    protected double getMaximumSpeed() {
+    protected double getMaxSpeed() {
         return 0.3D;
     }
 }
