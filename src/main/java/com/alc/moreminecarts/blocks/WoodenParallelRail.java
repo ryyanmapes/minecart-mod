@@ -8,8 +8,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class WoodenParallelRail extends ParallelRail {
-    public float maxSpeed = 0.2f;
-
 
     public WoodenParallelRail(Properties builder) {
         super(builder);
@@ -17,7 +15,7 @@ public class WoodenParallelRail extends ParallelRail {
 
     @Override
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        return maxSpeed;
+        return WoodenRail.WOODEN_MAX_SPEED;
     }
 
     @Override

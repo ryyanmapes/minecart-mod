@@ -9,16 +9,13 @@ import net.minecraft.world.World;
 
 public class WoodenRailTurn extends RailTurn {
 
-    public float maxSpeed = 0.2f;
-
-
     public WoodenRailTurn(Properties builder) {
         super(builder);
     }
 
     @Override
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        return maxSpeed;
+        return WoodenRail.WOODEN_MAX_SPEED;
     }
 
     @Override

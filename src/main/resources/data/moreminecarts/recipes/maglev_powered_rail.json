@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GLG",
+    "GRG",
+    "GLG"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "L": {
+      "item": "moreminecarts:levitation_powder"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:maglev_powered_rail",
+    "count": 4
+  }
+}

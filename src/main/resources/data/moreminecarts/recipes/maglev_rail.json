@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QIQ",
+    "QLQ",
+    "QIQ"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "L": {
+      "item": "moreminecarts:levitation_powder"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:maglev_rail",
+    "count": 8
+  }
+}

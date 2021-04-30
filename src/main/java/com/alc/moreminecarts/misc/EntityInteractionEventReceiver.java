@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.misc;
 
 
+import com.alc.moreminecarts.entities.HighSpeedMinecartEntities;
 import com.alc.moreminecarts.items.CouplerItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
@@ -20,9 +21,10 @@ import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder("moreminecarts")
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = "moreminecarts")
-public class CoupleEventReceiver {
+public class EntityInteractionEventReceiver {
 
     public static final Item coupler = null;
+    public static final Item high_speed_upgrade = null;
 
     @SubscribeEvent
     public static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
@@ -36,6 +38,7 @@ public class CoupleEventReceiver {
 
         Entity entity = event.getTarget();
 
+        // We check both hands, but only use one, since this function gets called once for each hand.
         if (using.getItem() == coupler || using_secondary.getItem() == coupler) {
             event.setCanceled(true);
             if (event.getWorld().isClientSide()) return;
@@ -52,6 +55,16 @@ public class CoupleEventReceiver {
                 else {
                     CouplerItem.clearCoupler(using);
                 }
+            }
+        }
+
+        if (using.getItem() == high_speed_upgrade || using_secondary.getItem() == high_speed_upgrade) {
+            event.setCanceled(true);
+            if (event.getWorld().isClientSide()) return;
+
+            if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity) {
+                HighSpeedMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
+                using.getStack().shrink(1);
             }
         }
 
