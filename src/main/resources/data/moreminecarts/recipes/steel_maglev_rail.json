@@ -10,7 +10,7 @@
       "tag": "minecraft:stick"
     },
     "Q": {
-      "item": "moreminecarts:silica_steel"
+      "tag": "forge:ingots/steel"
     },
     "L": {
       "item": "moreminecarts:levitation_powder"

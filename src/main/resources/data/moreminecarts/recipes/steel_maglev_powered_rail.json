@@ -16,7 +16,7 @@
       "item": "moreminecarts:levitation_powder"
     },
     "Q": {
-      "item": "moreminecarts:silica_steel"
+      "tag": "forge:ingots/steel"
     }
   },
   "result": {
