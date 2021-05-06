@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_rail_raised_ne",
+  "textures": {
+    "rail": "moreminecarts:block/maglev_powered_rail_on"
+  }
+}
