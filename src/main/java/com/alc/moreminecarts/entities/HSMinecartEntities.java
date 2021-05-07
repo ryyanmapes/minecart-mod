@@ -53,13 +53,18 @@ public class HSMinecartEntities {
         }
         public HSMinecart(World worldIn, double x, double y, double z) { super(worldIn, x, y, z);}
         @Override
-        protected double getMaxSpeed() { return MoreMinecartsConstants.MAGLEV_MAX_SPEED; }
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
-
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
@@ -71,16 +76,19 @@ public class HSMinecartEntities {
         public HSChestMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
         }
-
         @Override
-        protected double getMaxSpeed() {
-            return MoreMinecartsConstants.MAGLEV_MAX_SPEED*2;
-        }
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
@@ -93,14 +101,18 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() {
-            return MoreMinecartsConstants.MAGLEV_MAX_SPEED;
-        }
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
@@ -111,12 +123,18 @@ public class HSMinecartEntities {
         public HSCommandBlockMinecart(EntityType<? extends CommandBlockMinecartEntity> type, World world) { super(type, world); }
         public HSCommandBlockMinecart(World worldIn, double x, double y, double z) { super(worldIn, x, y, z); }
         @Override
-        protected double getMaxSpeed() { return MoreMinecartsConstants.MAGLEV_MAX_SPEED; }
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
@@ -129,14 +147,18 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() {
-            return MoreMinecartsConstants.MAGLEV_MAX_SPEED;
-        }
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
@@ -149,14 +171,18 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() {
-            return MoreMinecartsConstants.MAGLEV_MAX_SPEED;
-        }
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
