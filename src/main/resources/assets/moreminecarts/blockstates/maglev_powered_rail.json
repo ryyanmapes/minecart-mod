@@ -1,25 +1,25 @@
 {
   "variants": {
     "powered=false,shape=ascending_east": {
-      "model": "moreminecarts:block/maglev_powered_rail_raised_ne",
+      "model": "moreminecarts:block/maglev_powered_rail_off_raised_ne",
       "y": 90
     },
     "powered=false,shape=ascending_north": {
-      "model": "moreminecarts:block/maglev_powered_rail_raised_ne"
+      "model": "moreminecarts:block/maglev_powered_rail_off_raised_ne"
     },
     "powered=false,shape=ascending_south": {
-      "model": "moreminecarts:block/maglev_powered_rail_raised_sw"
+      "model": "moreminecarts:block/maglev_powered_rail_off_raised_sw"
     },
     "powered=false,shape=ascending_west": {
-      "model": "moreminecarts:block/maglev_powered_rail_raised_sw",
+      "model": "moreminecarts:block/maglev_powered_rail_off_raised_sw",
       "y": 90
     },
     "powered=false,shape=east_west": {
-      "model": "moreminecarts:block/maglev_powered_rail",
+      "model": "moreminecarts:block/maglev_powered_rail_off",
       "y": 90
     },
     "powered=false,shape=north_south": {
-      "model": "moreminecarts:block/maglev_powered_rail"
+      "model": "moreminecarts:block/maglev_powered_rail_off"
     },
     "powered=true,shape=ascending_east": {
       "model": "moreminecarts:block/maglev_powered_rail_on_raised_ne",

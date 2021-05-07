@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "moreminecarts:block/maglev_powered_rail"
+    "layer0": "moreminecarts:block/maglev_powered_rail_off"
   }
 }
