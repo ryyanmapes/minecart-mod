@@ -7,7 +7,7 @@
   ],
   "key": {
     "S": {
-      "tag": "minecraft:stick"
+      "item": "minecraft:stick"
     },
     "Q": {
       "item": "moreminecarts:silica_steel"

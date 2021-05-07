@@ -1,15 +1,1 @@
-{
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "S"
-  ],
-  "key": {
-    "I": {
-      "item": "minecraft:phantom_membrane"
-    }
-  },
-  "result": {
-    "item": "moreminecarts:levitation_powder",
-    "count": 1
-  }
-}
+{"ingredients":[{"item":"minecraft:phantom_membrane"}],"result":{"count":1,"item":"moreminecarts:levitation_powder"},"type":"minecraft:crafting_shapeless"}

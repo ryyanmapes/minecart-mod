@@ -1,12 +1,14 @@
 package com.alc.moreminecarts.blocks;
 
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -30,12 +32,17 @@ public class ChunkLoaderBlock extends ContainerBlock {
     }
 
     @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(POWERED);
+    }
+
+    @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult trace_result) {
         if (world.isClientSide) return ActionResultType.SUCCESS;
 
         TileEntity tile_entity = world.getBlockEntity(pos);
         if (tile_entity instanceof ChunkLoaderTile) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile_entity);
+            NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile_entity, pos);
             return ActionResultType.SUCCESS;
         }
 

@@ -1,15 +1,1 @@
-{
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "S"
-  ],
-  "key": {
-    "S": {
-      "item": "minecraft:shulker_shell"
-    }
-  },
-  "result": {
-    "item": "moreminecarts:levitation_powder",
-    "count": 16
-  }
-}
+{"ingredients":[{"item":"minecraft:shulker_shell"}],"result":{"count":16,"item":"moreminecarts:levitation_powder"},"type":"minecraft:crafting_shapeless"}

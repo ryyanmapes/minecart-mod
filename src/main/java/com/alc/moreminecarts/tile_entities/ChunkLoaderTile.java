@@ -1,12 +1,13 @@
 package com.alc.moreminecarts.tile_entities;
 
-import com.alc.moreminecarts.MoreMinecartsMod;
+import com.alc.moreminecarts.MoreMinecartsConstants;
+import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.FurnaceContainer;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -16,27 +17,29 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraftforge.registries.ObjectHolder;
 
 import javax.annotation.Nullable;
 
-public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITickableTileEntity {
+@ObjectHolder("moreminecarts")
+public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
+    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
 
-    public static final TileEntityType chunk_loader_tile = null;
-    public static final String LAST_BLOCK_POS_X_PROPERTY = "last_block_pos_x";
-    public static final String LAST_BLOCK_POS_Y_PROPERTY = "last_block_pos_y";
-    public static final String LAST_BLOCK_POS_Z_PROPERTY = "last_block_pos_z";
+    protected static final String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
+    protected static final String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
+    protected static final String TIME_LEFT_PROPERTY = "time_left";
     public static int MAX_TIME_LEFT = 7200001;
 
     protected ItemStack input_itemstack = ItemStack.EMPTY;
-    protected final IIntArray dataAccess = new IIntArray() {
+    public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return ChunkLoaderTile.this.time_left * (is_enabled ? 1 : -1);
+                    return ChunkLoaderTile.this.time_left;
                 default:
                     return 0;
             }
@@ -59,37 +62,39 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
         }
     };
 
-    public boolean is_enabled;
+    public boolean lit_last_tick;
     // This should never be zero. 1 is the minimum value here, for reasons.
     public int time_left;
-    public BlockPos last_block_pos;
+    public int last_chunk_x;
+    public int last_chunk_z;
 
     public ChunkLoaderTile() {
-        super(chunk_loader_tile);
-        is_enabled = false;
+        super(chunk_loader_te);
+        lit_last_tick = false;
         time_left = 1;
-        last_block_pos = worldPosition;
+        last_chunk_x = getBlockPos().getX() >> 4;
+        last_chunk_z = getBlockPos().getZ() >> 4;
     }
 
     @Override
     public CompoundNBT save(CompoundNBT compound) {
-        compound.putInt(LAST_BLOCK_POS_X_PROPERTY, last_block_pos.getX());
-        compound.putInt(LAST_BLOCK_POS_Y_PROPERTY, last_block_pos.getY());
-        compound.putInt(LAST_BLOCK_POS_Z_PROPERTY, last_block_pos.getZ());
+        compound.putInt(LAST_CHUNK_X_PROPERTY, last_chunk_x);
+        compound.putInt(LAST_CHUNK_Z_PROPERTY, last_chunk_z);
+        compound.putInt(TIME_LEFT_PROPERTY, time_left);
         return super.save(compound);
     }
 
     @Override
     public void load(BlockState state, CompoundNBT compound) {
-        int new_old_x = compound.getInt(LAST_BLOCK_POS_X_PROPERTY);
-        int new_old_y = compound.getInt(LAST_BLOCK_POS_Y_PROPERTY);
-        int new_old_z = compound.getInt(LAST_BLOCK_POS_Z_PROPERTY);
-        last_block_pos = new BlockPos(new_old_x, new_old_y, new_old_z);
+        last_chunk_x = compound.getInt(LAST_CHUNK_X_PROPERTY);
+        last_chunk_z = compound.getInt(LAST_CHUNK_Z_PROPERTY);
+        time_left = compound.getInt(TIME_LEFT_PROPERTY);
+        lit_last_tick = isLit();
         super.load(state, compound);
     }
 
-    protected Container createMenu(int i, PlayerInventory inventory) {
-        return new FurnaceContainer(i, inventory, this, this.dataAccess);
+    public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
+        return new ChunkLoaderContainer(i, level, worldPosition, inventory, player);
     }
 
     public static int getBurnDuration(Item item) {
@@ -105,47 +110,72 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
 
     public void tick() {
 
-        boolean lit_last_tick = time_left == 1;
         if (isLit()) time_left--;
 
         if (!level.isClientSide) {
 
             int burn_duration = getBurnDuration(input_itemstack.getItem());
-            if (burn_duration >= 0 && time_left + burn_duration <= MAX_TIME_LEFT) {
-                time_left += burn_duration;
+            if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= MAX_TIME_LEFT) {
+
+                if (time_left > 0) time_left += burn_duration;
+                else time_left -= burn_duration;
+
                 input_itemstack.shrink(1);
             }
 
-            if (isLit()) {
-                if (worldPosition != last_block_pos || !lit_last_tick) {
-                    forceChucksAt(last_block_pos, false);
-                    forceChucksAt(worldPosition, true);
-                    last_block_pos = worldPosition;
-                }
+            int chunk_x = getBlockPos().getX() >> 4;
+            int chunk_z = getBlockPos().getZ() >> 4;
+
+            if (chunk_x != last_chunk_x || chunk_z != last_chunk_z) {
+                forceChucksAt(last_chunk_x, last_chunk_z, false);
+
+                last_chunk_x = chunk_x;
+                last_chunk_z = chunk_z;
+
+                lit_last_tick = !isLit();
             }
-            else {
-                forceChucksAt(last_block_pos, false);
-                forceChucksAt(worldPosition, false);
-                last_block_pos = worldPosition;
+
+            if (lit_last_tick != isLit()) {
+                if (isLit()) {
+                    forceChucksAt(chunk_x, chunk_z, true);
+                }
+                else {
+                    forceChucksAt(chunk_x, chunk_z, false);
+                }
             }
 
             this.setChanged();
         }
+
+        lit_last_tick = isLit();
     }
 
-    private void forceChucksAt(BlockPos pos, boolean add) {
-        int last_chunk_x = pos.getX() >> 4;
-        int last_chunk_z = pos.getZ() >> 4;
-
+    private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerWorld) level, MoreMinecartsMod.MODID, pos, last_chunk_x, last_chunk_z, add, true);
+                ForgeChunkManager.forceChunk((ServerWorld) level, MoreMinecartsConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, true);
             }
         }
     }
 
+    @Override
+    public void setRemoved() {
+        if (!level.isClientSide) {
+
+            int chunk_x = getBlockPos().getX() >> 4;
+            int chunk_z = getBlockPos().getZ() >> 4;
+
+            forceChucksAt(chunk_x, chunk_z, false);
+        }
+        super.setRemoved();
+    }
+
     public boolean isLit() {
-        return time_left > 1 && is_enabled;
+        return time_left > 1 && isEnabled();
+    }
+
+    public boolean isEnabled() {
+        return time_left > 0;
     }
 
     // Inventory stuff below.
@@ -208,4 +238,10 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
     public void clearContent() {
         input_itemstack = ItemStack.EMPTY;
     }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return null;
+    }
+
 }

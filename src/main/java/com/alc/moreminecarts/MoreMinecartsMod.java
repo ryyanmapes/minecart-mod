@@ -1,23 +1,33 @@
 package com.alc.moreminecarts;
 
 import com.alc.moreminecarts.blocks.*;
+import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.entities.*;
+import com.alc.moreminecarts.entities.HSMinecartEntities.*;
+import com.alc.moreminecarts.guis.ChunkLoaderScreen;
 import com.alc.moreminecarts.items.*;
 import com.alc.moreminecarts.misc.CouplerClientFactory;
-import com.alc.moreminecarts.misc.CouplerPacketHandler;
+import com.alc.moreminecarts.misc.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.renderers.*;
+import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -45,11 +55,13 @@ public class MoreMinecartsMod
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final String MODID = "moreminecarts";
+    private static final String MODID = "moreminecarts";
 
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
+    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
+    private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
     // Entities
     private static final RegistryObject<EntityType<MinecartWithNet>> MINECART_WITH_NET_ENTITY = ENTITIES.register("minecart_with_net", () -> EntityType.Builder.<MinecartWithNet>of(MinecartWithNet::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("minecart_with_net"));
@@ -66,18 +78,33 @@ public class MoreMinecartsMod
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<CouplerEntity> coupler = null;
 
-    // Rail Blocks
+    // High Speed Carts
+    private static final RegistryObject<EntityType<HSMinecart>> HS_CART_ENTITY = ENTITIES.register("high_speed_minecart", () -> EntityType.Builder.<HSMinecart>of(HSMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_minecart"));
+    private static final RegistryObject<EntityType<HSChestMinecart>> HS_CHEST_CART_ENTITY = ENTITIES.register("high_speed_chest_minecart", () -> EntityType.Builder.<HSChestMinecart>of(HSChestMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_chest_minecart"));
+    private static final RegistryObject<EntityType<HSTNTMinecart>> HS_TNT_CART_ENTITY = ENTITIES.register("high_speed_tnt_minecart", () -> EntityType.Builder.<HSTNTMinecart>of(HSTNTMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_tnt_minecart"));
+    private static final RegistryObject<EntityType<HSCommandBlockMinecart>> HS_COMMAND_BLOCK_CART_ENTITY = ENTITIES.register("high_speed_command_block_minecart", () -> EntityType.Builder.<HSCommandBlockMinecart>of(HSCommandBlockMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_command_block_minecart"));
+    private static final RegistryObject<EntityType<HSHopperMinecart>> HS_HOPPER_CART_ENTITY = ENTITIES.register("high_speed_hopper_minecart", () -> EntityType.Builder.<HSHopperMinecart>of(HSHopperMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_hopper_minecart"));
+    private static final RegistryObject<EntityType<HighSpeedSpawnerMinecart>> HS_SPAWNER_CART_ENTITY = ENTITIES.register("high_speed_spawner_minecart", () -> EntityType.Builder.<HighSpeedSpawnerMinecart>of(HighSpeedSpawnerMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_spawner_minecart"));
+
+    public static final EntityType<HSMinecart> high_speed_minecart = null;
+    public static final EntityType<HSChestMinecart> high_speed_chest_minecart = null;
+    public static final EntityType<HSTNTMinecart> high_speed_tnt_minecart = null;
+    public static final EntityType<HSCommandBlockMinecart> high_speed_command_block_minecart = null;
+    public static final EntityType<HSHopperMinecart> high_speed_hopper_minecart = null;
+    public static final EntityType<HighSpeedSpawnerMinecart> high_speed_spawner_minecart = null;
+
+    // Blocks
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> PARALLEL_RAIL_BLOCK = BLOCKS.register("parallel_rail", () -> new ParallelRail(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_PARALLEL_RAIL_BLOCK = BLOCKS.register("wooden_parallel_rail", () -> new WoodenParallelRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.CORAL_BLOCK)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.CORAL_BLOCK)));
-    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.CORAL_BLOCK)));
-    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.CORAL_BLOCK)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
-
+    private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(1f).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
 
     public static final Block rail_turn = null;
     public static final Block parallel_rail = null;
@@ -89,6 +116,7 @@ public class MoreMinecartsMod
     public static final Block maglev_parallel_rail = null;
     public static final Block maglev_powered_rail = null;
     public static final Block bioluminescent_rail = null;
+    public static final Block chunk_loader = null;
 
     // Buildable Items
     private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -107,7 +135,8 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> WOODEN_PUSHCART_ITEM = ITEMS.register("wooden_pushcart", () -> new WoodenPushcartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> IRON_PUSHCART_ITEM = ITEMS.register("iron_pushcart", () -> new IronPushcartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
-    private static final RegistryObject<Item> HIGH_SPEED_UPGRADE_ITEM = ITEMS.register("high_speed_upgrade", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> CHUNK_LOADER_ITEM = ITEMS.register("chunk_loader", () -> new BlockItem(chunk_loader, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
+    private static final RegistryObject<Item> HIGH_SPEED_UPGRADE_ITEM = ITEMS.register("high_speed_upgrade", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
 
     // Rail Signal Items
     private static final RegistryObject<Item> RAIL_SIGNAL_WHITE = ITEMS.register("rail_signal_white", () -> new Item(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -202,10 +231,19 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> SILICA_STEEL_MIX = ITEMS.register("silica_steel_mix", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
     private static final RegistryObject<Item> SILICA_STEEL = ITEMS.register("silica_steel", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
 
+    // Tile Entities
+    private static final RegistryObject<TileEntityType<ChunkLoaderTile>> CHUNK_LOADER_TILE_ENTITY = TILE_ENTITIES.register("chunk_loader_te", () -> TileEntityType.Builder.<ChunkLoaderTile>of(ChunkLoaderTile::new, chunk_loader).build(null));
+
+    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
+
+    // Containers
+    private static final RegistryObject<ContainerType<ChunkLoaderContainer>> CHUNK_LOADER_CONTAINER = CONTAINERS.register("chunk_loader_c", () -> IForgeContainerType.create((windowId, inv, data) -> new ChunkLoaderContainer(windowId, Minecraft.getInstance().level, data.readBlockPos(), inv, Minecraft.getInstance().player)));
+
+    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
 
     public MoreMinecartsMod() {
 
-        CouplerPacketHandler.Init();
+        MoreMinecartsPacketHandler.Init();
 
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -224,6 +262,8 @@ public class MoreMinecartsMod
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TILE_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
     }
 
@@ -238,13 +278,19 @@ public class MoreMinecartsMod
         // do something that can only be done on the client
         //LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 
+        ScreenManager.register(chunk_loader_c, ChunkLoaderScreen::new);
+
         RenderType cutout = RenderType.cutout();
-        RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
-        RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
-        RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(parallel_rail, cutout);
+        RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
+        RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(wooden_parallel_rail, cutout);
+        RenderTypeLookup.setRenderLayer(maglev_rail, cutout);
+        RenderTypeLookup.setRenderLayer(maglev_rail_turn, cutout);
+        RenderTypeLookup.setRenderLayer(maglev_parallel_rail, cutout);
+        RenderTypeLookup.setRenderLayer(maglev_powered_rail, cutout);
+        RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
 
         RenderTypeLookup.setRenderLayer(color_detector_rail_white, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_orange, cutout);
@@ -269,6 +315,13 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(coupler, CouplerRenderer::new);
+
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_minecart, HighSpeedMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_chest_minecart, HighSpeedMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_tnt_minecart, HighSpeedMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_command_block_minecart, HighSpeedMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_hopper_minecart, HighSpeedMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_spawner_minecart, HighSpeedMinecartRenderer::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
