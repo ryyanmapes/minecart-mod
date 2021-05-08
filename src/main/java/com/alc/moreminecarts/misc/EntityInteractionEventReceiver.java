@@ -64,7 +64,7 @@ public class EntityInteractionEventReceiver {
 
             if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity) {
                 HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
-                using.getStack().shrink(1);
+                if (!player.isCreative()) using.getStack().shrink(1);
             }
         }
 
