@@ -2,6 +2,7 @@ package com.alc.moreminecarts.blocks;
 
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +35,11 @@ public class ChunkLoaderBlock extends ContainerBlock {
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(POWERED);
+    }
+
+    @Override
+    public BlockRenderType getRenderShape(BlockState p_149645_1_) {
+        return BlockRenderType.MODEL;
     }
 
     @Override

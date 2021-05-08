@@ -105,7 +105,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(1f).harvestTool(ToolType.PICKAXE).harvestLevel(2)));
-    private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(1f).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(1f).harvestTool(ToolType.PICKAXE)));
 
 
     public static final Block rail_turn = null;
@@ -293,6 +293,7 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(maglev_parallel_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_powered_rail, cutout);
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
+        RenderTypeLookup.setRenderLayer(chunk_loader, cutout);
 
         RenderTypeLookup.setRenderLayer(color_detector_rail_white, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_orange, cutout);
