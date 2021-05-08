@@ -1,7 +1,6 @@
 package com.alc.moreminecarts.misc;
 
 
-import com.alc.moreminecarts.MoreMinecartsConstants;
 import com.alc.moreminecarts.entities.HSMinecartEntities;
 import com.alc.moreminecarts.items.CouplerItem;
 import net.minecraft.entity.Entity;
@@ -64,7 +63,7 @@ public class EntityInteractionEventReceiver {
             if (event.getWorld().isClientSide()) return;
 
             if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity
-                && ((AbstractMinecartEntity) entity).getMaxSpeedWithRail() < MoreMinecartsConstants.HS_MAX_SPEED) {
+                && !(entity instanceof HSMinecartEntities.IHSCart)) {
                 boolean success = HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
                 if (!player.abilities.instabuild && success) using.getStack().shrink(1);
             }

@@ -79,7 +79,9 @@ public class HSMinecartEntities {
         return true;
     }
 
-    public static class HSMinecart extends MinecartEntity {
+    public static interface IHSCart{};
+
+    public static class HSMinecart extends MinecartEntity implements IHSCart {
         public HSMinecart(EntityType<?> type, World world) {
             super(type, world);
         }
@@ -103,7 +105,7 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HSChestMinecart extends ChestMinecartEntity {
+    public static class HSChestMinecart extends ChestMinecartEntity implements IHSCart {
         public HSChestMinecart(EntityType<HSChestMinecart> type, World world) { super(type, world); }
         public HSChestMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
@@ -127,7 +129,7 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HSTNTMinecart extends TNTMinecartEntity {
+    public static class HSTNTMinecart extends TNTMinecartEntity implements IHSCart {
         public HSTNTMinecart(EntityType<? extends TNTMinecartEntity> type, World world) { super(type, world); }
         public HSTNTMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
@@ -151,7 +153,7 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HSCommandBlockMinecart extends CommandBlockMinecartEntity {
+    public static class HSCommandBlockMinecart extends CommandBlockMinecartEntity implements IHSCart {
         public HSCommandBlockMinecart(EntityType<? extends CommandBlockMinecartEntity> type, World world) { super(type, world); }
         public HSCommandBlockMinecart(World worldIn, double x, double y, double z) { super(worldIn, x, y, z); }
         @Override
@@ -173,7 +175,7 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HSHopperMinecart extends HopperMinecartEntity {
+    public static class HSHopperMinecart extends HopperMinecartEntity implements IHSCart{
         public HSHopperMinecart(EntityType<? extends HopperMinecartEntity> type, World world) { super(type, world); }
         public HSHopperMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
@@ -197,7 +199,7 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HighSpeedSpawnerMinecart extends SpawnerMinecartEntity {
+    public static class HighSpeedSpawnerMinecart extends SpawnerMinecartEntity implements IHSCart {
         public HighSpeedSpawnerMinecart(EntityType<? extends SpawnerMinecartEntity> type, World world) { super(type, world); }
         public HighSpeedSpawnerMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
@@ -221,7 +223,7 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HighSpeedFurnaceMinecart extends FurnaceMinecartEntity {
+    public static class HighSpeedFurnaceMinecart extends FurnaceMinecartEntity implements IHSCart {
         public HighSpeedFurnaceMinecart(EntityType<? extends FurnaceMinecartEntity> type, World world) { super(type, world); }
         public HighSpeedFurnaceMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
@@ -247,7 +249,7 @@ public class HSMinecartEntities {
 
     // Modded high-speed variants
 
-    public static class HighSpeedNetMinecart extends NetMinecartEntity {
+    public static class HighSpeedNetMinecart extends NetMinecartEntity implements IHSCart {
         public HighSpeedNetMinecart(EntityType<? extends NetMinecartEntity> type, World world) { super(type, world); }
         @Override
         protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
@@ -268,7 +270,7 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HighSpeedChunkLoaderMinecart extends ChunkLoaderCartEntity {
+    public static class HighSpeedChunkLoaderMinecart extends ChunkLoaderCartEntity implements IHSCart {
         public HighSpeedChunkLoaderMinecart(EntityType<? extends ChunkLoaderCartEntity> type, World world) { super(type, world); }
         @Override
         protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
