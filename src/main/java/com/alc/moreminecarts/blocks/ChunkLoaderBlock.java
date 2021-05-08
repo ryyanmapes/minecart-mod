@@ -87,6 +87,18 @@ public class ChunkLoaderBlock extends ContainerBlock {
         }
     }
 
-    // TODO Comparator stuff
+    // Comparator stuff
+
+    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
+        return true;
+    }
+
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
+        TileEntity tile_entity = world.getBlockEntity(pos);
+        if (tile_entity instanceof ChunkLoaderTile) {
+            return ((ChunkLoaderTile) tile_entity).getComparatorSignal();
+        }
+        return 0;
+    }
 
 }

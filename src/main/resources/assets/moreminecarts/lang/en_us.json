@@ -66,5 +66,14 @@
   "entity.moreminecarts.campfire_cart": "Campfire Cart",
   "entity.moreminecarts.soulfire_pushcart": "Soulfire Cart",
   "entity.moreminecarts.wooden_pushcart": "Wooden Pushcart",
-  "entity.moreminecarts.iron_pushcart": "Iron Pushcart"
+  "entity.moreminecarts.iron_pushcart": "Iron Pushcart",
+  "entity.moreminecarts.high_speed_minecart": "Aerodynamic Minecart",
+  "entity.moreminecarts.high_speed_chest_minecart": "Aerodynamic Minecart with Chest",
+  "entity.moreminecarts.high_speed_tnt_minecart": "Aerodynamic Minecart with TNT",
+  "entity.moreminecarts.high_speed_command_block_minecart": "Aerodynamic Minecart with Command Block",
+  "entity.moreminecarts.high_speed_hopper_minecart": "Aerodynamic Minecart with Hopper",
+  "entity.moreminecarts.high_speed_spawner_minecart": "Aerodynamic Minecart with Spawner",
+  "entity.moreminecarts.high_speed_furnace_minecart": "Aerodynamic Minecart with Furnace",
+  "entity.moreminecarts.high_speed_net_minecart": "Aerodynamic Minecart with Spider",
+  "entity.moreminecarts.high_speed_chunk_loader_minecart": "Aerodynamic Minecart with Chunk Loader"
 }

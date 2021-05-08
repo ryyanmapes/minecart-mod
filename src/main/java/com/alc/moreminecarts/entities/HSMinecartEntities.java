@@ -4,12 +4,15 @@ import com.alc.moreminecarts.MoreMinecartsConstants;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.*;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ObjectHolder;
+
+import java.util.UUID;
 
 @ObjectHolder("moreminecarts")
 public class HSMinecartEntities {
@@ -33,8 +36,24 @@ public class HSMinecartEntities {
 
         AbstractMinecartEntity new_minecart = null;
 
-        if (minecart instanceof MinecartEntity) new_minecart = high_speed_minecart.create(minecart.level);
-        else if (minecart instanceof ChestMinecartEntity) new_minecart = high_speed_chest_minecart.create(minecart.level);
+        if (minecart instanceof MinecartEntity) {
+            new_minecart = high_speed_minecart.create(minecart.level);
+            /*HSMinecart newer_minecart = high_speed_minecart.create(minecart.level);
+            for (Entity passenger : minecart.getPassengers()) {
+                passenger.stopRiding();
+                passenger.startRiding(newer_minecart);
+            }
+            new_minecart = newer_minecart;*/
+        }
+        else if (minecart instanceof ChestMinecartEntity) {
+            new_minecart = high_speed_chest_minecart.create(minecart.level);
+            /*HSChestMinecart newer_minecart = high_speed_chest_minecart.create(minecart.level);
+            Iterator<ItemStack> all_items = minecart.getAllSlots().iterator();
+            for (int i = 0; i < ((ChestMinecartEntity) minecart).getContainerSize(); i++) {
+                ItemStack stack = all_items.next();
+                if (stack != ItemStack.EMPTY) newer_minecart.canPlaceItem()
+            }*/
+        }
         else if (minecart instanceof TNTMinecartEntity) new_minecart = high_speed_tnt_minecart.create(minecart.level);
         else if (minecart instanceof CommandBlockMinecartEntity) new_minecart = high_speed_command_block_minecart.create(minecart.level);
         else if (minecart instanceof HopperMinecartEntity) new_minecart = high_speed_hopper_minecart.create(minecart.level);
@@ -45,10 +64,16 @@ public class HSMinecartEntities {
         // todo campfire carts
         else return false;
 
-        new_minecart.setPos(x, y, z);
-        new_minecart.setDeltaMovement(minecart.getDeltaMovement());
+        CompoundNBT data = new CompoundNBT();
+        minecart.saveWithoutId(data);
+        // Weird workaround to prevent the new minecart taking the UUID of the old.
+        UUID true_uuid = new_minecart.getUUID();
+        new_minecart.load(data);
+        new_minecart.setUUID(true_uuid);
 
+        if (minecart instanceof ContainerMinecartEntity) ((ContainerMinecartEntity) minecart).dropContentsWhenDead(false);
         minecart.remove();
+
         minecart.level.addFreshEntity(new_minecart);
 
         return true;

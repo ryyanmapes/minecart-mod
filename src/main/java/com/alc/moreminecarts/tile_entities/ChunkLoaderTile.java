@@ -271,4 +271,10 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
             InventoryHelper.dropContents(world, pos, drops);
         }
     }
+
+    public int getComparatorSignal() {
+        float true_time_left = Math.abs(time_left) - 1;
+        double log_proportion = Math.log10( ((true_time_left/ChunkLoaderTile.MAX_TIME_LEFT)*9 + 1 ));
+        return (int)Math.ceil(log_proportion * 15);
+    }
 }

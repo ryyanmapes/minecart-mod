@@ -97,6 +97,12 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
+    public void activateMinecart(int p_96095_1_, int p_96095_2_, int p_96095_3_, boolean p_96095_4_) {
+        setEnabled(p_96095_4_);
+    }
+
+    // Container stuff
+
     @Override
     public int getContainerSize() {
         return 1;
@@ -262,6 +268,8 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         return time_left > 0;
     }
 
-
+    public void setEnabled(boolean enabled) {
+        time_left = Math.abs(time_left) * (enabled? 1 : -1);
+    }
 
 }

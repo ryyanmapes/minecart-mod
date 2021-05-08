@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.misc;
 
 
+import com.alc.moreminecarts.MoreMinecartsConstants;
 import com.alc.moreminecarts.entities.HSMinecartEntities;
 import com.alc.moreminecarts.items.CouplerItem;
 import net.minecraft.entity.Entity;
@@ -62,14 +63,15 @@ public class EntityInteractionEventReceiver {
             event.setCanceled(true);
             if (event.getWorld().isClientSide()) return;
 
-            if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity) {
+            if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity
+                && ((AbstractMinecartEntity) entity).getMaxSpeedWithRail() < MoreMinecartsConstants.HS_MAX_SPEED) {
                 boolean success = HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
-                if (!player.isCreative() && success) using.getStack().shrink(1);
+                if (!player.abilities.instabuild && success) using.getStack().shrink(1);
             }
         }
 
-        // To prevent entering a high speed cart immediatly after upgrading it.
-        if (event.getTarget() instanceof HSMinecartEntities.HSMinecart && event.getTarget().tickCount < 100) {
+        // To prevent entering a high speed cart immediately after upgrading it.
+        if (event.getTarget() instanceof HSMinecartEntities.HSMinecart && event.getTarget().tickCount < 10) {
             event.setCanceled(true);
             return;
         }
