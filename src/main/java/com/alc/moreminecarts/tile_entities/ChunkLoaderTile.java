@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
@@ -18,7 +19,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.registries.ObjectHolder;
@@ -28,11 +32,13 @@ import javax.annotation.Nullable;
 @ObjectHolder("moreminecarts")
 public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
     public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
+    public static final Item chunkrodite = null;
+    public static final Item chunkrodite_block = null;
 
-    public static final String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
-    public static final String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
-    public static final String TIME_LEFT_PROPERTY = "time_left";
-    public static int MAX_TIME_LEFT = 7200001;
+    public static String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
+    public static String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
+    public static String TIME_LEFT_PROPERTY = "time_left";
+    public static int MAX_TIME_LEFT = 10368000;
 
     protected ItemStack input_itemstack = ItemStack.EMPTY;
     public final IIntArray dataAccess = new IIntArray() {
@@ -106,6 +112,8 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
         if (item == Items.DIAMOND) return 72000;
         if (item == Items.DIAMOND_BLOCK) return 648000;
         if (item == Items.NETHER_STAR) return 3456000;
+        if (item == chunkrodite) return 18000;
+        if (item == chunkrodite_block) return 162000;
         return -1;
     }
 
@@ -247,4 +255,18 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
         return null;
     }
 
+    // For dropping chunkrodite
+    public static void dropExtras(World world, int time_left, BlockPos pos) {
+        int count = (int)Math.floor(time_left / 24000.0f);
+        Item to_drop = chunkrodite;
+        if (count > 64) {
+            count = (int)Math.floor(time_left / 9.0f);
+            to_drop = chunkrodite_block;
+            if (count > 64) count = 64; // Should never occur, but just in case.
+        }
+
+        ItemStack drop_stack = new ItemStack(to_drop, count);
+        NonNullList<ItemStack> drops = NonNullList.withSize(1, drop_stack);
+        InventoryHelper.dropContents(world, pos, drops);
+    }
 }

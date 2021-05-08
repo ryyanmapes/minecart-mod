@@ -5,11 +5,13 @@ import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIntArray;
+import net.minecraft.util.IntArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,6 +25,16 @@ public class ChunkLoaderContainer extends Container {
     private final IInventory inventory;
     private final IIntArray data;
     protected final World level;
+
+    public ChunkLoaderContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
+        super(chunk_loader_c, n);
+
+        this.inventory = new Inventory(1);
+        this.data = new IntArray(1);
+        this.level = player_inventory.player.level;
+
+        CommonInitialization(player_inventory);
+    }
 
     // For use with the entity chunk loaders.
     public ChunkLoaderContainer(int n, World world, IInventory inventory, IIntArray data, PlayerInventory player_inventory, PlayerEntity player_entity) {

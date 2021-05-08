@@ -23,13 +23,13 @@ import java.util.List;
 
 // Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
 // but we force it if it's a player
-public class MinecartWithNet extends AbstractMinecartEntity {
+public class NetMinecartEntity extends AbstractMinecartEntity {
 
-    public MinecartWithNet(EntityType<?> type, World world) {
+    public NetMinecartEntity(EntityType<?> type, World world) {
         super(type, world);
     }
 
-    public MinecartWithNet(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public NetMinecartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
         super(type, worldIn, x, y, z);
     }
 

@@ -8,8 +8,10 @@ import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -23,12 +25,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.registries.ObjectHolder;
 
 
 // Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
 // but we force it if it's a player
+@ObjectHolder("moreminecarts")
 public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(ChunkLoaderCartEntity.class, DataSerializers.BOOLEAN);
+
+    public static final Item chunk_loader = null;
 
     public ChunkLoaderCartEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -55,7 +61,8 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     public void destroy(DamageSource source) {
         super.destroy(source);
         if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            // TODO
+            this.spawnAtLocation(chunk_loader);
+            ChunkLoaderTile.dropExtras(level, time_left, getOnPos());
         }
         onRemoval();
 
@@ -93,6 +100,36 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     @Override
     public int getContainerSize() {
         return 1;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return input_itemstack.isEmpty();
+    }
+
+    @Override
+    public ItemStack getItem(int slot) {
+        return input_itemstack;
+    }
+
+    @Override
+    public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
+        return input_itemstack;
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) {
+        return input_itemstack;
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack to_set) {
+        input_itemstack = to_set;
+    }
+
+    @Override
+    public boolean stillValid(PlayerEntity player) {
+        return player.distanceToSqr((double)this.position().x + 0.5D, (double)this.position().y + 0.5D, (double)this.position().z + 0.5D) <= 64.0D;
     }
 
     // Mostly copied from ChunkLoaderBlock
@@ -156,6 +193,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
 
     @Override
     public void tick() {
+        super.tick();
 
         if (isLit()) time_left--;
 
