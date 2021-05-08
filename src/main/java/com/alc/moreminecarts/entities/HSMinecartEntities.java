@@ -23,7 +23,7 @@ public class HSMinecartEntities {
     public static final EntityType<HSHopperMinecart> high_speed_hopper_minecart = null;
     public static final EntityType<HighSpeedSpawnerMinecart> high_speed_spawner_minecart = null;
 
-    public static void upgradeMinecart(AbstractMinecartEntity minecart) {
+    public static boolean upgradeMinecart(AbstractMinecartEntity minecart) {
         double x = minecart.position().x;
         double y = minecart.position().y;
         double z = minecart.position().z;
@@ -37,7 +37,7 @@ public class HSMinecartEntities {
         else if (minecart instanceof HopperMinecartEntity) new_minecart = high_speed_hopper_minecart.create(minecart.level);
         else if (minecart instanceof SpawnerMinecartEntity) new_minecart = high_speed_spawner_minecart.create(minecart.level);
         // todo modded carts
-        else return;
+        else return false;
 
         new_minecart.setPos(x, y, z);
         new_minecart.setYBodyRot(minecart.getYHeadRot()); // todo is this correct?
@@ -45,6 +45,8 @@ public class HSMinecartEntities {
 
         minecart.remove();
         minecart.level.addFreshEntity(new_minecart);
+
+        return true;
     }
 
     public static class HSMinecart extends MinecartEntity {

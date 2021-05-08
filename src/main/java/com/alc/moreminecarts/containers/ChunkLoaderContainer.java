@@ -24,6 +24,18 @@ public class ChunkLoaderContainer extends Container {
     private final IIntArray data;
     protected final World level;
 
+    // For use with the entity chunk loaders.
+    public ChunkLoaderContainer(int n, World world, IInventory inventory, IIntArray data, PlayerInventory player_inventory, PlayerEntity player_entity) {
+        super(chunk_loader_c, n);
+
+        this.inventory = inventory;
+        this.data = data;
+        this.level = player_inventory.player.level;
+
+        CommonInitialization(player_inventory);
+    }
+
+    // For use with tile entity chunk loaders.
     public ChunkLoaderContainer(int n, World world, BlockPos pos, PlayerInventory player_inventory, PlayerEntity player_entity) {
         super(chunk_loader_c, n);
 
@@ -33,6 +45,10 @@ public class ChunkLoaderContainer extends Container {
         this.data = tile.dataAccess;
         this.level = player_inventory.player.level;
 
+        CommonInitialization(player_inventory);
+    }
+
+    public void CommonInitialization(PlayerInventory player_inventory) {
         this.addSlot(new ChunkLoaderSlot(inventory, 0, 112, 15));
 
         // player inventory slots, taken from the AbstractFurnaceContainer code.

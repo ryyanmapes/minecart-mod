@@ -63,8 +63,8 @@ public class EntityInteractionEventReceiver {
             if (event.getWorld().isClientSide()) return;
 
             if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity) {
-                HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
-                if (!player.isCreative()) using.getStack().shrink(1);
+                boolean success = HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
+                if (!player.isCreative() && success) using.getStack().shrink(1);
             }
         }
 

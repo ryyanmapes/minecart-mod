@@ -29,9 +29,9 @@ import javax.annotation.Nullable;
 public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
     public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
 
-    protected static final String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
-    protected static final String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
-    protected static final String TIME_LEFT_PROPERTY = "time_left";
+    public static final String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
+    public static final String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
+    public static final String TIME_LEFT_PROPERTY = "time_left";
     public static int MAX_TIME_LEFT = 7200001;
 
     protected ItemStack input_itemstack = ItemStack.EMPTY;
