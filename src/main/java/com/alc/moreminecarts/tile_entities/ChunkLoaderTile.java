@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.MoreMinecartsConstants;
+import com.alc.moreminecarts.blocks.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -71,7 +72,7 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
     public ChunkLoaderTile() {
         super(chunk_loader_te);
         lit_last_tick = false;
-        time_left = 1;
+        time_left = -1;
         last_chunk_x = getBlockPos().getX() >> 4;
         last_chunk_z = getBlockPos().getZ() >> 4;
     }
@@ -99,7 +100,7 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
 
     public static int getBurnDuration(Item item) {
         if (item == Items.AIR) return -1;
-        if (item == Items.QUARTZ) return 1200;
+        if (item == Items.QUARTZ) return 600;
         if (item == Items.EMERALD) return 6000;
         if (item == Items.EMERALD_BLOCK) return 54000;
         if (item == Items.DIAMOND) return 72000;
@@ -142,6 +143,8 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
                 else {
                     forceChucksAt(chunk_x, chunk_z, false);
                 }
+                this.level.setBlock(this.worldPosition, this.level.getBlockState(this.worldPosition).setValue(ChunkLoaderBlock.POWERED, Boolean.valueOf(this.isLit())), 3);
+
             }
 
             this.setChanged();
