@@ -12,6 +12,7 @@
   "block.moreminecarts.bioluminescent_rail": "Bioluminescent Rail",
   "block.moreminecarts.chunk_loader": "Chunk Loader",
   "block.moreminecarts.silica_steel_block": "Silica Steel Block",
+  "block.moreminecarts.chunkrodite_block": "Chunkrodite Block",
 
   "block.moreminecarts.color_detector_rail_white": "Color Detector Rail (White)",
   "block.moreminecarts.color_detector_rail_orange": "Color Detector Rail (Orange)",
@@ -58,8 +59,10 @@
   "item.moreminecarts.levitation_powder": "Levitation Lubricant",
   "item.moreminecarts.silica_steel_mix": "Silica Steel Mix",
   "item.moreminecarts.silica_steel": "Silica Steel",
+  "item.moreminecarts.chunkrodite": "Chunkrodite",
 
   "entity.moreminecarts.minecart_with_net": "Minecart with Spider",
+  "entity.moreminecarts.minecart_with_chunk_loader": "Minecart with ChunkLoader",
   "entity.moreminecarts.campfire_cart": "Campfire Cart",
   "entity.moreminecarts.soulfire_pushcart": "Soulfire Cart",
   "entity.moreminecarts.wooden_pushcart": "Wooden Pushcart",

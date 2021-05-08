@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "M"
+  ],
+  "key": {
+    "C": {
+      "item": "moreminecarts:chunk_loader"
+    },
+    "M": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:minecart_with_chunk_loader"
+  }
+}

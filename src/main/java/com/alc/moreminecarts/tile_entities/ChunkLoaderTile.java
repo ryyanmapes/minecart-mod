@@ -265,8 +265,10 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
             if (count > 64) count = 64; // Should never occur, but just in case.
         }
 
-        ItemStack drop_stack = new ItemStack(to_drop, count);
-        NonNullList<ItemStack> drops = NonNullList.withSize(1, drop_stack);
-        InventoryHelper.dropContents(world, pos, drops);
+        if (count != 0) {
+            ItemStack drop_stack = new ItemStack(to_drop, count);
+            NonNullList<ItemStack> drops = NonNullList.withSize(1, drop_stack);
+            InventoryHelper.dropContents(world, pos, drops);
+        }
     }
 }
