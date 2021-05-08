@@ -1,8 +1,9 @@
 {
+	"parent": "block/block",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "moreminecarts:block/chunk_loader",
-		"particle": "moreminecarts:block/chunk_loader"
+		"0": "moreminecarts:block/chunk_loader_off",
+		"particle": "moreminecarts:block/chunk_loader_off"
 	},
 	"elements": [
 		{

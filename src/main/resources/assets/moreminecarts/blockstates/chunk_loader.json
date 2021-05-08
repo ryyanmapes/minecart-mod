@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "moreminecarts:block/chunk_loader_off"
+    },
+    "powered=true": {
+      "model": "moreminecarts:block/chunk_loader_on"
+    }
+  }
+}
