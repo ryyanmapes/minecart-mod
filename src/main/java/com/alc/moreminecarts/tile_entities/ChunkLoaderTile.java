@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
@@ -15,13 +16,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.world.ForgeChunkManager;
@@ -30,7 +32,7 @@ import net.minecraftforge.registries.ObjectHolder;
 import javax.annotation.Nullable;
 
 @ObjectHolder("moreminecarts")
-public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
+public class ChunkLoaderTile extends LockableTileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
     public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
     public static final Item chunkrodite = null;
     public static final Item chunkrodite_block = null;
@@ -40,7 +42,7 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
     public static String TIME_LEFT_PROPERTY = "time_left";
     public static int MAX_TIME_LEFT = 10368000;
 
-    protected ItemStack input_itemstack = ItemStack.EMPTY;
+    protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
@@ -104,6 +106,11 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
         return new ChunkLoaderContainer(i, level, worldPosition, inventory, player);
     }
 
+    @Override
+    protected Container createMenu(int p_213906_1_, PlayerInventory p_213906_2_) {
+        return null;
+    }
+
     public static int getBurnDuration(Item item) {
         if (item == Items.AIR) return -1;
         if (item == Items.QUARTZ) return 600;
@@ -123,13 +130,13 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
 
         if (!level.isClientSide) {
 
-            int burn_duration = getBurnDuration(input_itemstack.getItem());
+            int burn_duration = getBurnDuration(items.get(0).getItem());
             if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= MAX_TIME_LEFT) {
 
                 if (time_left > 0) time_left += burn_duration;
                 else time_left -= burn_duration;
 
-                input_itemstack.shrink(1);
+                items.get(0).shrink(1);
             }
 
             int chunk_x = getBlockPos().getX() >> 4;
@@ -189,51 +196,51 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
         return time_left > 0;
     }
 
-    // Inventory stuff below.
+    // Inventory stuff below, taken from AbstractFurnaceTileEntity.
 
-    @Override
     public int[] getSlotsForFace(Direction p_180463_1_) {
         return new int[0];
     }
 
-    @Override
     public boolean canPlaceItemThroughFace(int p_180462_1_, ItemStack p_180462_2_, @Nullable Direction p_180462_3_) {
         return true;
     }
 
-    @Override
     public boolean canTakeItemThroughFace(int p_180461_1_, ItemStack p_180461_2_, Direction p_180461_3_) {
         return false;
     }
 
-    @Override
     public int getContainerSize() {
         return 1;
     }
 
-    @Override
     public boolean isEmpty() {
-        return input_itemstack.isEmpty();
+        for(ItemStack itemstack : this.items) {
+            if (!itemstack.isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    @Override
-    public ItemStack getItem(int slot) {
-        return input_itemstack;
+    public ItemStack getItem(int p_70301_1_) {
+        return this.items.get(p_70301_1_);
     }
 
-    @Override
     public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
-        return input_itemstack;
+        return ItemStackHelper.removeItem(this.items, p_70298_1_, p_70298_2_);
     }
 
-    @Override
-    public ItemStack removeItemNoUpdate(int slot) {
-        return input_itemstack;
+    public ItemStack removeItemNoUpdate(int p_70304_1_) {
+        return ItemStackHelper.takeItem(this.items, p_70304_1_);
     }
 
-    @Override
-    public void setItem(int slot, ItemStack to_set) {
-        input_itemstack = to_set;
+    public void setItem(int p_70299_1_, ItemStack p_70299_2_) {
+        this.items.set(p_70299_1_, p_70299_2_);
+        if (p_70299_2_.getCount() > this.getMaxStackSize()) {
+            p_70299_2_.setCount(this.getMaxStackSize());
+        }
     }
 
     @Override
@@ -247,20 +254,20 @@ public class ChunkLoaderTile extends TileEntity implements ISidedInventory, ITic
 
     @Override
     public void clearContent() {
-        input_itemstack = ItemStack.EMPTY;
+        this.items.clear();
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return null;
+    protected ITextComponent getDefaultName() {
+        return new StringTextComponent("Chunk Loader");
     }
 
     // For dropping chunkrodite
     public static void dropExtras(World world, int time_left, BlockPos pos) {
-        int count = (int)Math.floor(time_left / 24000.0f);
+        int count = (int)Math.floor( Math.abs(time_left) / 24000.0f);
         Item to_drop = chunkrodite;
         if (count > 64) {
-            count = (int)Math.floor(time_left / 9.0f);
+            count = (int)Math.floor(count / 9.0f);
             to_drop = chunkrodite_block;
             if (count > 64) count = 64; // Should never occur, but just in case.
         }

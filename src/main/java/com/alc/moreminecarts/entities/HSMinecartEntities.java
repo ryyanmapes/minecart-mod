@@ -235,8 +235,9 @@ public class HSMinecartEntities {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
-        @Override
-        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        // Turned off because it actually makes them slower on maglev rails.
+        //@Override
+        //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
         @Override
         public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
         @Override
