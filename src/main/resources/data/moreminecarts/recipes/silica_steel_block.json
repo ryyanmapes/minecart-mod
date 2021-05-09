@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "moreminecarts:silica_steel"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:silica_steel_block",
+    "count": 1
+  }
+}

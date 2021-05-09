@@ -62,14 +62,15 @@ public class EntityInteractionEventReceiver {
             event.setCanceled(true);
             if (event.getWorld().isClientSide()) return;
 
-            if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity) {
-                HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
-                if (!player.isCreative()) using.getStack().shrink(1);
+            if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity
+                && !(entity instanceof HSMinecartEntities.IHSCart)) {
+                boolean success = HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
+                if (!player.abilities.instabuild && success) using.getStack().shrink(1);
             }
         }
 
-        // To prevent entering a high speed cart immediatly after upgrading it.
-        if (event.getTarget() instanceof HSMinecartEntities.HSMinecart && event.getTarget().tickCount < 100) {
+        // To prevent entering a high speed cart immediately after upgrading it.
+        if (event.getTarget() instanceof HSMinecartEntities.HSMinecart && event.getTarget().tickCount < 10) {
             event.setCanceled(true);
             return;
         }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "moreminecarts:chunkrodite"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:chunkrodite_block",
+    "count": 1
+  }
+}

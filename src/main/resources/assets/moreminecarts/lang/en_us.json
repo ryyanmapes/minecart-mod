@@ -12,6 +12,7 @@
   "block.moreminecarts.bioluminescent_rail": "Bioluminescent Rail",
   "block.moreminecarts.chunk_loader": "Chunk Loader",
   "block.moreminecarts.silica_steel_block": "Silica Steel Block",
+  "block.moreminecarts.chunkrodite_block": "Chunkrodite Block",
 
   "block.moreminecarts.color_detector_rail_white": "Color Detector Rail (White)",
   "block.moreminecarts.color_detector_rail_orange": "Color Detector Rail (Orange)",
@@ -31,6 +32,7 @@
   "block.moreminecarts.color_detector_rail_black": "Color Detector Rail (Black)",
 
   "item.moreminecarts.minecart_with_net": "Minecart with Spider",
+  "item.moreminecarts.minecart_with_chunk_loader": "Minecart with Chunk Loader",
   "item.moreminecarts.campfire_cart": "Campfire Cart",
   "item.moreminecarts.soulfire_cart": "Soul Campfire Cart",
   "item.moreminecarts.wooden_pushcart": "Wooden Pushcart",
@@ -58,10 +60,21 @@
   "item.moreminecarts.levitation_powder": "Levitation Lubricant",
   "item.moreminecarts.silica_steel_mix": "Silica Steel Mix",
   "item.moreminecarts.silica_steel": "Silica Steel",
+  "item.moreminecarts.chunkrodite": "Chunkrodite",
 
   "entity.moreminecarts.minecart_with_net": "Minecart with Spider",
+  "entity.moreminecarts.minecart_with_chunk_loader": "Minecart with ChunkLoader",
   "entity.moreminecarts.campfire_cart": "Campfire Cart",
   "entity.moreminecarts.soulfire_pushcart": "Soulfire Cart",
   "entity.moreminecarts.wooden_pushcart": "Wooden Pushcart",
-  "entity.moreminecarts.iron_pushcart": "Iron Pushcart"
+  "entity.moreminecarts.iron_pushcart": "Iron Pushcart",
+  "entity.moreminecarts.high_speed_minecart": "Aerodynamic Minecart",
+  "entity.moreminecarts.high_speed_chest_minecart": "Aerodynamic Minecart with Chest",
+  "entity.moreminecarts.high_speed_tnt_minecart": "Aerodynamic Minecart with TNT",
+  "entity.moreminecarts.high_speed_command_block_minecart": "Aerodynamic Minecart with Command Block",
+  "entity.moreminecarts.high_speed_hopper_minecart": "Aerodynamic Minecart with Hopper",
+  "entity.moreminecarts.high_speed_spawner_minecart": "Aerodynamic Minecart with Spawner",
+  "entity.moreminecarts.high_speed_furnace_minecart": "Aerodynamic Minecart with Furnace",
+  "entity.moreminecarts.high_speed_net_minecart": "Aerodynamic Minecart with Spider",
+  "entity.moreminecarts.high_speed_chunk_loader_minecart": "Aerodynamic Minecart with Chunk Loader"
 }

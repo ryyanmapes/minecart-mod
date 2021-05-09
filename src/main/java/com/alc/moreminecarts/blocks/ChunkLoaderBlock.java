@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -72,6 +73,32 @@ public class ChunkLoaderBlock extends ContainerBlock {
         return new ChunkLoaderTile();
     }
 
-    // TODO Comparator stuff
+    @Override
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState state_2, boolean bool) {
+        if (!state.is(state_2.getBlock())) {
+            TileEntity tile_entity = world.getBlockEntity(pos);
+            if (tile_entity instanceof ChunkLoaderTile) {
+                ChunkLoaderTile chunk_loader = (ChunkLoaderTile) tile_entity;
+                InventoryHelper.dropContents(world, pos, chunk_loader);
+                ChunkLoaderTile.dropExtras(world, chunk_loader.time_left, pos);
+                world.updateNeighbourForOutputSignal(pos, this);
+            }
+            super.onRemove(state, world, pos, state_2, bool);
+        }
+    }
+
+    // Comparator stuff
+
+    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
+        return true;
+    }
+
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
+        TileEntity tile_entity = world.getBlockEntity(pos);
+        if (tile_entity instanceof ChunkLoaderTile) {
+            return ((ChunkLoaderTile) tile_entity).getComparatorSignal();
+        }
+        return 0;
+    }
 
 }
