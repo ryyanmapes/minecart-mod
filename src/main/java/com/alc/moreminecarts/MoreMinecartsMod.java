@@ -86,10 +86,13 @@ public class MoreMinecartsMod
     private static final RegistryObject<EntityType<HSTNTMinecart>> HS_TNT_CART_ENTITY = ENTITIES.register("high_speed_tnt_minecart", () -> EntityType.Builder.<HSTNTMinecart>of(HSTNTMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_tnt_minecart"));
     private static final RegistryObject<EntityType<HSCommandBlockMinecart>> HS_COMMAND_BLOCK_CART_ENTITY = ENTITIES.register("high_speed_command_block_minecart", () -> EntityType.Builder.<HSCommandBlockMinecart>of(HSCommandBlockMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_command_block_minecart"));
     private static final RegistryObject<EntityType<HSHopperMinecart>> HS_HOPPER_CART_ENTITY = ENTITIES.register("high_speed_hopper_minecart", () -> EntityType.Builder.<HSHopperMinecart>of(HSHopperMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_hopper_minecart"));
-    private static final RegistryObject<EntityType<HighSpeedSpawnerMinecart>> HS_SPAWNER_CART_ENTITY = ENTITIES.register("high_speed_spawner_minecart", () -> EntityType.Builder.<HighSpeedSpawnerMinecart>of(HighSpeedSpawnerMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_spawner_minecart"));
-    private static final RegistryObject<EntityType<HighSpeedFurnaceMinecart>> HS_FURNACE_CART_ENTITY = ENTITIES.register("high_speed_furnace_minecart", () -> EntityType.Builder.<HighSpeedFurnaceMinecart>of(HighSpeedFurnaceMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_furnace_minecart"));
-    private static final RegistryObject<EntityType<HighSpeedNetMinecart>> HS_NET_CART_ENTITY = ENTITIES.register("high_speed_net_minecart", () -> EntityType.Builder.<HighSpeedNetMinecart>of(HighSpeedNetMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_net_minecart"));
-    private static final RegistryObject<EntityType<HighSpeedChunkLoaderMinecart>> HS_CHUNK_LOADER_CART_ENTITY = ENTITIES.register("high_speed_chunk_loader_minecart", () -> EntityType.Builder.<HighSpeedChunkLoaderMinecart>of(HighSpeedChunkLoaderMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_chunk_loader_minecart"));
+    private static final RegistryObject<EntityType<HSSpawnerMinecart>> HS_SPAWNER_CART_ENTITY = ENTITIES.register("high_speed_spawner_minecart", () -> EntityType.Builder.<HSSpawnerMinecart>of(HSSpawnerMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_spawner_minecart"));
+    private static final RegistryObject<EntityType<HSFurnaceMinecart>> HS_FURNACE_CART_ENTITY = ENTITIES.register("high_speed_furnace_minecart", () -> EntityType.Builder.<HSFurnaceMinecart>of(HSFurnaceMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_furnace_minecart"));
+    private static final RegistryObject<EntityType<HSNetMinecart>> HS_NET_CART_ENTITY = ENTITIES.register("high_speed_net_minecart", () -> EntityType.Builder.<HSNetMinecart>of(HSNetMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_net_minecart"));
+    private static final RegistryObject<EntityType<HSChunkLoaderMinecart>> HS_CHUNK_LOADER_CART_ENTITY = ENTITIES.register("high_speed_chunk_loader_minecart", () -> EntityType.Builder.<HSChunkLoaderMinecart>of(HSChunkLoaderMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_chunk_loader_minecart"));
+    private static final RegistryObject<EntityType<HSCampfireMinecart>> HS_CAMPFIRE_CART_ENTITY = ENTITIES.register("high_speed_campfire_minecart", () -> EntityType.Builder.<HSCampfireMinecart>of(HSCampfireMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_campfire_minecart"));
+    private static final RegistryObject<EntityType<HSSoulfireMinecart>> HS_SOULFIRE_CART_ENTITY = ENTITIES.register("high_speed_soulfire_minecart", () -> EntityType.Builder.<HSSoulfireMinecart>of(HSSoulfireMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_soulfire_minecart"));
+    private static final RegistryObject<EntityType<HSPushcart>> HS_PUSHCART_ENTITY = ENTITIES.register("high_speed_pushcart", () -> EntityType.Builder.<HSPushcart>of(HSPushcart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_pushcart"));
 
 
     public static final EntityType<HSMinecart> high_speed_minecart = null;
@@ -97,10 +100,13 @@ public class MoreMinecartsMod
     public static final EntityType<HSTNTMinecart> high_speed_tnt_minecart = null;
     public static final EntityType<HSCommandBlockMinecart> high_speed_command_block_minecart = null;
     public static final EntityType<HSHopperMinecart> high_speed_hopper_minecart = null;
-    public static final EntityType<HighSpeedSpawnerMinecart> high_speed_spawner_minecart = null;
-    public static final EntityType<HighSpeedSpawnerMinecart> high_speed_furnace_minecart = null;
-    public static final EntityType<HighSpeedSpawnerMinecart> high_speed_net_minecart = null;
-    public static final EntityType<HighSpeedSpawnerMinecart> high_speed_chunk_loader_minecart = null;
+    public static final EntityType<HSSpawnerMinecart> high_speed_spawner_minecart = null;
+    public static final EntityType<HSFurnaceMinecart> high_speed_furnace_minecart = null;
+    public static final EntityType<HSNetMinecart> high_speed_net_minecart = null;
+    public static final EntityType<HSChunkLoaderMinecart> high_speed_chunk_loader_minecart = null;
+    public static final EntityType<HSCampfireMinecart> high_speed_campfire_minecart = null;
+    public static final EntityType<HSSoulfireMinecart> high_speed_soulfire_minecart = null;
+    public static final EntityType<HSPushcart> high_speed_pushcart = null;
 
     // Blocks
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
@@ -348,6 +354,10 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(high_speed_furnace_minecart, HighSpeedMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_net_minecart, HighSpeedMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_chunk_loader_minecart, HighSpeedMinecartRenderer::new);
+
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_campfire_minecart, HighSpeedPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_soulfire_minecart, HighSpeedPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_pushcart, HighSpeedPushcartRenderer::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

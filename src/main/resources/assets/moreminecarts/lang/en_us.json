@@ -76,5 +76,8 @@
   "entity.moreminecarts.high_speed_spawner_minecart": "Aerodynamic Minecart with Spawner",
   "entity.moreminecarts.high_speed_furnace_minecart": "Aerodynamic Minecart with Furnace",
   "entity.moreminecarts.high_speed_net_minecart": "Aerodynamic Minecart with Spider",
-  "entity.moreminecarts.high_speed_chunk_loader_minecart": "Aerodynamic Minecart with Chunk Loader"
+  "entity.moreminecarts.high_speed_chunk_loader_minecart": "Aerodynamic Minecart with Chunk Loader",
+  "entity.moreminecarts.high_speed_campfire_minecart": "Aerodynamic Campfire Cart",
+  "entity.moreminecarts.high_speed_soulfire_minecart": "Aerodynamic Soulfire Cart",
+  "entity.moreminecarts.high_speed_pushcart": "Aerodynamic Pushcart"
 }

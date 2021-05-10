@@ -5,10 +5,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -25,8 +27,6 @@ import javax.annotation.Nullable;
 
 public class ChunkLoaderBlock extends ContainerBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-
-    public ChunkLoaderTile tile_entity;
 
     public ChunkLoaderBlock(Properties builder) {
         super(builder);
@@ -61,11 +61,6 @@ public class ChunkLoaderBlock extends ContainerBlock {
         return true;
     }
 
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        tile_entity = new ChunkLoaderTile();
-        return tile_entity;
-    }
 
     @Nullable
     @Override
@@ -85,6 +80,19 @@ public class ChunkLoaderBlock extends ContainerBlock {
             }
             super.onRemove(state, world, pos, state_2, bool);
         }
+    }
+
+    // Stuff taken from FurnaceBlock.
+
+    @Override
+    public void setPlacedBy(World p_180633_1_, BlockPos p_180633_2_, BlockState p_180633_3_, LivingEntity p_180633_4_, ItemStack p_180633_5_) {
+        if (p_180633_5_.hasCustomHoverName()) {
+            TileEntity tileentity = p_180633_1_.getBlockEntity(p_180633_2_);
+            if (tileentity instanceof ChunkLoaderTile) {
+                ((ChunkLoaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
+            }
+        }
+
     }
 
     // Comparator stuff

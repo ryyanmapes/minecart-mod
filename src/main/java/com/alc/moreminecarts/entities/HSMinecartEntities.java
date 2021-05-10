@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MoreMinecartsConstants;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.*;
 import net.minecraft.item.Item;
@@ -24,10 +25,13 @@ public class HSMinecartEntities {
     public static final EntityType<HSTNTMinecart> high_speed_tnt_minecart = null;
     public static final EntityType<HSCommandBlockMinecart> high_speed_command_block_minecart = null;
     public static final EntityType<HSHopperMinecart> high_speed_hopper_minecart = null;
-    public static final EntityType<HighSpeedSpawnerMinecart> high_speed_spawner_minecart = null;
-    public static final EntityType<HighSpeedFurnaceMinecart> high_speed_furnace_minecart = null;
-    public static final EntityType<HighSpeedNetMinecart> high_speed_net_minecart = null;
-    public static final EntityType<HighSpeedChunkLoaderMinecart> high_speed_chunk_loader_minecart = null;
+    public static final EntityType<HSSpawnerMinecart> high_speed_spawner_minecart = null;
+    public static final EntityType<HSFurnaceMinecart> high_speed_furnace_minecart = null;
+    public static final EntityType<HSNetMinecart> high_speed_net_minecart = null;
+    public static final EntityType<HSChunkLoaderMinecart> high_speed_chunk_loader_minecart = null;
+    public static final EntityType<HSCampfireMinecart> high_speed_campfire_minecart = null;
+    public static final EntityType<HSSoulfireMinecart> high_speed_soulfire_minecart = null;
+    public static final EntityType<HSPushcart> high_speed_pushcart = null;
 
     public static boolean upgradeMinecart(AbstractMinecartEntity minecart) {
         double x = minecart.position().x;
@@ -36,24 +40,16 @@ public class HSMinecartEntities {
 
         AbstractMinecartEntity new_minecart = null;
 
+        if (minecart instanceof IHSCart) return false;
         if (minecart instanceof MinecartEntity) {
-            new_minecart = high_speed_minecart.create(minecart.level);
-            /*HSMinecart newer_minecart = high_speed_minecart.create(minecart.level);
+            HSMinecart newer_minecart = high_speed_minecart.create(minecart.level);
             for (Entity passenger : minecart.getPassengers()) {
                 passenger.stopRiding();
                 passenger.startRiding(newer_minecart);
             }
-            new_minecart = newer_minecart;*/
+            new_minecart = newer_minecart;
         }
-        else if (minecart instanceof ChestMinecartEntity) {
-            new_minecart = high_speed_chest_minecart.create(minecart.level);
-            /*HSChestMinecart newer_minecart = high_speed_chest_minecart.create(minecart.level);
-            Iterator<ItemStack> all_items = minecart.getAllSlots().iterator();
-            for (int i = 0; i < ((ChestMinecartEntity) minecart).getContainerSize(); i++) {
-                ItemStack stack = all_items.next();
-                if (stack != ItemStack.EMPTY) newer_minecart.canPlaceItem()
-            }*/
-        }
+        else if (minecart instanceof ChestMinecartEntity) new_minecart = high_speed_chest_minecart.create(minecart.level);
         else if (minecart instanceof TNTMinecartEntity) new_minecart = high_speed_tnt_minecart.create(minecart.level);
         else if (minecart instanceof CommandBlockMinecartEntity) new_minecart = high_speed_command_block_minecart.create(minecart.level);
         else if (minecart instanceof HopperMinecartEntity) new_minecart = high_speed_hopper_minecart.create(minecart.level);
@@ -61,6 +57,16 @@ public class HSMinecartEntities {
         else if (minecart instanceof FurnaceMinecartEntity) new_minecart = high_speed_furnace_minecart.create(minecart.level);
         else if (minecart instanceof NetMinecartEntity) new_minecart = high_speed_net_minecart.create(minecart.level);
         else if (minecart instanceof ChunkLoaderCartEntity) new_minecart = high_speed_chunk_loader_minecart.create(minecart.level);
+        else if (minecart instanceof SoulfireCartEntity) new_minecart = high_speed_soulfire_minecart.create(minecart.level);
+        else if (minecart instanceof CampfireCartEntity) new_minecart = high_speed_campfire_minecart.create(minecart.level);
+        else if (minecart instanceof IronPushcartEntity) {
+            HSPushcart newer_minecart = high_speed_pushcart.create(minecart.level);
+            for (Entity passenger : minecart.getPassengers()) {
+                passenger.stopRiding();
+                passenger.startRiding(newer_minecart);
+            }
+            new_minecart = newer_minecart;
+        }
         // todo campfire carts
         else return false;
 
@@ -199,9 +205,9 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HighSpeedSpawnerMinecart extends SpawnerMinecartEntity implements IHSCart {
-        public HighSpeedSpawnerMinecart(EntityType<? extends SpawnerMinecartEntity> type, World world) { super(type, world); }
-        public HighSpeedSpawnerMinecart(World worldIn, double x, double y, double z) {
+    public static class HSSpawnerMinecart extends SpawnerMinecartEntity implements IHSCart {
+        public HSSpawnerMinecart(EntityType<? extends SpawnerMinecartEntity> type, World world) { super(type, world); }
+        public HSSpawnerMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
         }
         @Override
@@ -223,9 +229,9 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HighSpeedFurnaceMinecart extends FurnaceMinecartEntity implements IHSCart {
-        public HighSpeedFurnaceMinecart(EntityType<? extends FurnaceMinecartEntity> type, World world) { super(type, world); }
-        public HighSpeedFurnaceMinecart(World worldIn, double x, double y, double z) {
+    public static class HSFurnaceMinecart extends FurnaceMinecartEntity implements IHSCart {
+        public HSFurnaceMinecart(EntityType<? extends FurnaceMinecartEntity> type, World world) { super(type, world); }
+        public HSFurnaceMinecart(World worldIn, double x, double y, double z) {
             super(worldIn, x, y, z);
         }
         @Override
@@ -235,8 +241,9 @@ public class HSMinecartEntities {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
         }
-        @Override
-        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        // Turned off because it actually makes them slower on maglev rails.
+        //@Override
+        //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
         @Override
         public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
         @Override
@@ -249,8 +256,8 @@ public class HSMinecartEntities {
 
     // Modded high-speed variants
 
-    public static class HighSpeedNetMinecart extends NetMinecartEntity implements IHSCart {
-        public HighSpeedNetMinecart(EntityType<? extends NetMinecartEntity> type, World world) { super(type, world); }
+    public static class HSNetMinecart extends NetMinecartEntity implements IHSCart {
+        public HSNetMinecart(EntityType<? extends NetMinecartEntity> type, World world) { super(type, world); }
         @Override
         protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
@@ -270,8 +277,8 @@ public class HSMinecartEntities {
         }
     }
 
-    public static class HighSpeedChunkLoaderMinecart extends ChunkLoaderCartEntity implements IHSCart {
-        public HighSpeedChunkLoaderMinecart(EntityType<? extends ChunkLoaderCartEntity> type, World world) { super(type, world); }
+    public static class HSChunkLoaderMinecart extends ChunkLoaderCartEntity implements IHSCart {
+        public HSChunkLoaderMinecart(EntityType<? extends ChunkLoaderCartEntity> type, World world) { super(type, world); }
         @Override
         protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
         @Override
@@ -291,6 +298,69 @@ public class HSMinecartEntities {
         }
     }
 
-    // TODO campfire carts
+    public static class HSCampfireMinecart extends CampfireCartEntity implements IHSCart {
+        public HSCampfireMinecart(EntityType<? extends CampfireCartEntity> type, World world) { super(type, world); }
+        @Override
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
+        @Override
+        public void destroy(DamageSource source) {
+            super.destroy(source);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
+        }
+        //@Override
+        //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
+        @Override
+        public IPacket<?> getAddEntityPacket() {
+            return NetworkHooks.getEntitySpawningPacket(this);
+        }
+    }
+
+    public static class HSSoulfireMinecart extends SoulfireCartEntity implements IHSCart {
+        public HSSoulfireMinecart(EntityType<? extends SoulfireCartEntity> type, World world) { super(type, world); }
+        @Override
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
+        @Override
+        public void destroy(DamageSource source) {
+            super.destroy(source);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
+        }
+        //@Override
+        //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
+        @Override
+        public IPacket<?> getAddEntityPacket() {
+            return NetworkHooks.getEntitySpawningPacket(this);
+        }
+    }
+
+    public static class HSPushcart extends IronPushcartEntity implements IHSCart {
+        public HSPushcart(EntityType<? extends IronPushcartEntity> type, World world) { super(type, world); }
+        @Override
+        protected double getMaxSpeed() { return MoreMinecartsConstants.HS_MAX_SPEED; }
+        @Override
+        public void destroy(DamageSource source) {
+            super.destroy(source);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(high_speed_upgrade);
+        }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MoreMinecartsConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
+        @Override
+        public double getControlSpeed() { return 500; }
+        @Override
+        public IPacket<?> getAddEntityPacket() {
+            return NetworkHooks.getEntitySpawningPacket(this);
+        }
+    }
 
 }

@@ -27,6 +27,13 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
     }
 
     @Override
+    public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+        this.renderBackground(p_230430_1_);
+        super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+        this.renderTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
+    }
+
+    @Override
     protected void renderBg(MatrixStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         this.minecraft.getTextureManager().bind(display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
