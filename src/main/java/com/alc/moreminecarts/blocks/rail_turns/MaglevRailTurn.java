@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.rail_turns;
 
 import com.alc.moreminecarts.MoreMinecartsConstants;
 import net.minecraft.block.BlockState;

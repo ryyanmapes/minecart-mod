@@ -1,5 +1,6 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.rail_turns;
 
+import com.alc.moreminecarts.blocks.WoodenRail;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.Direction;

@@ -1,6 +1,9 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.rail_turns;
 
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractRailBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.DirectionalBlock;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -12,8 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 
@@ -22,9 +23,6 @@ public class RailTurn extends AbstractRailBlock {
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty FLIPPED = BooleanProperty.create("flipped");
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
 
 
     public RailTurn(Properties builder) {

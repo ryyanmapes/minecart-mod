@@ -1,6 +1,14 @@
 package com.alc.moreminecarts;
 
 import com.alc.moreminecarts.blocks.*;
+import com.alc.moreminecarts.blocks.holographic_rails.MaglevHolographicRail;
+import com.alc.moreminecarts.blocks.holographic_rails.MaglevProjectorRail;
+import com.alc.moreminecarts.blocks.parallel_rails.MaglevParallelRail;
+import com.alc.moreminecarts.blocks.parallel_rails.ParallelRail;
+import com.alc.moreminecarts.blocks.parallel_rails.WoodenParallelRail;
+import com.alc.moreminecarts.blocks.rail_turns.MaglevRailTurn;
+import com.alc.moreminecarts.blocks.rail_turns.RailTurn;
+import com.alc.moreminecarts.blocks.rail_turns.WoodenRailTurn;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.entities.*;
 import com.alc.moreminecarts.entities.HSMinecartEntities.*;
@@ -15,6 +23,8 @@ import com.alc.moreminecarts.renderers.*;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -29,6 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -115,57 +126,91 @@ public class MoreMinecartsMod
     public static final EntityType<HSSoulfireMinecart> high_speed_soulfire_minecart = null;
     public static final EntityType<HSPushcart> high_speed_pushcart = null;
 
-    // Blocks
+    // Rail Blocks
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> PARALLEL_RAIL_BLOCK = BLOCKS.register("parallel_rail", () -> new ParallelRail(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> PROJECTOR_RAIL = BLOCKS.register("projector_rail", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> HOLOGRAM_RAIL = BLOCKS.register("hologram_rail", () -> new RailTurn(of(Material.GLASS).noCollission().strength(0.2F).sound(SoundType.GLASS)));
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_PARALLEL_RAIL_BLOCK = BLOCKS.register("wooden_parallel_rail", () -> new WoodenParallelRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> WOODEN_PROJECTOR_RAIL = BLOCKS.register("wooden_projector_rail", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> WOODEN_HOLOGRAM_RAIL = BLOCKS.register("wooden_hologram_rail", () -> new WoodenRailTurn(of(Material.GLASS, MaterialColor.WOOD).noCollission().strength(0.2F).sound(SoundType.GLASS)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_PROJECTOR_RAIL = BLOCKS.register("maglev_projector_rail", () -> new MaglevProjectorRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_HOLOGRAM_RAIL = BLOCKS.register("maglev_hologram_rail", () -> new MaglevHolographicRail(of(Material.GLASS, MaterialColor.COLOR_BLUE).noCollission().strength(0.2F).sound(SoundType.GLASS)));
+    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
+
+    // Other Blocks
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
     private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).harvestTool(ToolType.PICKAXE)));
     private static final RegistryObject<Block> CHUNKRODITE_BLOCK = BLOCKS.register("chunkrodite_block", () -> new Block(of(Material.STONE, MaterialColor.COLOR_BLACK).strength(3f, 3f).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> GLASS_CACTUS = BLOCKS.register("glass_cactus", () -> new GlassCactusBlock(of(Material.GLASS, MaterialColor.WOOL).randomTicks().strength(2F).sound(SoundType.GLASS)));
 
 
     public static final Block rail_turn = null;
     public static final Block parallel_rail = null;
+    public static final Block projector_rail = null;
+    public static final Block hologram_rail = null;
     public static final Block wooden_rail = null;
     public static final Block wooden_rail_turn = null;
     public static final Block wooden_parallel_rail = null;
+    public static final Block wooden_projector_rail = null;
+    public static final Block wooden_hologram_rail = null;
     public static final Block maglev_rail = null;
     public static final Block maglev_rail_turn = null;
     public static final Block maglev_parallel_rail = null;
+    public static final Block maglev_projector_rail = null;
+    public static final Block maglev_hologram_rail = null;
     public static final Block maglev_powered_rail = null;
     public static final Block bioluminescent_rail = null;
+
     public static final Block chunk_loader = null;
     public static final Block silica_steel_block = null;
     public static final Block chunkrodite_block = null;
+    public static final Block glass_cactus = null;
 
-    // Buildable Items
+    // Potted Plants
+    private static final RegistryObject<Block> POTTED_GLASS_CACTUS = BLOCKS.register("potted_glass_cactus", () -> new FlowerPotBlock(glass_cactus, of(Material.DECORATION).instabreak().noOcclusion()));
+    private static final RegistryObject<Block> POTTED_BEET = BLOCKS.register("potted_beet", () -> new FlowerPotBlock(chunkrodite_block, of(Material.DECORATION).instabreak().noOcclusion()));
+
+    public static final Block potted_glass_cactus = null;
+    public static final Block potted_beet = null;
+
+    // Rail Items
     private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> PARALLEL_RAIL_ITEM = ITEMS.register("parallel_rail", () -> new BlockItem(parallel_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> PROJECTOR_RAIL_ITEM = ITEMS.register("projector_rail", () -> new BlockItem(projector_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_RAIL_TURN_ITEM = ITEMS.register("wooden_rail_turn", () -> new BlockItem(wooden_rail_turn, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_PARALLEL_RAIL_ITEM = ITEMS.register("wooden_parallel_rail", () -> new BlockItem(wooden_parallel_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> WOODEN_PROJECTOR_RAIL_ITEM = ITEMS.register("wooden_projector_rail", () -> new BlockItem(wooden_projector_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_RAIL_ITEM = ITEMS.register("maglev_rail", () -> new BlockItem(maglev_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_RAIL_TURN_ITEM = ITEMS.register("maglev_rail_turn", () -> new BlockItem(maglev_rail_turn, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_PARALLEL_RAIL_ITEM = ITEMS.register("maglev_parallel_rail", () -> new BlockItem(maglev_parallel_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> MAGLEV_PROJECTOR_RAIL_ITEM = ITEMS.register("maglev_projector_rail", () -> new BlockItem(maglev_projector_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_POWERED_RAIL_ITEM = ITEMS.register("maglev_powered_rail", () -> new BlockItem(maglev_powered_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+
+    // Minecart Items
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_CHUNK_LOADER_ITEM = ITEMS.register("minecart_with_chunk_loader", () -> new ChunkLoaderCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> CAMPFIRE_CART_ITEM = ITEMS.register("campfire_cart", () -> new CampfireCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> SOULFIRE_CART_ITEM = ITEMS.register("soulfire_cart", () -> new SoulfireCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_PUSHCART_ITEM = ITEMS.register("wooden_pushcart", () -> new WoodenPushcartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> IRON_PUSHCART_ITEM = ITEMS.register("iron_pushcart", () -> new IronPushcartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
-    private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
+
+    // Block Items
     private static final RegistryObject<Item> CHUNK_LOADER_ITEM = ITEMS.register("chunk_loader", () -> new BlockItem(chunk_loader, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
     private static final RegistryObject<Item> SILICA_STEEL_BLOCK_ITEM = ITEMS.register("silica_steel_block", () -> new BlockItem(silica_steel_block, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
     private static final RegistryObject<Item> CHUNKRODITE_BLOCK_ITEM = ITEMS.register("chunkrodite_block", () -> new BlockItem(chunkrodite_block, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
+    private static final RegistryObject<Item> GLASS_CACTUS_ITEM = ITEMS.register("glass_cactus", () -> new BlockItem(glass_cactus, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    // Misc Items
+    private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> HIGH_SPEED_UPGRADE_ITEM = ITEMS.register("high_speed_upgrade", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
 
     // Rail Signal Items
@@ -299,6 +344,8 @@ public class MoreMinecartsMod
         TILE_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
+        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:textures/TODO"), ()->potted_glass_cactus);
+        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:textures/TODO"), ()->potted_beet);
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -317,12 +364,18 @@ public class MoreMinecartsMod
         RenderType cutout = RenderType.cutout();
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(parallel_rail, cutout);
+        RenderTypeLookup.setRenderLayer(projector_rail, cutout);
+        RenderTypeLookup.setRenderLayer(hologram_rail, cutout);
         RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
         RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(wooden_parallel_rail, cutout);
+        RenderTypeLookup.setRenderLayer(wooden_projector_rail, cutout);
+        RenderTypeLookup.setRenderLayer(wooden_hologram_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(maglev_parallel_rail, cutout);
+        RenderTypeLookup.setRenderLayer(maglev_projector_rail, cutout);
+        RenderTypeLookup.setRenderLayer(maglev_hologram_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_powered_rail, cutout);
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(chunk_loader, cutout);

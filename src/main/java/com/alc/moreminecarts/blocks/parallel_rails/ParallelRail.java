@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.parallel_rails;
 
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
