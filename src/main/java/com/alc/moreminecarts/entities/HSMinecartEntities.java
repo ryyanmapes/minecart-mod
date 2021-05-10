@@ -356,7 +356,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MoreMinecartsConstants.HS_AIR_DRAG; }
         @Override
-        public double getControlSpeed() { return 500; }
+        public double getControlSpeed() { return 300; }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
