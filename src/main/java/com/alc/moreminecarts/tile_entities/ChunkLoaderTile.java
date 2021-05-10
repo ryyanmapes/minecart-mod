@@ -128,7 +128,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
         if (isLit()) time_left--;
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
 
             int burn_duration = getBurnDuration(items.get(0).getItem());
             if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= MAX_TIME_LEFT) {
