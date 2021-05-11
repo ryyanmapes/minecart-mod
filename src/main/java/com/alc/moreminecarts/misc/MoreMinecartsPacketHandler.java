@@ -1,9 +1,13 @@
 package com.alc.moreminecarts.misc;
 
+import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.entities.CouplerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -55,9 +59,9 @@ public class MoreMinecartsPacketHandler {
 
         public static CouplePacket decode(PacketBuffer buf) {
             CouplePacket packet = new CouplePacket(0,0,0);
-            packet.coupler_id = buf.readInt();
             packet.v1 = buf.readInt();
             packet.v2 = buf.readInt();
+            packet.coupler_id = buf.readInt();
             return packet;
         }
 
@@ -65,15 +69,15 @@ public class MoreMinecartsPacketHandler {
         public static void handle(CouplePacket msg, Supplier<NetworkEvent.Context> ctx) {
             //LogManager.getLogger().info("HERE!!!");
             ctx.get().enqueueWork(() -> {
-                /*
-                ClientWorld world = Minecraft.getInstance().world;
 
-                Entity ent = world.getEntityByID(msg.coupler_id);
+                World world = MoreMinecartsMod.PROXY.getWorld();
+
+                Entity ent = world.getEntity(msg.coupler_id);
                 if (ent != null && ent instanceof CouplerEntity) {
                     CouplerEntity coupler_ent = (CouplerEntity) ent;
                     coupler_ent.vehicle1_id = msg.v1;
                     coupler_ent.vehicle2_id = msg.v2;
-                }*/
+                }
             });
             ctx.get().setPacketHandled(true);
         }

@@ -40,15 +40,21 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     public static String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
     public static String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
     public static String TIME_LEFT_PROPERTY = "time_left";
-    public static int MAX_TIME_LEFT = 10368000;
+    public static int MAX_TIME = 10368000;
+    public static int MAX_MINUTES = 8640;
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    // Because of Minecraft stupid, we have to save the time left in two halves
+    // (because when it is sent over the server, it truncates to a short)
+    // So we send the upper and lower bits seperately
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return ChunkLoaderTile.this.time_left;
+                    return (int)Math.ceil( (Math.abs(ChunkLoaderTile.this.time_left) - 1) / 1200.0);
+                case 1:
+                    return ChunkLoaderTile.this.time_left > 0? 1 : -1;
                 default:
                     return 0;
             }
@@ -58,7 +64,10 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         public void set(int index, int set_to) {
             switch(index) {
                 case 0:
-                    ChunkLoaderTile.this.time_left = set_to;
+                    ChunkLoaderTile.this.time_left = set_to * 1200;
+                    break;
+                case 1:
+                    ChunkLoaderTile.this.time_left = Math.abs(ChunkLoaderTile.this.time_left) * (set_to > 0? 1 : -1);
                     break;
                 default:
                     break;
@@ -67,7 +76,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
         @Override
         public int getCount() {
-            return 1;
+            return 2;
         }
     };
 
@@ -126,12 +135,14 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
     public void tick() {
 
+        boolean changed_flag = false;
         if (isLit()) time_left--;
 
         if (!level.isClientSide()) {
 
             int burn_duration = getBurnDuration(items.get(0).getItem());
-            if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= MAX_TIME_LEFT) {
+            if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= MAX_TIME) {
+                changed_flag = true;
 
                 if (time_left > 0) time_left += burn_duration;
                 else time_left -= burn_duration;
@@ -143,6 +154,8 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
             int chunk_z = getBlockPos().getZ() >> 4;
 
             if (chunk_x != last_chunk_x || chunk_z != last_chunk_z) {
+                changed_flag = true;
+
                 forceChucksAt(last_chunk_x, last_chunk_z, false);
 
                 last_chunk_x = chunk_x;
@@ -152,6 +165,8 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
             }
 
             if (lit_last_tick != isLit()) {
+                changed_flag = true;
+
                 if (isLit()) {
                     forceChucksAt(chunk_x, chunk_z, true);
                 }
@@ -162,7 +177,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
             }
 
-            this.setChanged();
+            if (changed_flag) this.setChanged();
         }
 
         lit_last_tick = isLit();
@@ -281,7 +296,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
     public int getComparatorSignal() {
         float true_time_left = Math.abs(time_left) - 1;
-        double log_proportion = Math.log10( ((true_time_left/ChunkLoaderTile.MAX_TIME_LEFT)*9 + 1 ));
+        double log_proportion = Math.log10( ((true_time_left/ChunkLoaderTile.MAX_TIME)*9 + 1 ));
         return (int)Math.ceil(log_proportion * 15);
     }
 }

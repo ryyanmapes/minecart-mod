@@ -43,8 +43,7 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
 
         this.blit(matrix, leftPos + 28, topPos + 36, 0, 166, progess, 16);
 
-        int actual_progress = menu.getTimeLeft();
-        int minutes_left = (int)Math.ceil(actual_progress / 1200.0f);
+        int minutes_left = menu.getTimeLeft();
         this.font.draw(matrix, minutes_left + " minutes left", leftPos + 29, topPos + 55, 4210752);
 
     }
