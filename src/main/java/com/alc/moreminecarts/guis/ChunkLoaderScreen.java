@@ -39,7 +39,7 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
         double log_progress = menu.getLogProgress();
-        int progess = (int)Math.floor(120 * log_progress);
+        int progess = (int)Math.ceil(120 * log_progress);
 
         this.blit(matrix, leftPos + 28, topPos + 36, 0, 166, progess, 16);
 

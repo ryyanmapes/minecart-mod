@@ -251,6 +251,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
                     forceChucksAt(chunk_x, chunk_z, false);
                 }
 
+                setMinecartPowered(isLit());
             }
 
             if (changed_flag) this.setChanged();
