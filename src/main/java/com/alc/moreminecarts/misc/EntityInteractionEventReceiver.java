@@ -70,7 +70,8 @@ public class EntityInteractionEventReceiver {
         }
 
         // To prevent entering a high speed cart immediately after upgrading it.
-        if (event.getTarget() instanceof HSMinecartEntities.HSMinecart && event.getTarget().tickCount < 10) {
+        if ( (event.getTarget() instanceof HSMinecartEntities.HSMinecart || event.getTarget() instanceof HSMinecartEntities.HSPushcart)
+                && event.getTarget().tickCount < 10) {
             event.setCanceled(true);
             return;
         }

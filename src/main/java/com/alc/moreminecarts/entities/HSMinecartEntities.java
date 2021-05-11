@@ -45,7 +45,6 @@ public class HSMinecartEntities {
             HSMinecart newer_minecart = high_speed_minecart.create(minecart.level);
             for (Entity passenger : minecart.getPassengers()) {
                 passenger.stopRiding();
-                passenger.startRiding(newer_minecart);
             }
             new_minecart = newer_minecart;
         }
@@ -63,11 +62,9 @@ public class HSMinecartEntities {
             HSPushcart newer_minecart = high_speed_pushcart.create(minecart.level);
             for (Entity passenger : minecart.getPassengers()) {
                 passenger.stopRiding();
-                passenger.startRiding(newer_minecart);
             }
             new_minecart = newer_minecart;
         }
-        // todo campfire carts
         else return false;
 
         CompoundNBT data = new CompoundNBT();

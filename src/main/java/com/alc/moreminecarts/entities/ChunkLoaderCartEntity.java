@@ -146,12 +146,15 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     // Mostly copied from ChunkLoaderBlock
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    // See ChunkLoaderBlock for an explanation of this monstrosity.
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return time_left;
+                    return (int)Math.ceil( (Math.abs(ChunkLoaderCartEntity.this.time_left) - 1) / 1200.0) * get(1);
+                case 1:
+                    return ChunkLoaderCartEntity.this.time_left > 0? 1 : -1;
                 default:
                     return 0;
             }
@@ -161,7 +164,10 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         public void set(int index, int set_to) {
             switch(index) {
                 case 0:
-                    time_left = set_to;
+                    ChunkLoaderCartEntity.this.time_left = set_to * 1200;
+                    break;
+                case 1:
+                    ChunkLoaderCartEntity.this.time_left = Math.abs(ChunkLoaderCartEntity.this.time_left) * (set_to > 0? 1 : -1);
                     break;
                 default:
                     break;
@@ -170,7 +176,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
 
         @Override
         public int getCount() {
-            return 1;
+            return 2;
         }
     };
 
@@ -206,12 +212,14 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     public void tick() {
         super.tick();
 
+        boolean changed_flag = false;
         if (isLit()) time_left--;
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
 
             int burn_duration = ChunkLoaderTile.getBurnDuration(items.get(0).getItem());
             if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= ChunkLoaderTile.MAX_TIME) {
+                changed_flag = true;
 
                 if (time_left > 0) time_left += burn_duration;
                 else time_left -= burn_duration;
@@ -223,6 +231,8 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
             int chunk_z = getOnPos().getZ() >> 4;
 
             if (chunk_x != last_chunk_x || chunk_z != last_chunk_z) {
+                changed_flag = true;
+
                 forceChucksAt(last_chunk_x, last_chunk_z, false);
 
                 last_chunk_x = chunk_x;
@@ -232,16 +242,18 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
             }
 
             if (lit_last_tick != isLit()) {
+                changed_flag = true;
+
                 if (isLit()) {
                     forceChucksAt(chunk_x, chunk_z, true);
                 }
                 else {
                     forceChucksAt(chunk_x, chunk_z, false);
                 }
-                setMinecartPowered(isLit());
+
             }
 
-            this.setChanged();
+            if (changed_flag) this.setChanged();
         }
 
         lit_last_tick = isLit();

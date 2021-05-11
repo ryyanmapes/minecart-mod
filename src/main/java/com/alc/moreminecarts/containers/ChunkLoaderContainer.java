@@ -141,7 +141,7 @@ public class ChunkLoaderContainer extends Container {
 
     @OnlyIn(Dist.CLIENT)
     public int getTimeLeft() {
-        return this.data.get(0);
+        return Math.abs(this.data.get(0));
     }
 
     @OnlyIn(Dist.CLIENT)

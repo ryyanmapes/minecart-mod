@@ -52,7 +52,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return (int)Math.ceil( (Math.abs(ChunkLoaderTile.this.time_left) - 1) / 1200.0);
+                    return (int)Math.ceil( (Math.abs(ChunkLoaderTile.this.time_left) - 1) / 1200.0) * get(1);
                 case 1:
                     return ChunkLoaderTile.this.time_left > 0? 1 : -1;
                 default:
