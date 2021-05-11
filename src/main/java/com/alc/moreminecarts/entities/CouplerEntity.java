@@ -1,10 +1,10 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.misc.MoreMinecartsPacketHandler;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.PaintingEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -17,6 +17,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +49,7 @@ public class CouplerEntity extends Entity {
     public double lastDiff = 0;
 
     public CouplerEntity(EntityType<?> type, World worldIn, Entity vehicle1, Entity vehicle2) {
-        super((EntityType<? extends PaintingEntity>) type, worldIn);
+        super( type, worldIn);
         this.vehicle1 = vehicle1;
         this.vehicle1_id = vehicle1.getId();
         this.vehicle2 = vehicle2;
@@ -60,9 +61,9 @@ public class CouplerEntity extends Entity {
         super(type, world);
     }
 
-    // TODO what here?
     @Override
-    protected void defineSynchedData() { }
+    protected void defineSynchedData() {
+    }
 
     @Nullable
     public Entity getFirstVehicle() {
@@ -132,6 +133,7 @@ public class CouplerEntity extends Entity {
         updateDisplay();
     }
 
+
     @Override
     public boolean canBeCollidedWith() {
         return false;
@@ -145,6 +147,10 @@ public class CouplerEntity extends Entity {
 
     @Override
     public PushReaction getPistonPushReaction() { return PushReaction.IGNORE; }
+
+    public boolean isPickable() {
+        return !this.removed;
+    }
 
     public static double getEntityForceScale(Entity ent) {
         if (ent instanceof AbstractMinecartEntity) {
@@ -189,8 +195,8 @@ public class CouplerEntity extends Entity {
                 }
             }
 
-            if (this.vehicle1 != null && this.vehicle2 != null && !this.level.isClientSide) {
-                //CouplerPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.setValue(()->this), new CouplerPacketHandler.CouplePacket(this.getEntityId(), this.vehicle1_id , this.vehicle2_id));
+            if (this.vehicle1 != null && this.vehicle2 != null) {
+                MoreMinecartsPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(()->this), new MoreMinecartsPacketHandler.CouplePacket(this.getId(), this.vehicle1_id , this.vehicle2_id));
             }
 
             if (this.tickCount > 100) {
@@ -278,7 +284,6 @@ public class CouplerEntity extends Entity {
         Entity ent2 = getSecondVehicle();
 
         if (ent1 == null || ent2 == null) {
-            onBroken(true);
             return;
         }
 

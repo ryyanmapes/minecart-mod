@@ -30,8 +30,8 @@ public class ChunkLoaderContainer extends Container {
         super(chunk_loader_c, n);
 
         this.inventory = new Inventory(1);
-        this.data = new IntArray(1);
-        this.level = world;
+        this.data = new IntArray(2);
+        this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
     }
@@ -61,7 +61,15 @@ public class ChunkLoaderContainer extends Container {
     }
 
     public void CommonInitialization(PlayerInventory player_inventory) {
-        this.addSlot(new ChunkLoaderSlot(inventory, 0, 112, 15));
+
+        checkContainerSize(inventory, 1);
+        checkContainerDataCount(data, 2);
+
+        this.addSlot(new ChunkLoaderSlot(inventory, 0, 112, 15){
+            public void setChanged() {
+                super.setChanged();
+                ChunkLoaderContainer.this.slotsChanged(this.container);
+            }});
 
         // player inventory slots, taken from the AbstractFurnaceContainer code.
         for(int i = 0; i < 3; ++i) {
@@ -133,23 +141,21 @@ public class ChunkLoaderContainer extends Container {
 
     @OnlyIn(Dist.CLIENT)
     public int getTimeLeft() {
-        return Math.abs(this.data.get(0)) - 1;
+        return this.data.get(0);
     }
 
     @OnlyIn(Dist.CLIENT)
     public double getLogProgress() {
-        return (Math.log10( ((float)getTimeLeft()/ChunkLoaderTile.MAX_TIME_LEFT)*9 + 1 ));
+        return (Math.log10( ((float)getTimeLeft()/ChunkLoaderTile.MAX_MINUTES)*9 + 1 ));
     }
 
     @OnlyIn(Dist.CLIENT)
     public boolean isEnabled() {
-        return this.data.get(0) >= 0;
+        return this.data.get(1) > 0;
     }
 
     public void setEnabled(boolean enabled) {
-        int initial = Math.abs(data.get(0));
-        this.setData(0, initial * (enabled? 1 : -1));
-
+        this.setData(1, enabled? 1 : -1);
         this.broadcastChanges();
     }
 }

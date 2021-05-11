@@ -79,6 +79,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
 
     // Taken from Campfire Block
     private static void spawnSmokeParticles(World worldIn, Vector3d pos, boolean isSignalFire, boolean spawnExtraSmoke) {
+        if (!worldIn.isClientSide()) return;
         Random random = worldIn.getRandom();
         BasicParticleType basicparticletype = isSignalFire ? ParticleTypes.CAMPFIRE_SIGNAL_SMOKE : ParticleTypes.CAMPFIRE_COSY_SMOKE;
         worldIn.addParticle(basicparticletype, true, pos.x + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.y + 0.4 + random.nextDouble(), (double)pos.z + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
@@ -167,12 +168,13 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         }
 
         Vector3d pos = this.position();
-        if (isMinecartPowered()) {
-            level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.3F, 1.0F, false);
-            spawnSmokeParticles(level, this.position(), false, true);
-        }
-        else {
-            level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
+        if (level.isClientSide()) {
+            if (isMinecartPowered()) {
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.3F, 1.0F, false);
+                spawnSmokeParticles(level, this.position(), false, true);
+            } else {
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
+            }
         }
 
         setMinecartPowered(!isMinecartPowered());
