@@ -31,7 +31,7 @@ public class ChunkLoaderContainer extends Container {
 
         this.inventory = new Inventory(1);
         this.data = new IntArray(1);
-        this.level = player_inventory.player.level;
+        this.level = world;
 
         CommonInitialization(player_inventory);
     }

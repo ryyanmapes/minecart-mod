@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LLL",
+    "LEL",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "item": "moreminecarts:levitation_powder"
+    },
+    "E": {
+      "item": "minecraft:emerald_block"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:high_speed_upgrade",
+    "count": 2
+  }
+}

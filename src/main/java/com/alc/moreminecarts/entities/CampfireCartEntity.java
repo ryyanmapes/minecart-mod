@@ -63,7 +63,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
             pushZ = this.getDeltaMovement().z;
         }
 
-        if (this.isMinecartPowered()){
+        if (this.isMinecartPowered() && level.isClientSide()){
             Vector3d pos = this.position();
             if (random.nextInt(10) == 0) {
                 level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.2F + random.nextFloat()/3, random.nextFloat() * 0.7F + 0.6F, false);
