@@ -9,10 +9,11 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.extensions.IForgeBlock;
 
 import java.util.Random;
 
-public class GlassCactusBlock extends CactusBlock {
+public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
     public GlassCactusBlock(Properties p_i48435_1_) {
         super(p_i48435_1_);
@@ -32,5 +33,4 @@ public class GlassCactusBlock extends CactusBlock {
     public void entityInside(BlockState p_196262_1_, World p_196262_2_, BlockPos p_196262_3_, Entity p_196262_4_) {
         p_196262_4_.hurt(DamageSource.CACTUS, 2.0F);
     }
-
 }

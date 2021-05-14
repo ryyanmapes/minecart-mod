@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.blocks.rail_turns;
 
-import com.alc.moreminecarts.MoreMinecartsConstants;
+import com.alc.moreminecarts.MMConstants;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.math.BlockPos;
@@ -14,6 +14,6 @@ public class MaglevRailTurn extends RailTurn {
 
     @Override
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        return MoreMinecartsConstants.MAGLEV_MAX_SPEED;
+        return MMConstants.MAGLEV_MAX_SPEED;
     }
 }

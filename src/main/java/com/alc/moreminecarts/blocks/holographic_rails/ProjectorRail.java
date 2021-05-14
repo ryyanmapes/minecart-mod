@@ -1,25 +1,24 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
+import com.alc.moreminecarts.MMReferences;
 import net.minecraft.block.*;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.*;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder("moreminecarts")
 public class ProjectorRail extends AbstractRailBlock {
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-
-    public static final Block hologram_rail = null;
 
     public ProjectorRail(Properties builder) {
         super(true, builder);
@@ -32,7 +31,7 @@ public class ProjectorRail extends AbstractRailBlock {
     }
 
     protected int getHologramLength() {return 5;}
-    protected Block getHologramRail() {return hologram_rail;}
+    protected Block getHologramRail() {return MMReferences.hologram_rail;}
 
     @Override
     protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
@@ -128,6 +127,39 @@ public class ProjectorRail extends AbstractRailBlock {
         }
         // TODO error here
         return RailShape.NORTH_SOUTH;
+    }
+
+    // Comparator stuff
+
+    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
+        return true;
+    }
+
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
+        return world.getEntitiesOfClass(AbstractMinecartEntity.class, this.getDectectionBox(state, pos),
+                (cart) -> {
+                    BlockState under = world.getBlockState(cart.blockPosition());
+                    if (under.getBlock() == Blocks.AIR) under = world.getBlockState(cart.blockPosition().below());
+
+                    return ((under.getBlock() == getHologramRail() || under.getBlock() == state.getBlock())
+                            && under.getValue(FACING) == state.getValue(FACING));
+                    }
+                ).size() > 0? 15 : 0;
+    }
+
+    private AxisAlignedBB getDectectionBox(BlockState state, BlockPos pos) {
+        boolean powered = state.getValue(POWERED);
+        Direction direction = state.getValue(FACING);
+        int length = getHologramLength();
+
+        return new AxisAlignedBB(
+                (double)(pos.getX() + Math.min(direction.getStepX()*length, 0)) + 0.2D,
+                (double)pos.getY(),
+                (double)(pos.getZ() + Math.min(direction.getStepZ()*length, 0)) + 0.2D,
+
+                (double)(pos.getX() + Math.max(direction.getStepX()*length, 0) + 1) - 0.2D,
+                (double)(pos.getY() + (powered? length : 0) + 1) - 0.2D,
+                (double)(pos.getZ() + Math.max(direction.getStepZ()*length, 0) + 1) - 0.2D);
     }
 
 }

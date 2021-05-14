@@ -13,4 +13,14 @@ public class ServerProxy implements IProxy{
     public PlayerEntity getPlayer() {
         return null;
     }
+
+    @Override
+    public boolean isHoldingJump() {
+        return false;
+    }
+
+    @Override
+    public boolean isHoldingRun() {
+        return false;
+    }
 }

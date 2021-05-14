@@ -1,8 +1,8 @@
 package com.alc.moreminecarts.items;
 
+import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,17 +12,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.UUID;
 
-@ObjectHolder("moreminecarts")
 public class CouplerItem extends Item {
-    public static final EntityType<CouplerEntity> coupler = null;
-
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String TAG_COUPLED_UUID_1 = "coupled_UUID_1";
     private static final String TAG_COUPLED_UUID_2 = "coupled_UUID_2";
@@ -66,7 +62,7 @@ public class CouplerItem extends Item {
                             (ent1.position().y + ent2.position().y)/2,
                             (ent1.position().z + ent2.position().z)/2);
 
-                    List<CouplerEntity> list = worldIn.getEntities(coupler,
+                    List<CouplerEntity> list = worldIn.getEntities(MMReferences.coupler,
                             new AxisAlignedBB(center_pos.x + 0.5, center_pos.y + 0.5, center_pos.z + 0.5,
                                             center_pos.x - 0.5, center_pos.y - 0.5, center_pos.z - 0.5), (entity) -> true);
 
@@ -80,7 +76,7 @@ public class CouplerItem extends Item {
                     }
 
                     if (!is_duplicate) {
-                        CouplerEntity coupler_ent = new CouplerEntity(coupler, worldIn, ent1, ent2);
+                        CouplerEntity coupler_ent = new CouplerEntity(MMReferences.coupler, worldIn, ent1, ent2);
                         worldIn.addFreshEntity(coupler_ent);
                         tag.remove(TAG_COUPLED_UUID_1);
                         return;

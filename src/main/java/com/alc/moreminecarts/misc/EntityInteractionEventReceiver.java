@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.misc;
 
 
+import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.entities.HSMinecartEntities;
 import com.alc.moreminecarts.items.CouplerItem;
 import net.minecraft.entity.Entity;
@@ -9,22 +10,17 @@ import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder("moreminecarts")
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = "moreminecarts")
 public class EntityInteractionEventReceiver {
-
-    public static final Item coupler = null;
-    public static final Item high_speed_upgrade = null;
 
     @SubscribeEvent
     public static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
@@ -39,11 +35,11 @@ public class EntityInteractionEventReceiver {
         Entity entity = event.getTarget();
 
         // We check both hands, but only use one, since this function gets called once for each hand.
-        if (using.getItem() == coupler || using_secondary.getItem() == coupler) {
+        if (using.getItem() == MMItemReferences.coupler || using_secondary.getItem() == MMItemReferences.coupler) {
             event.setCanceled(true);
             if (event.getWorld().isClientSide()) return;
 
-            if (using.getItem() == coupler) {
+            if (using.getItem() == MMItemReferences.coupler) {
                 if (entity instanceof AbstractMinecartEntity
                     || entity instanceof BoatEntity
                     || entity instanceof MobEntity
@@ -58,11 +54,11 @@ public class EntityInteractionEventReceiver {
             }
         }
 
-        if (using.getItem() == high_speed_upgrade || using_secondary.getItem() == high_speed_upgrade) {
+        if (using.getItem() == MMItemReferences.high_speed_upgrade || using_secondary.getItem() == MMItemReferences.high_speed_upgrade) {
             event.setCanceled(true);
             if (event.getWorld().isClientSide()) return;
 
-            if (using.getItem() == high_speed_upgrade && entity instanceof AbstractMinecartEntity
+            if (using.getItem() == MMItemReferences.high_speed_upgrade && entity instanceof AbstractMinecartEntity
                 && !(entity instanceof HSMinecartEntities.IHSCart)) {
                 boolean success = HSMinecartEntities.upgradeMinecart((AbstractMinecartEntity) entity);
                 if (!player.abilities.instabuild && success) using.getStack().shrink(1);
@@ -76,6 +72,11 @@ public class EntityInteractionEventReceiver {
             return;
         }
 
+    }
+
+    @SubscribeEvent
+    public static void onItemPickup(PlayerEvent.ItemPickupEvent event) {
+        // todo if health < 5, and is remote, pickup broken remote
     }
 
 }

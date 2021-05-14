@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.datagen;
 
+import com.alc.moreminecarts.MMReferences;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
@@ -7,13 +8,10 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder("moreminecarts")
+// Pretty sure this is useless?
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = "moreminecarts")
 public class RailDataGen {
-
-    public static final net.minecraft.block.Block wooden_rail = null;
 
     @SubscribeEvent
     public static void gatherData(final GatherDataEvent event) {
@@ -33,7 +31,7 @@ public class RailDataGen {
 
         @Override
         protected void addTags() {
-            tag(BlockTags.RAILS).add(wooden_rail);
+            tag(BlockTags.RAILS).add(MMReferences.wooden_rail);
         }
     }
 

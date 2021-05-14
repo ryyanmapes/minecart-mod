@@ -1,7 +1,8 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MoreMinecartsConstants;
-import com.alc.moreminecarts.MoreMinecartsMod;
+import com.alc.moreminecarts.MMItemReferences;
+import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.blocks.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
@@ -12,7 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -27,16 +27,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.registries.ObjectHolder;
 
 
 // Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
 // but we force it if it's a player
-@ObjectHolder("moreminecarts")
 public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(ChunkLoaderCartEntity.class, DataSerializers.BOOLEAN);
-
-    public static final Item chunk_loader = null;
 
     public ChunkLoaderCartEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -63,7 +59,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     public void destroy(DamageSource source) {
         super.destroy(source);
         if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(chunk_loader);
+            this.spawnAtLocation(MMItemReferences.chunk_loader);
             ChunkLoaderTile.dropExtras(level, time_left, getOnPos());
         }
         onRemoval();
@@ -91,7 +87,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        return MoreMinecartsMod.chunk_loader.defaultBlockState().setValue(ChunkLoaderBlock.POWERED, Boolean.valueOf(isMinecartPowered()));
+        return MMReferences.chunk_loader.defaultBlockState().setValue(ChunkLoaderBlock.POWERED, Boolean.valueOf(isMinecartPowered()));
     }
 
     @Override
@@ -263,7 +259,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerWorld) level, MoreMinecartsConstants.modid, this, chunk_x + i, chunk_z + j, add, true);
+                ForgeChunkManager.forceChunk((ServerWorld) level, MMConstants.modid, this, chunk_x + i, chunk_z + j, add, true);
             }
         }
     }

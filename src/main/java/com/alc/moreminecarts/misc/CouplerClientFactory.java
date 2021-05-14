@@ -1,16 +1,12 @@
 package com.alc.moreminecarts.misc;
 
+import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.CouplerEntity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ObjectHolder;
-import net.minecraftforge.fml.network.FMLPlayMessages.*;
+import net.minecraftforge.fml.network.FMLPlayMessages.SpawnEntity;
 
-@ObjectHolder("moreminecarts")
 public class CouplerClientFactory {
-
-    public static final EntityType<CouplerEntity> coupler = null;
 
     public CouplerClientFactory() {super();}
 
@@ -19,7 +15,7 @@ public class CouplerClientFactory {
     }
 
     public static CouplerEntity getCouplerFromPacket(SpawnEntity packet, World world) {
-        CouplerEntity ent = new CouplerEntity(coupler, world);
+        CouplerEntity ent = new CouplerEntity(MMReferences.coupler, world);
         ent.setId(packet.getEntityId());
         ent.setUUID(packet.getUuid());
 

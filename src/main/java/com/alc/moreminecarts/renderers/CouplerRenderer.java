@@ -51,13 +51,24 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
     }
 
 
+    public Vector3d getLerpedPosition(Entity entity, float partialTicks) {
+        double d0 = MathHelper.lerp((double)partialTicks, entity.xOld, entity.getX());
+        double d1 = MathHelper.lerp((double)partialTicks, entity.yOld, entity.getY());
+        double d2 = MathHelper.lerp((double)partialTicks, entity.zOld, entity.getZ());
+        return new Vector3d(d0, d1, d2);
+    }
+
     // Modified from MobRenderer
     // EntityLivingIn: from
     // leashHolder: to
     private <E extends Entity> void renderCoupler(World world, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Entity vehicle1, Entity vehicle2) {
         matrixStackIn.pushPose();
-        Vector3d from_pos = vehicle1.position().subtract(0, vehicle1.getBoundingBox().getYsize()/2, 0);
-        Vector3d to_pos = vehicle2.position().subtract(0, vehicle2.getBoundingBox().getYsize()/2, 0);
+
+        Vector3d vehicle1_pos = getLerpedPosition(vehicle1, partialTicks);
+        Vector3d vehicle2_pos = getLerpedPosition(vehicle2, partialTicks);
+
+        Vector3d from_pos = vehicle1_pos.subtract(0, vehicle1.getBoundingBox().getYsize()/2, 0);
+        Vector3d to_pos = vehicle2_pos.subtract(0, vehicle2.getBoundingBox().getYsize()/2, 0);
 
         double d0 = (double)(vehicle1.yRot * ((float)Math.PI / 180F) + (Math.PI / 2D));
         Vector3d v1_lead_pos = vehicle1.getLeashOffset();

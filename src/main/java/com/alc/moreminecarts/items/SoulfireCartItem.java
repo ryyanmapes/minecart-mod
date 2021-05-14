@@ -1,15 +1,11 @@
 package com.alc.moreminecarts.items;
 
+import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.SoulfireCartEntity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder("moreminecarts")
 public class SoulfireCartItem extends AbstractMinecartItem {
-
-    public static final EntityType<SoulfireCartEntity> soulfire_cart = null;
 
     public SoulfireCartItem(Properties builder) {
         super(builder);
@@ -18,7 +14,7 @@ public class SoulfireCartItem extends AbstractMinecartItem {
     @Override
     void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
 
-        SoulfireCartEntity minecart = new SoulfireCartEntity(soulfire_cart, world, posX, posY, posZ);
+        SoulfireCartEntity minecart = new SoulfireCartEntity(MMReferences.soulfire_cart, world, posX, posY, posZ);
         if (stack.hasCustomHoverName()) {
             minecart.setCustomName(stack.getDisplayName());
         }

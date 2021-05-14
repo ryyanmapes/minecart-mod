@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
+import com.alc.moreminecarts.MMReferences;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,14 +18,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder("moreminecarts")
 public class HolographicRail extends AbstractRailBlock {
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
-
-    public static final Block projector_rail = null;
 
     public HolographicRail(Properties builder) {
         super(true, builder);
@@ -36,7 +33,7 @@ public class HolographicRail extends AbstractRailBlock {
         builder.add(FACING, SHAPE);
     }
 
-    protected Block getProjectorRail() {return projector_rail;}
+    protected Block getProjectorRail() {return MMReferences.projector_rail;}
 
     public boolean canSurvive(BlockState state, IWorldReader world_reader, BlockPos pos) {
 
