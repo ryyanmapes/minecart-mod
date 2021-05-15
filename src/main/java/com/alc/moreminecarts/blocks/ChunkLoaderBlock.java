@@ -97,10 +97,12 @@ public class ChunkLoaderBlock extends ContainerBlock {
 
     // Comparator stuff
 
+    @Override
     public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
         return true;
     }
 
+    @Override
     public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
         TileEntity tile_entity = world.getBlockEntity(pos);
         if (tile_entity instanceof ChunkLoaderTile) {

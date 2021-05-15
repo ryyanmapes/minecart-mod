@@ -1,8 +1,9 @@
-package com.alc.moreminecarts.misc;
+package com.alc.moreminecarts.proxy;
 
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.entities.CouplerEntity;
+import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -26,12 +27,21 @@ public class MoreMinecartsPacketHandler {
     public static void Init() {
         int id = 0;
 
+        // For syncing the coupler to the server -> client
         INSTANCE.registerMessage(id++,
                 CouplePacket.class,
                 CouplePacket::encode,
                 CouplePacket::decode,
                 CouplePacket::handle);
 
+        // For changing the chunk loader client -> server
+        INSTANCE.registerMessage(id++,
+                ChunkLoaderPacket.class,
+                ChunkLoaderPacket::encode,
+                ChunkLoaderPacket::decode,
+                ChunkLoaderPacket::handle);
+
+        // For changing the piston pushcart client -> server
         INSTANCE.registerMessage(id++,
                 ChunkLoaderPacket.class,
                 ChunkLoaderPacket::encode,
@@ -108,6 +118,41 @@ public class MoreMinecartsPacketHandler {
                 ServerPlayerEntity sender = ctx.get().getSender();
                 if (sender.containerMenu instanceof ChunkLoaderContainer) {
                     ((ChunkLoaderContainer)sender.containerMenu).setEnabled(msg.set_enabled);
+                }
+            });
+            ctx.get().setPacketHandled(true);
+        }
+
+    }
+
+    public static class PistonPushcartPacket {
+        public boolean is_up_key;
+        public boolean now_down;
+
+        public PistonPushcartPacket(boolean is_up_key, boolean now_down) {
+            this.is_up_key = is_up_key;
+            this.now_down = now_down;
+        }
+
+        public static void encode(PistonPushcartPacket msg, PacketBuffer buf) {
+            buf.writeBoolean(msg.is_up_key);
+            buf.writeBoolean(msg.now_down);
+        }
+
+        public static PistonPushcartPacket decode(PacketBuffer buf) {
+            PistonPushcartPacket packet = new PistonPushcartPacket(false, false);
+            packet.is_up_key = buf.readBoolean();
+            packet.now_down = buf.readBoolean();
+            return packet;
+        }
+
+
+        public static void handle(PistonPushcartPacket msg, Supplier<NetworkEvent.Context> ctx) {
+
+            ctx.get().enqueueWork(() -> {
+                ServerPlayerEntity sender = ctx.get().getSender();
+                if (sender.getRootVehicle() instanceof PistonPushcartEntity) {
+                    ((PistonPushcartEntity)sender.getRootVehicle()).setElevating(msg.is_up_key, msg.now_down);
                 }
             });
             ctx.get().setPacketHandled(true);

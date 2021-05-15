@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.blocks;
 
-import com.alc.moreminecarts.MoreMinecartsConstants;
+import com.alc.moreminecarts.MMConstants;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PoweredRailBlock;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -15,6 +15,6 @@ public class PoweredMaglevRail extends PoweredRailBlock {
 
     @Override
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        return MoreMinecartsConstants.MAGLEV_MAX_SPEED;
+        return MMConstants.MAGLEV_MAX_SPEED;
     }
 }

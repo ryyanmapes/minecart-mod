@@ -16,4 +16,16 @@ public class ClientProxy implements IProxy {
     public PlayerEntity getPlayer() {
         return Minecraft.getInstance().player;
     }
+
+    @Override
+    public boolean isHoldingJump() {
+        return Minecraft.getInstance().player.input.jumping;
+    }
+
+    @Override
+    public boolean isHoldingRun() {
+        return Minecraft.getInstance().player.input.shiftKeyDown;
+    }
+
+
 }

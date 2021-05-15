@@ -1,6 +1,8 @@
 package com.alc.moreminecarts.tile_entities;
 
-import com.alc.moreminecarts.MoreMinecartsConstants;
+import com.alc.moreminecarts.MMConstants;
+import com.alc.moreminecarts.MMItemReferences;
+import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import net.minecraft.block.BlockState;
@@ -17,7 +19,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
@@ -27,16 +28,10 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.registries.ObjectHolder;
 
 import javax.annotation.Nullable;
 
-@ObjectHolder("moreminecarts")
 public class ChunkLoaderTile extends LockableTileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
-    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
-    public static final Item chunkrodite = null;
-    public static final Item chunkrodite_block = null;
-
     public static String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
     public static String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
     public static String TIME_LEFT_PROPERTY = "time_left";
@@ -87,7 +82,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     public int last_chunk_z;
 
     public ChunkLoaderTile() {
-        super(chunk_loader_te);
+        super(MMReferences.chunk_loader_te);
         lit_last_tick = false;
         time_left = -1;
         last_chunk_x = getBlockPos().getX() >> 4;
@@ -128,8 +123,8 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         if (item == Items.DIAMOND) return 72000;
         if (item == Items.DIAMOND_BLOCK) return 648000;
         if (item == Items.NETHER_STAR) return 3456000;
-        if (item == chunkrodite) return 18000;
-        if (item == chunkrodite_block) return 162000;
+        if (item == MMItemReferences.chunkrodite) return 18000;
+        if (item == MMItemReferences.chunkrodite_block) return 162000;
         return -1;
     }
 
@@ -186,7 +181,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerWorld) level, MoreMinecartsConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, true);
+                ForgeChunkManager.forceChunk((ServerWorld) level, MMConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, true);
             }
         }
     }
@@ -277,13 +272,13 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         return new StringTextComponent("Chunk Loader");
     }
 
-    // For dropping chunkrodite
+    // For dropping MMItemReferences.
     public static void dropExtras(World world, int time_left, BlockPos pos) {
         int count = (int)Math.floor( Math.abs(time_left) / 24000.0f);
-        Item to_drop = chunkrodite;
+        Item to_drop = MMItemReferences.chunkrodite;
         if (count > 64) {
             count = (int)Math.floor(count / 9.0f);
-            to_drop = chunkrodite_block;
+            to_drop = MMItemReferences.chunkrodite_block;
             if (count > 64) count = 64; // Should never occur, but just in case.
         }
 

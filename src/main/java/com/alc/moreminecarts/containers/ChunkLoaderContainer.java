@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.containers;
 
+import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.misc.ChunkLoaderSlot;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.entity.player.PlayerEntity;
@@ -7,7 +8,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIntArray;
@@ -16,18 +16,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder("moreminecarts")
 public class ChunkLoaderContainer extends Container {
-    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
 
     private final IInventory inventory;
     private final IIntArray data;
     protected final World level;
 
     public ChunkLoaderContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
-        super(chunk_loader_c, n);
+        super(MMReferences.chunk_loader_c, n);
 
         this.inventory = new Inventory(1);
         this.data = new IntArray(2);
@@ -38,7 +35,7 @@ public class ChunkLoaderContainer extends Container {
 
     // For use with the entity chunk loaders.
     public ChunkLoaderContainer(int n, World world, IInventory inventory, IIntArray data, PlayerInventory player_inventory, PlayerEntity player_entity) {
-        super(chunk_loader_c, n);
+        super(MMReferences.chunk_loader_c, n);
 
         this.inventory = inventory;
         this.data = data;
@@ -49,7 +46,7 @@ public class ChunkLoaderContainer extends Container {
 
     // For use with tile entity chunk loaders.
     public ChunkLoaderContainer(int n, World world, BlockPos pos, PlayerInventory player_inventory, PlayerEntity player_entity) {
-        super(chunk_loader_c, n);
+        super(MMReferences.chunk_loader_c, n);
 
         ChunkLoaderTile tile = (ChunkLoaderTile) world.getBlockEntity(pos);
 

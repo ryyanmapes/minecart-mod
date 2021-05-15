@@ -1,18 +1,13 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.MMItemReferences;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder("moreminecarts")
 public class WoodenPushcartEntity extends AbstractPushcart {
-
-    public static final Item wooden_pushcart = null;
-
     public WoodenPushcartEntity(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -25,7 +20,7 @@ public class WoodenPushcartEntity extends AbstractPushcart {
     public void destroy(DamageSource source) {
         this.remove();
         if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            ItemStack stack = new ItemStack(wooden_pushcart);
+            ItemStack stack = new ItemStack(MMItemReferences.wooden_pushcart);
             if (this.hasCustomName()) {
                 stack.setHoverName(this.getCustomName());
             }

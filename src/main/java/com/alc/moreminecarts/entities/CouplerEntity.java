@@ -1,13 +1,13 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.misc.MoreMinecartsPacketHandler;
+import com.alc.moreminecarts.MMItemReferences;
+import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +25,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.UUID;
 
-@ObjectHolder("moreminecarts")
 public class CouplerEntity extends Entity {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -36,8 +34,6 @@ public class CouplerEntity extends Entity {
     private static final double PREFERRED_DISTANCE = 2;
 
     private CompoundNBT vehicleNBTTag;
-
-    public static final Item coupler = null;
 
     public Entity vehicle1;
     public int vehicle1_id;
@@ -255,7 +251,7 @@ public class CouplerEntity extends Entity {
 
     public void onBroken(boolean drop_item) {
         this.playSound(SoundEvents.CHAIN_BREAK, 1.0F, 1.0F);
-        if (drop_item) spawnAtLocation(coupler);
+        if (drop_item) spawnAtLocation(MMItemReferences.coupler);
         this.remove();
     }
 

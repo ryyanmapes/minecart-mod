@@ -1,7 +1,7 @@
-package com.alc.moreminecarts.guis;
+package com.alc.moreminecarts.client;
 
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
-import com.alc.moreminecarts.misc.MoreMinecartsPacketHandler;
+import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.AbstractButton;
