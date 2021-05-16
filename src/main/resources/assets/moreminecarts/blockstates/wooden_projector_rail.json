@@ -1,26 +1,19 @@
-
 {
   "variants": {
-    "shape=north_south": {
+    "facing=north": {
       "model": "moreminecarts:block/wooden_projector_rail"
     },
-    "shape=east_west": {
+    "facing=south": {
+      "model": "moreminecarts:block/wooden_projector_rail",
+      "y": 180
+    },
+	"facing=east": {
       "model": "moreminecarts:block/wooden_projector_rail",
       "y": 90
     },
-    "shape=ascending_east": {
-      "model": "moreminecarts:block/wooden_projector_rail_raised_ne",
-      "y": 90
-    },
-    "shape=ascending_west": {
-      "model": "moreminecarts:block/wooden_projector_rail_raised_sw",
-      "y": 90
-    },
-    "shape=ascending_north": {
-      "model": "moreminecarts:block/wooden_projector_rail_raised_ne"
-    },
-    "shape=ascending_south": {
-      "model": "moreminecarts:block/wooden_projector_rail_raised_sw"
-    }
+	"facing=west": {
+      "model": "moreminecarts:block/wooden_projector_rail",
+      "y": 270
+	 }
   }
 }
