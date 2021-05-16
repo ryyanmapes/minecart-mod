@@ -9,11 +9,12 @@ import net.minecraft.state.*;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class ProjectorRail extends AbstractRailBlock {
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
@@ -22,7 +23,7 @@ public class ProjectorRail extends AbstractRailBlock {
 
     public ProjectorRail(Properties builder) {
         super(true, builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(POWERED, false));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(POWERED, false));
     }
 
     @Override
@@ -44,18 +45,19 @@ public class ProjectorRail extends AbstractRailBlock {
             RailShape shape = GetAscending(direction, now_powered);
 
             // Remove old holograms
-            for (int i = 1; i <= getHologramLength(); i++) {
-                BlockPos test_pos = pos.relative(direction, i).above(!now_powered? i : 0);
+            for (int i = 0; i < getHologramLength(); i++) {
+                BlockPos test_pos = pos.relative(direction, i+1).above(!now_powered? i: 0);
                 if (worldIn.getBlockState(test_pos).is(getHologramRail())) {
                     worldIn.setBlock(test_pos, Blocks.AIR.defaultBlockState(), 3);
                 }
             }
 
             // Add new holograms
-            for (int i = 1; i <= getHologramLength(); i++) {
-                BlockPos test_pos = pos.relative(direction, i).above(now_powered? i : 0);
+            for (int i = 0; i < getHologramLength(); i++) {
+                BlockPos test_pos = pos.relative(direction, i+1).above(now_powered? i : 0);
                 if (!worldIn.getBlockState(test_pos).is(Blocks.AIR)) break;
-                worldIn.setBlock(test_pos, getHologramRail().defaultBlockState().setValue(FACING, direction).setValue(SHAPE, shape), 3);
+                worldIn.setBlock(test_pos,
+                        getHologramRail().defaultBlockState().setValue(FACING, direction).setValue(SHAPE, shape).setValue(HolographicRail.LENGTH, i), 3);
             }
 
             worldIn.updateNeighborsAt(pos.below(), this);
@@ -65,13 +67,19 @@ public class ProjectorRail extends AbstractRailBlock {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         Direction direction = context.getHorizontalDirection();
-        return this.defaultBlockState().setValue(FACING, direction);
+        return this.defaultBlockState().setValue(FACING, direction)
+                .setValue(SHAPE, direction.getAxis() == Direction.Axis.Z? RailShape.NORTH_SOUTH : RailShape.EAST_WEST);
     }
 
     // Unused
     @Override
     public Property<RailShape> getShapeProperty() {
         return SHAPE;
+    }
+
+    @Override
+    public RailShape getRailDirection(BlockState state, IBlockReader world, BlockPos pos, @Nullable AbstractMinecartEntity cart) {
+        return state.getValue(FACING).getAxis() == Direction.Axis.Z? RailShape.NORTH_SOUTH : RailShape.EAST_WEST;
     }
 
     @Override
@@ -127,39 +135,6 @@ public class ProjectorRail extends AbstractRailBlock {
         }
         // TODO error here
         return RailShape.NORTH_SOUTH;
-    }
-
-    // Comparator stuff
-
-    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
-        return true;
-    }
-
-    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
-        return world.getEntitiesOfClass(AbstractMinecartEntity.class, this.getDectectionBox(state, pos),
-                (cart) -> {
-                    BlockState under = world.getBlockState(cart.blockPosition());
-                    if (under.getBlock() == Blocks.AIR) under = world.getBlockState(cart.blockPosition().below());
-
-                    return ((under.getBlock() == getHologramRail() || under.getBlock() == state.getBlock())
-                            && under.getValue(FACING) == state.getValue(FACING));
-                    }
-                ).size() > 0? 15 : 0;
-    }
-
-    private AxisAlignedBB getDectectionBox(BlockState state, BlockPos pos) {
-        boolean powered = state.getValue(POWERED);
-        Direction direction = state.getValue(FACING);
-        int length = getHologramLength();
-
-        return new AxisAlignedBB(
-                (double)(pos.getX() + Math.min(direction.getStepX()*length, 0)) + 0.2D,
-                (double)pos.getY(),
-                (double)(pos.getZ() + Math.min(direction.getStepZ()*length, 0)) + 0.2D,
-
-                (double)(pos.getX() + Math.max(direction.getStepX()*length, 0) + 1) - 0.2D,
-                (double)(pos.getY() + (powered? length : 0) + 1) - 0.2D,
-                (double)(pos.getZ() + Math.max(direction.getStepZ()*length, 0) + 1) - 0.2D);
     }
 
 }

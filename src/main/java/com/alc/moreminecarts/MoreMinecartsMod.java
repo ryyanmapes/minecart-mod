@@ -1,8 +1,7 @@
 package com.alc.moreminecarts;
 
 import com.alc.moreminecarts.blocks.*;
-import com.alc.moreminecarts.blocks.holographic_rails.MaglevHolographicRail;
-import com.alc.moreminecarts.blocks.holographic_rails.MaglevProjectorRail;
+import com.alc.moreminecarts.blocks.holographic_rails.*;
 import com.alc.moreminecarts.blocks.parallel_rails.MaglevParallelRail;
 import com.alc.moreminecarts.blocks.parallel_rails.ParallelRail;
 import com.alc.moreminecarts.blocks.parallel_rails.WoodenParallelRail;
@@ -23,6 +22,7 @@ import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.proxy.ServerProxy;
 import com.alc.moreminecarts.renderers.*;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
+import com.alc.moreminecarts.tile_entities.LockingRailTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -39,7 +39,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.blockplacer.ColumnBlockPlacer;
 import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.feature.BlockClusterFeatureConfig;
@@ -67,9 +66,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import static com.alc.moreminecarts.MMItemReferences.*;
@@ -85,10 +81,7 @@ public class MoreMinecartsMod
     public static String MODID = "moreminecarts";
     public static IProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
-    public static final ConfiguredFeature<?, ?> GLASS_CACTUS_FEATURE = Feature.RANDOM_PATCH.configured((new BlockClusterFeatureConfig.Builder(
-            new SimpleBlockStateProvider(glass_cactus.getStateDefinition().any()),
-            new ColumnBlockPlacer(1, 2))).tries(2).noProjection().build())
-            .decorated(Features.Placements.HEIGHTMAP_DOUBLE_SQUARE).count(2);
+    public static ConfiguredFeature<?, ?> GLASS_CACTUS_FEATURE;
 
 
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
@@ -124,19 +117,19 @@ public class MoreMinecartsMod
     // Rail Blocks
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> PARALLEL_RAIL_BLOCK = BLOCKS.register("parallel_rail", () -> new ParallelRail(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> PROJECTOR_RAIL = BLOCKS.register("projector_rail", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> HOLOGRAM_RAIL = BLOCKS.register("hologram_rail", () -> new RailTurn(of(Material.GLASS).noCollission().strength(0.2F).sound(SoundType.GLASS)));
+    private static final RegistryObject<Block> PROJECTOR_RAIL = BLOCKS.register("projector_rail", () -> new ProjectorRail(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> HOLOGRAM_RAIL = BLOCKS.register("hologram_rail", () -> new HolographicRail(of(Material.GLASS).noCollission().strength(0.2F).sound(SoundType.GLASS)));
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_PARALLEL_RAIL_BLOCK = BLOCKS.register("wooden_parallel_rail", () -> new WoodenParallelRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> WOODEN_PROJECTOR_RAIL = BLOCKS.register("wooden_projector_rail", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> WOODEN_HOLOGRAM_RAIL = BLOCKS.register("wooden_hologram_rail", () -> new WoodenRailTurn(of(Material.GLASS, MaterialColor.WOOD).noCollission().strength(0.2F).sound(SoundType.GLASS)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
-    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
-    private static final RegistryObject<Block> MAGLEV_PROJECTOR_RAIL = BLOCKS.register("maglev_projector_rail", () -> new MaglevProjectorRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> WOODEN_PROJECTOR_RAIL = BLOCKS.register("wooden_projector_rail", () -> new WoodenProjectorRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> WOODEN_HOLOGRAM_RAIL = BLOCKS.register("wooden_hologram_rail", () -> new WoodenHolographicRail(of(Material.GLASS, MaterialColor.WOOD).noCollission().strength(0.2F).sound(SoundType.GLASS)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> MAGLEV_PROJECTOR_RAIL = BLOCKS.register("maglev_projector_rail", () -> new MaglevProjectorRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> MAGLEV_HOLOGRAM_RAIL = BLOCKS.register("maglev_hologram_rail", () -> new MaglevHolographicRail(of(Material.GLASS, MaterialColor.COLOR_BLUE).noCollission().strength(0.2F).sound(SoundType.GLASS)));
-    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.HEAVY_METAL, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.GILDED_BLACKSTONE)));
+    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
     private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
 
@@ -144,9 +137,9 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
     private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).harvestTool(ToolType.PICKAXE)));
     private static final RegistryObject<Block> CHUNKRODITE_BLOCK = BLOCKS.register("chunkrodite_block", () -> new Block(of(Material.STONE, MaterialColor.COLOR_BLACK).strength(3f, 3f).harvestTool(ToolType.PICKAXE)));
-    private static final RegistryObject<Block> GLASS_CACTUS = BLOCKS.register("glass_cactus", () -> new GlassCactusBlock(of(Material.GLASS, MaterialColor.WOOL).randomTicks().strength(2F).sound(SoundType.GLASS)));
-    private static final RegistryObject<Block> HOLO_SCAFFOLD_GENERATOR = BLOCKS.register("holo_scaffold_generator", () -> new Block(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).harvestTool(ToolType.PICKAXE).lightLevel((state) -> 13)));
-    private static final RegistryObject<Block> HOLO_SCAFFOLD = BLOCKS.register("holo_scaffold", () -> new Block(of(Material.DECORATION).strength(0.2F).lightLevel((state) -> 3)));
+    private static final RegistryObject<Block> GLASS_CACTUS = BLOCKS.register("glass_cactus", () -> new GlassCactusBlock(of(Material.GLASS, MaterialColor.WOOL).randomTicks().strength(2F).sound(SoundType.GLASS).noOcclusion()));
+    private static final RegistryObject<Block> HOLO_SCAFFOLD_GENERATOR = BLOCKS.register("holo_scaffold_generator", () -> new Block(of(Material.HEAVY_METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).harvestTool(ToolType.PICKAXE).lightLevel((state) -> 13)));
+    private static final RegistryObject<Block> HOLO_SCAFFOLD = BLOCKS.register("holo_scaffold", () -> new HoloScaffold(of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
 
 
     // Potted Plants
@@ -250,13 +243,11 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> SILICA_STEEL = ITEMS.register("silica_steel", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
     private static final RegistryObject<Item> CHUNKRODITE = ITEMS.register("chunkrodite", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
     private static final RegistryObject<Item> HARD_LIGHT_LENS = ITEMS.register("hard_light_lens", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
-
-
+    private static final RegistryObject<Item> GLASS_SPINES = ITEMS.register("glass_spines", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
 
     // Tile Entities
     private static final RegistryObject<TileEntityType<ChunkLoaderTile>> CHUNK_LOADER_TILE_ENTITY = TILE_ENTITIES.register("chunk_loader_te", () -> TileEntityType.Builder.<ChunkLoaderTile>of(ChunkLoaderTile::new, MMReferences.chunk_loader).build(null));
-
-    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
+    private static final RegistryObject<TileEntityType<LockingRailTile>> LOCKING_RAIL_TILE_ENTITY = TILE_ENTITIES.register("locking_rail_te", () -> TileEntityType.Builder.<LockingRailTile>of(LockingRailTile::new, locking_rail).build(null));
 
     // Containers
     private static final RegistryObject<ContainerType<ChunkLoaderContainer>> CHUNK_LOADER_CONTAINER = CONTAINERS.register("chunk_loader_c", () -> IForgeContainerType.create(
@@ -292,25 +283,16 @@ public class MoreMinecartsMod
         //((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:textures/TODO"), ()->potted_glass_cactus);
         //((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:textures/TODO"), ()->potted_beet);
 
-        List<Supplier<ConfiguredFeature<?,?>>> feature_list = new ArrayList<>();
-        feature_list.add(() -> GLASS_CACTUS_FEATURE);
-
-        ForgeRegistries.BIOMES.forEach(
-                (biome) -> {
-                    if (biome.getBiomeCategory() == Biome.Category.DESERT) {
-                        biome.getGenerationSettings().features().add(feature_list);
-                    }
-                }
-
-        );
-
     }
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        // some preinit code
-        //LOGGER.info("HELLO FROM PREINIT");
-        //LOGGER.info("BLOCK >> {}", WOODEN_RAIL_BLOCK.getId());
+        GLASS_CACTUS_FEATURE = Feature.RANDOM_PATCH.configured((new BlockClusterFeatureConfig.Builder(
+                new SimpleBlockStateProvider(glass_cactus.getStateDefinition().any()),
+                new ColumnBlockPlacer(1, 2))).tries(2).noProjection().build())
+                .decorated(Features.Placements.HEIGHTMAP_DOUBLE_SQUARE).count(2);
+
+
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -340,6 +322,8 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(maglev_powered_rail, cutout);
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
+        RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);
+        RenderTypeLookup.setRenderLayer(glass_cactus, cutout);
 
         RenderTypeLookup.setRenderLayer(color_detector_rail_white, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_orange, cutout);

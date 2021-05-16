@@ -17,4 +17,5 @@ public class MaglevRail extends RailBlock {
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
         return MMConstants.MAGLEV_MAX_SPEED;
     }
+
 }

@@ -64,7 +64,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.getEntityData().define(HEIGHT_PARAMETER, height);
-        this.getEntityData().define(HEIGHT_PARAMETER, last_height);
+        this.getEntityData().define(LAST_HEIGHT_PARAMETER, last_height);
     }
 
     public void setElevating(boolean is_upwards, boolean is_down) {

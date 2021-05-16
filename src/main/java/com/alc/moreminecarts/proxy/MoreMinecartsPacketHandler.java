@@ -43,10 +43,10 @@ public class MoreMinecartsPacketHandler {
 
         // For changing the piston pushcart client -> server
         INSTANCE.registerMessage(id++,
-                ChunkLoaderPacket.class,
-                ChunkLoaderPacket::encode,
-                ChunkLoaderPacket::decode,
-                ChunkLoaderPacket::handle);
+                PistonPushcartPacket.class,
+                PistonPushcartPacket::encode,
+                PistonPushcartPacket::decode,
+                PistonPushcartPacket::handle);
     }
 
     // Currently unused.
