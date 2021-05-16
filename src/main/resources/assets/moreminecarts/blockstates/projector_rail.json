@@ -1,12 +1,20 @@
 
 {
   "variants": {
-    "shape=north_south": {
+    "facing=north": {
       "model": "moreminecarts:block/projector_rail"
     },
-    "shape=east_west": {
+    "facing=south": {
+      "model": "moreminecarts:block/projector_rail",
+      "y": 180
+    },
+	"facing=east": {
       "model": "moreminecarts:block/projector_rail",
       "y": 90
+    },
+	"facing=west": {
+      "model": "moreminecarts:block/projector_rail",
+      "y": 270
     },
     "shape=ascending_east": {
       "model": "moreminecarts:block/projector_rail_raised_ne",
