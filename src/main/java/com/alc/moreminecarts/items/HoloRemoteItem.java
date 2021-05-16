@@ -1,36 +1,90 @@
 package com.alc.moreminecarts.items;
 
 import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.blocks.HoloScaffold;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ScaffoldingItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SChatPacket;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class HoloRemoteItem extends ScaffoldingItem {
+import javax.annotation.Nullable;
 
-    // todo add correct block here
+public class HoloRemoteItem extends BlockItem {
+
     public HoloRemoteItem(Item.Properties properties) {
         super(MMReferences.holo_scaffold, properties);
 
     }
 
-    @Override
-    protected boolean mustSurvive() {
-        return true;
+    // Taken from ScaffoldingItem
+
+    @Nullable
+    public BlockItemUseContext updatePlacementContext(BlockItemUseContext context) {
+        BlockPos blockpos = context.getClickedPos();
+        World world = context.getLevel();
+        BlockState blockstate = world.getBlockState(blockpos);
+
+        if (!HoloScaffold.isValidDistance(world, blockpos)) return null;
+
+        if (!blockstate.is(this.getBlock())) {
+            return context;
+        } else {
+            Direction direction;
+            if (context.isSecondaryUseActive()) {
+                direction = context.isInside() ? context.getClickedFace().getOpposite() : context.getClickedFace();
+            } else {
+                direction = (context.getClickedFace().getAxis() == Direction.Axis.Y)
+                        ? context.getHorizontalDirection()
+                        : Direction.UP;
+            }
+
+            int i = 0;
+            BlockPos.Mutable blockpos$mutable = blockpos.mutable().move(direction);
+
+            while(i < 30) {
+                if (!world.isClientSide && !World.isInWorldBounds(blockpos$mutable)) {
+                    PlayerEntity playerentity = context.getPlayer();
+                    int j = world.getMaxBuildHeight();
+                    if (playerentity instanceof ServerPlayerEntity && blockpos$mutable.getY() >= j) {
+                        SChatPacket schatpacket = new SChatPacket((new TranslationTextComponent("build.tooHigh", j)).withStyle(TextFormatting.RED), ChatType.GAME_INFO, Util.NIL_UUID);
+                        ((ServerPlayerEntity)playerentity).connection.send(schatpacket);
+                    }
+                    break;
+                }
+
+                blockstate = world.getBlockState(blockpos$mutable);
+                if (!blockstate.is(this.getBlock())) {
+                    if (blockstate.canBeReplaced(context)) {
+                        return BlockItemUseContext.at(context, blockpos$mutable, direction);
+                    }
+                    break;
+                }
+
+                blockpos$mutable.move(direction);
+                if (direction.getAxis().isHorizontal()) {
+                    ++i;
+                }
+            }
+        }
+        return null;
     }
+
 
     // All copied from BlockItem, and slightly modified.
     public ActionResultType place(BlockItemUseContext context) {

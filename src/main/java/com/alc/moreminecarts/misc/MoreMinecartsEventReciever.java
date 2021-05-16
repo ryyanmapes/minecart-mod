@@ -2,6 +2,7 @@ package com.alc.moreminecarts.misc;
 
 
 import com.alc.moreminecarts.MMItemReferences;
+import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.entities.HSMinecartEntities;
 import com.alc.moreminecarts.items.CouplerItem;
 import net.minecraft.entity.Entity;
@@ -14,13 +15,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = "moreminecarts")
-public class EntityInteractionEventReceiver {
+public class MoreMinecartsEventReciever {
 
     @SubscribeEvent
     public static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
@@ -77,6 +81,13 @@ public class EntityInteractionEventReceiver {
     @SubscribeEvent
     public static void onItemPickup(PlayerEvent.ItemPickupEvent event) {
         // todo if health < 5, and is remote, pickup broken remote
+    }
+
+    @SubscribeEvent
+    public static void onBiomeLoad(BiomeLoadingEvent event) {
+        if (event.getCategory() == Biome.Category.DESERT) {
+            event.getGeneration().addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, MoreMinecartsMod.GLASS_CACTUS_FEATURE);
+        }
     }
 
 }

@@ -93,7 +93,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
     }
 
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(SHAPE, POWERED);
+        builder.add(SHAPE, POWERED, INVERTED);
     }
 
     @Override

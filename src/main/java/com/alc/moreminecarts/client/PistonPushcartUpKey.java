@@ -3,6 +3,7 @@ package com.alc.moreminecarts.client;
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -15,6 +16,10 @@ public class PistonPushcartUpKey extends KeyBinding {
 
     @Override
     public void setDown(boolean pressed) {
+        super.setDown(pressed);
+
+        if (Minecraft.getInstance().getConnection() == null) return;
+
         MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.PistonPushcartPacket(true, pressed));
 
         PlayerEntity player = MoreMinecartsMod.PROXY.getPlayer();
@@ -22,6 +27,5 @@ public class PistonPushcartUpKey extends KeyBinding {
             ((PistonPushcartEntity) player.getRootVehicle()).setElevating(true, pressed);
         }
 
-        super.setDown(pressed);
     }
 }

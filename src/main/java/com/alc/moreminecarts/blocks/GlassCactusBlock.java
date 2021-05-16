@@ -1,8 +1,10 @@
 package com.alc.moreminecarts.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CactusBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
@@ -17,6 +19,11 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
     public GlassCactusBlock(Properties p_i48435_1_) {
         super(p_i48435_1_);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(AGE);
     }
 
     // Grows 3x as slow.
