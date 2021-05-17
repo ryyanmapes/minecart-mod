@@ -5,8 +5,7 @@
 	  "x": 90
     },
 	"variant=1": {
-      "model": "moreminecarts:block/piston_rod",
-	  "x": 90
+      "model": "moreminecarts:block/piston_rod"
     },
 	"variant=2": {
       "model": "minecraft:block/piston_head",
