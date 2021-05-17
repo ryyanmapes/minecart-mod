@@ -1,16 +1,20 @@
 {
   "variants": {
     "variant=0": {
-      "model": "minecraft:block/piston_base"
+      "model": "minecraft:block/piston_base",
+	  "x": 90
     },
 	"variant=1": {
-      "model": "moreminecarts:block/piston_rod"
+      "model": "moreminecarts:block/piston_rod",
+	  "x": 90
     },
 	"variant=2": {
-      "model": "minecraft:block/piston_head"
+      "model": "minecraft:block/piston_head",
+	  "x": 90
     },
 	"variant=3": {
-      "model": "minecraft:block/piston_head_sticky"
+      "model": "minecraft:block/piston_head_sticky",
+	  "x": 90
     }
   }
 }
