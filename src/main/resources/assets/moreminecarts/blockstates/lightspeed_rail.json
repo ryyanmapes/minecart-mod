@@ -1,0 +1,12 @@
+
+{
+  "variants": {
+    "shape=north_south": {
+      "model": "moreminecarts:block/lightspeed_rail"
+    },
+    "shape=east_west": {
+      "model": "moreminecarts:block/lightspeed_rail",
+      "y": 90
+    }
+  }
+}
