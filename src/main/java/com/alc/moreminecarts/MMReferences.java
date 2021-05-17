@@ -26,6 +26,7 @@ public class MMReferences {
     public static final EntityType<WoodenPushcartEntity> wooden_pushcart = null;
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<PistonPushcartEntity> piston_pushcart = null;
+    public static final EntityType<StickyPistonPushcartEntity> sticky_piston_pushcart = null;
     public static final EntityType<CouplerEntity> coupler = null;
 
     // Tile Entities

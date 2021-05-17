@@ -166,10 +166,10 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         Vector3d pos = this.position();
         if (level.isClientSide()) {
             if (isMinecartPowered()) {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.3F, 1.0F, false);
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.3F, 1.0F, false);
                 spawnSmokeParticles(level, this.position(), false, true);
             } else {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundCategory.NEUTRAL, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
             }
         }
 
