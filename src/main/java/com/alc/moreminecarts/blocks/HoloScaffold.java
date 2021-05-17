@@ -43,6 +43,12 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         this.registerDefaultState(this.stateDefinition.any().setValue(TRUE_DISTANCE, MAX_DISTANCE).setValue(WATERLOGGED, false).setValue(BOTTOM, true));
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> p_206840_1_) {
+        p_206840_1_.add(TRUE_DISTANCE, WATERLOGGED, BOTTOM);
+    }
+
+
     // Gets lowest-distance neighbor in any direction, or -1 if there is none.
     public static int getDistance(IBlockReader reader, BlockPos pos) {
         int min_distance = MAX_DISTANCE + 1;
@@ -117,11 +123,6 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     @Override
     public FluidState getFluidState(BlockState p_204507_1_) {
         return p_204507_1_.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(p_204507_1_);
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> p_206840_1_) {
-        p_206840_1_.add(TRUE_DISTANCE, WATERLOGGED, BOTTOM);
     }
 
     @Override
