@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "bottom=false": {
       "model": "moreminecarts:block/holo_scaffold"
+    },
+    "bottom=true": {
+      "model": "minecraft:block/holo_scaffold_bottom"
     }
   }
 }
