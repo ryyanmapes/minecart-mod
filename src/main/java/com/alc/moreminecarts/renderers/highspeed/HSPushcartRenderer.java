@@ -1,11 +1,12 @@
-package com.alc.moreminecarts.renderers;
+package com.alc.moreminecarts.renderers.highspeed;
 
+import com.alc.moreminecarts.renderers.FixedBlockMinecart;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class HighSpeedPushcartRenderer extends FixedBlockMinecart {
-    public HighSpeedPushcartRenderer(EntityRendererManager renderManagerIn) {
+public class HSPushcartRenderer extends FixedBlockMinecart {
+    public HSPushcartRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
     }
 

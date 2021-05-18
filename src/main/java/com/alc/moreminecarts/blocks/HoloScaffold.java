@@ -3,6 +3,7 @@ package com.alc.moreminecarts.blocks;
 import com.alc.moreminecarts.MMReferences;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
@@ -140,8 +141,8 @@ public class HoloScaffold extends Block implements IWaterLoggable {
                 .setValue(BOTTOM, this.isBottom(world, blockpos, i));
     }
 
-    private boolean isBottom(IBlockReader p_220116_1_, BlockPos p_220116_2_, int p_220116_3_) {
-        return p_220116_3_ > 0 && !p_220116_1_.getBlockState(p_220116_2_.below()).is(this);
+    private boolean isBottom(IBlockReader block_reader, BlockPos pos, int distance) {
+        return block_reader.getBlockState(pos.below()).is(Blocks.AIR);
     }
 
     @Override

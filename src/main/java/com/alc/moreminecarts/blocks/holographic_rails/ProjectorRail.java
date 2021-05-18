@@ -47,7 +47,8 @@ public class ProjectorRail extends AbstractRailBlock {
             // Remove old holograms
             for (int i = 0; i < getHologramLength(); i++) {
                 BlockPos test_pos = pos.relative(direction, i+1).above(!now_powered? i: 0);
-                if (worldIn.getBlockState(test_pos).is(getHologramRail())) {
+                BlockState test_state = worldIn.getBlockState(test_pos);
+                if (test_state.is(getHologramRail()) && test_state.getValue(FACING) == direction && test_state.getValue(SHAPE) == shape) {
                     worldIn.setBlock(test_pos, Blocks.AIR.defaultBlockState(), 3);
                 }
             }
