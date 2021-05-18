@@ -1,12 +1,12 @@
-package com.alc.moreminecarts.renderers;
+package com.alc.moreminecarts.renderers.highspeed;
 
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class HighSpeedMinecartRenderer extends MinecartRenderer {
-    public HighSpeedMinecartRenderer(EntityRendererManager renderManagerIn) {
+public class HSMinecartRenderer extends MinecartRenderer {
+    public HSMinecartRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
     }
 

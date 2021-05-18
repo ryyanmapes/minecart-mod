@@ -29,6 +29,10 @@ import java.util.Random;
 
 public class CampfireCartEntity extends AbstractMinecartEntity {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(FurnaceMinecartEntity.class, DataSerializers.BOOLEAN);
+    private static final String PUSH_X_NAME = "PushX";
+    private static final String PUSH_Z_NAME = "PushZ";
+    private static final String POWERED_NAME = "powered";
+
 
     public double pushX = 0;
     public double pushZ = 0;
@@ -194,14 +198,16 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
 
     protected void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
-        compound.putDouble("PushX", this.pushX);
-        compound.putDouble("PushZ", this.pushZ);
+        compound.putDouble(PUSH_X_NAME, this.pushX);
+        compound.putDouble(PUSH_Z_NAME, this.pushZ);
+        compound.putBoolean(POWERED_NAME, this.isMinecartPowered());
     }
 
     protected void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
         this.pushX = compound.getDouble("PushX");
         this.pushZ = compound.getDouble("PushZ");
+        setMinecartPowered(compound.getBoolean(POWERED_NAME));
     }
 
     public BlockState getDefaultDisplayBlockState() {

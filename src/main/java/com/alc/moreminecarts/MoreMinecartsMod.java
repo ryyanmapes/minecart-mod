@@ -21,6 +21,10 @@ import com.alc.moreminecarts.proxy.IProxy;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.proxy.ServerProxy;
 import com.alc.moreminecarts.renderers.*;
+import com.alc.moreminecarts.renderers.highspeed.HSMinecartRenderer;
+import com.alc.moreminecarts.renderers.highspeed.HSPistonPushcartRenderer;
+import com.alc.moreminecarts.renderers.highspeed.HSPushcartRenderer;
+import com.alc.moreminecarts.renderers.highspeed.HSStickyPistonPushcartRenderer;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
 import net.minecraft.block.*;
@@ -113,6 +117,9 @@ public class MoreMinecartsMod
     private static final RegistryObject<EntityType<HSCampfireMinecart>> HS_CAMPFIRE_CART_ENTITY = ENTITIES.register("high_speed_campfire_minecart", () -> EntityType.Builder.<HSCampfireMinecart>of(HSCampfireMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_campfire_minecart"));
     private static final RegistryObject<EntityType<HSSoulfireMinecart>> HS_SOULFIRE_CART_ENTITY = ENTITIES.register("high_speed_soulfire_minecart", () -> EntityType.Builder.<HSSoulfireMinecart>of(HSSoulfireMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_soulfire_minecart"));
     private static final RegistryObject<EntityType<HSPushcart>> HS_PUSHCART_ENTITY = ENTITIES.register("high_speed_pushcart", () -> EntityType.Builder.<HSPushcart>of(HSPushcart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_pushcart"));
+    private static final RegistryObject<EntityType<HSPistonPushcart>> HS_PISTON_PUSHCART_ENTITY = ENTITIES.register("high_speed_piston_pushcart", () -> EntityType.Builder.<HSPistonPushcart>of(HSPistonPushcart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_piston_pushcart"));
+    private static final RegistryObject<EntityType<HSStickyPistonPushcart>> HS_STICKY_PISTON_PUSHCART_ENTITY = ENTITIES.register("high_speed_sticky_piston_pushcart", () -> EntityType.Builder.<HSStickyPistonPushcart>of(HSStickyPistonPushcart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_sticky_piston_pushcart"));
+
 
     // Rail Blocks
     private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
@@ -144,8 +151,8 @@ public class MoreMinecartsMod
 
 
     // Potted Plants
-    //private static final RegistryObject<Block> POTTED_GLASS_CACTUS = BLOCKS.register("potted_glass_cactus", () -> new FlowerPotBlock(glass_cactus, of(Material.DECORATION).instabreak().noOcclusion()));
-    //private static final RegistryObject<Block> POTTED_BEET = BLOCKS.register("potted_beet", () -> new FlowerPotBlock(MMReferences.chunkrodite_block, of(Material.DECORATION).instabreak().noOcclusion()));
+    private static final RegistryObject<Block> POTTED_GLASS_CACTUS = BLOCKS.register("potted_glass_cactus", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> glass_cactus, of(Material.DECORATION).instabreak().noOcclusion()));
+    private static final RegistryObject<Block> POTTED_BEET = BLOCKS.register("potted_beet", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> MMReferences.chunkrodite_block, of(Material.DECORATION).instabreak().noOcclusion()));
 
     // Rail Items
     private static final RegistryObject<Item> RAIL_TURN_ITEM = ITEMS.register("rail_turn", () -> new BlockItem(rail_turn, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -282,9 +289,6 @@ public class MoreMinecartsMod
         TILE_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
-        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:models/block/pot_beet"), ()->potted_glass_cactus);
-        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:models/block/pot_glass_cactus"), ()->potted_beet);
-
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -294,7 +298,8 @@ public class MoreMinecartsMod
                 new ColumnBlockPlacer(1, 2))).tries(2).noProjection().build())
                 .decorated(Features.Placements.HEIGHTMAP_DOUBLE_SQUARE).count(2);
 
-
+        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), ()->potted_beet);
+        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), ()->potted_glass_cactus);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -328,6 +333,8 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
         RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);
         RenderTypeLookup.setRenderLayer(glass_cactus, cutout);
+        RenderTypeLookup.setRenderLayer(potted_beet, cutout);
+        RenderTypeLookup.setRenderLayer(potted_glass_cactus, cutout);
 
         RenderTypeLookup.setRenderLayer(color_detector_rail_white, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_orange, cutout);
@@ -356,19 +363,21 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.sticky_piston_pushcart, StickyPistonPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.coupler, CouplerRenderer::new);
 
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_chest_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_tnt_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_command_block_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_hopper_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_spawner_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_furnace_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_net_minecart, HighSpeedMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_chunk_loader_minecart, HighSpeedMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_chest_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_tnt_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_command_block_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_hopper_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_spawner_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_furnace_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_net_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_chunk_loader_minecart, HSMinecartRenderer::new);
 
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_campfire_minecart, HighSpeedPushcartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_soulfire_minecart, HighSpeedPushcartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(high_speed_pushcart, HighSpeedPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_campfire_minecart, HSPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_soulfire_minecart, HSPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_pushcart, HSPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_piston_pushcart, HSPistonPushcartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_sticky_piston_pushcart, HSStickyPistonPushcartRenderer::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

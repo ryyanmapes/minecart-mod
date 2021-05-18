@@ -119,7 +119,7 @@ public class PistonPushcartRenderer extends EntityRenderer<PistonPushcartEntity>
                 matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
 
         boolean is_first = true;
-        float length = MathHelper.lerp(partialTicks, pushcart.last_height, pushcart.height) * (4.0f/3.0f);
+        float length = MathHelper.lerp(partialTicks, pushcart.getLastHeight(), pushcart.getHeight()) * (4.0f/3.0f);
         matrixStackIn.translate(0, length, 0);
         while( length >= 0 ) {
 

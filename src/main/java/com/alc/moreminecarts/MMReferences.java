@@ -52,6 +52,8 @@ public class MMReferences {
     public static final EntityType<HSMinecartEntities.HSCampfireMinecart> high_speed_campfire_minecart = null;
     public static final EntityType<HSMinecartEntities.HSSoulfireMinecart> high_speed_soulfire_minecart = null;
     public static final EntityType<HSMinecartEntities.HSPushcart> high_speed_pushcart = null;
+    public static final EntityType<HSMinecartEntities.HSPistonPushcart> high_speed_piston_pushcart = null;
+    public static final EntityType<HSMinecartEntities.HSStickyPistonPushcart> high_speed_sticky_piston_pushcart = null;
 
     // Blocks
     public static final Block rail_turn = null;

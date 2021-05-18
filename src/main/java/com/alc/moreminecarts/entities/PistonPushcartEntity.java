@@ -1,21 +1,26 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMConstants;
+import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.Direction;
-import net.minecraft.util.TransportationHelper;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 public class PistonPushcartEntity extends IronPushcartEntity {
@@ -23,7 +28,21 @@ public class PistonPushcartEntity extends IronPushcartEntity {
 
     public static final DataParameter<Float> HEIGHT_PARAMETER = EntityDataManager.defineId(PistonPushcartEntity.class, DataSerializers.FLOAT);
     public static final DataParameter<Float> LAST_HEIGHT_PARAMETER = EntityDataManager.defineId(PistonPushcartEntity.class, DataSerializers.FLOAT);
+    public static final String HEIGHT_NAME = "height";
+    public static final String LAST_HEIGHT_NAME = "last_height";
 
+    public float getHeight() {
+        return this.entityData.get(HEIGHT_PARAMETER);
+    }
+    protected void setHeight(float height) {
+        this.entityData.set(HEIGHT_PARAMETER, height);
+    }
+    public float getLastHeight() {
+        return this.entityData.get(LAST_HEIGHT_PARAMETER);
+    }
+    protected void setLastHeight(float height) {
+        this.entityData.set(LAST_HEIGHT_PARAMETER, height);
+    }
 
     public PistonPushcartEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -33,31 +52,62 @@ public class PistonPushcartEntity extends IronPushcartEntity {
         super(type, worldIn, x, y, z);
     }
 
-    public float height;
-    public float last_height;
     // Not synced
     public boolean going_up;
     public boolean going_down;
 
     @Override
+    protected void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putFloat(HEIGHT_NAME, getHeight());
+        compound.putFloat(LAST_HEIGHT_NAME, getLastHeight());
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
+        this.setHeight(compound.getFloat(HEIGHT_NAME));
+        this.setLastHeight(compound.getFloat(LAST_HEIGHT_NAME));
+    }
+
+    @Override
     public double getPassengersRidingOffset() {
-        return 0.5 + height;
+        return 0.65 + getHeight();
     }
 
     @Override
     public void tick() {
         super.tick();
 
+        final float height = getHeight();
+        final float last_height = getLastHeight();
+
+        if (height != last_height) setLastHeight(height);
+
         if (ContainsPlayerPassenger()) {
-            if (height != last_height) last_height = height;
-
-            if (going_up) height += MMConstants.PISTON_PUSHCART_VERTICAL_SPEED;
-            if (going_down) height -= MMConstants.PISTON_PUSHCART_VERTICAL_SPEED;
-
-            if (height < 0) height = 0;
-            if (height > MMConstants.PISTON_PUSHCART_MAX_HEIGHT) height = MMConstants.PISTON_PUSHCART_MAX_HEIGHT;
+            if (going_up) attemptMove(true);
+            if (going_down) attemptMove(false);
         }
 
+    }
+
+    public void attemptMove(boolean going_up) {
+        final float height = getHeight();
+
+        if (going_up) {
+            BlockPos test_pos = this.blockPosition().above((int)Math.ceil(height + 1.5));
+            BlockState test_state = level.getBlockState( test_pos );
+            if (test_state.isAir()) setHeight(height + getVerticalSpeed());
+            if (getHeight() > MMConstants.PISTON_PUSHCART_MAX_HEIGHT) setHeight(MMConstants.PISTON_PUSHCART_MAX_HEIGHT);
+        }
+        else {
+            setHeight(height - getVerticalSpeed());
+            if (getHeight() < 0) setHeight(0);
+        }
+    }
+
+    public float getVerticalSpeed() {
+        return MMConstants.PISTON_PUSHCART_VERTICAL_SPEED;
     }
 
     public boolean ContainsPlayerPassenger() {
@@ -65,6 +115,12 @@ public class PistonPushcartEntity extends IronPushcartEntity {
             if (entity instanceof PlayerEntity) return true;
         }
         return false;
+    }
+
+    @Override
+    public void activateMinecart(int x, int y, int z, boolean receivingPower) {
+        if (receivingPower) attemptMove(true);
+        else attemptMove(false);
     }
 
     @Override
@@ -84,8 +140,8 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.getEntityData().define(HEIGHT_PARAMETER, height);
-        this.getEntityData().define(LAST_HEIGHT_PARAMETER, last_height);
+        this.getEntityData().define(HEIGHT_PARAMETER, 0.0f);
+        this.getEntityData().define(LAST_HEIGHT_PARAMETER, 0.0f);
     }
 
     public void setElevating(boolean is_upwards, boolean is_down) {
@@ -107,16 +163,28 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     public AxisAlignedBB getBoundingBoxForCulling() {
         AxisAlignedBB axisalignedbb = this.getBoundingBox();
         AxisAlignedBB true_axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ,
-                axisalignedbb.maxX, axisalignedbb.maxY + height, axisalignedbb.maxZ);
+                axisalignedbb.maxX, axisalignedbb.maxY + 0.65 + getHeight(), axisalignedbb.maxZ);
         return this.hasCustomDisplay() ? true_axisalignedbb.inflate((double)Math.abs(this.getDisplayOffset()) / 16.0D) : true_axisalignedbb;
     }
 
+    @Override
+    public void destroy(DamageSource source) {
+        this.remove();
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            ItemStack stack = new ItemStack(MMItemReferences.iron_pushcart);
+            if (this.hasCustomName()) {
+                stack.setHoverName(this.getCustomName());
+            }
+            this.spawnAtLocation(stack);
+            this.spawnAtLocation(new ItemStack(Items.PISTON));
+        }
+    }
 
     @Override
     public AxisAlignedBB getBoundingBox() {
         AxisAlignedBB bounding_box = super.getBoundingBox();
         return new AxisAlignedBB(bounding_box.minX, bounding_box.minY, bounding_box.minZ,
-                bounding_box.maxX, bounding_box.maxY + height, bounding_box.maxZ);
+                bounding_box.maxX, bounding_box.maxY + 0.65 + getHeight(), bounding_box.maxZ);
     }
 
     // Copied from AbstractMinecartEntity
@@ -137,7 +205,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
                 for(int i : POSE_DISMOUNT_HEIGHTS.get(pose)) {
                     for(int[] aint1 : aint) {
                         // CHANGED to add height to Y component
-                        blockpos$mutable.set(blockpos.getX() + aint1[0], blockpos.getY() + height + i, blockpos.getZ() + aint1[1]);
+                        blockpos$mutable.set(blockpos.getX() + aint1[0], blockpos.getY() + getHeight() + i, blockpos.getZ() + aint1[1]);
                         double d0 = this.level.getBlockFloorHeight(TransportationHelper.nonClimbableShape(this.level, blockpos$mutable), () -> {
                             return TransportationHelper.nonClimbableShape(this.level, blockpos$mutable.below());
                         });
@@ -170,5 +238,15 @@ public class PistonPushcartEntity extends IronPushcartEntity {
 
             return super.getDismountLocationForPassenger(p_230268_1_);
         }
+    }
+
+    // Weird workaround to extend entity interaction distance limits.
+    public ActionResultType interact(PlayerEntity player, Hand hand) {
+        ActionResultType result = super.interact(player, hand);
+        if (result == ActionResultType.SUCCESS && level.isClientSide) {
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(
+                    new MoreMinecartsPacketHandler.ExtendedInteractPacket(this, hand, player.isShiftKeyDown()));
+        }
+        return result;
     }
 }

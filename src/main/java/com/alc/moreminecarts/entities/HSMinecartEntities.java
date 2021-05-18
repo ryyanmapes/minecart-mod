@@ -42,14 +42,16 @@ public class HSMinecartEntities {
         else if (minecart instanceof ChunkLoaderCartEntity) new_minecart = MMReferences.high_speed_chunk_loader_minecart.create(minecart.level);
         else if (minecart instanceof SoulfireCartEntity) new_minecart = MMReferences.high_speed_soulfire_minecart.create(minecart.level);
         else if (minecart instanceof CampfireCartEntity) new_minecart = MMReferences.high_speed_campfire_minecart.create(minecart.level);
-        else if (minecart instanceof IronPushcartEntity) {
-            HSPushcart newer_minecart = MMReferences.high_speed_pushcart.create(minecart.level);
+        else if (minecart instanceof StickyPistonPushcartEntity) new_minecart = MMReferences.high_speed_sticky_piston_pushcart.create(minecart.level);
+        else if (minecart instanceof PistonPushcartEntity) new_minecart = MMReferences.high_speed_piston_pushcart.create(minecart.level);
+        else if (minecart instanceof IronPushcartEntity) new_minecart = MMReferences.high_speed_pushcart.create(minecart.level);
+        else return false;
+
+        if (minecart instanceof IronPushcartEntity) {
             for (Entity passenger : minecart.getPassengers()) {
                 passenger.stopRiding();
             }
-            new_minecart = newer_minecart;
         }
-        else return false;
 
         CompoundNBT data = new CompoundNBT();
         minecart.saveWithoutId(data);
@@ -341,6 +343,60 @@ public class HSMinecartEntities {
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
+        }
+    }
+
+    public static class HSPistonPushcart extends PistonPushcartEntity implements IHSCart {
+        public HSPistonPushcart(EntityType<? extends PistonPushcartEntity> type, World world) { super(type, world); }
+        @Override
+        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        @Override
+        public void destroy(DamageSource source) {
+            super.destroy(source);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+        }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
+        @Override
+        public double getControlSpeed() { return 300; }
+        @Override
+        public IPacket<?> getAddEntityPacket() {
+            return NetworkHooks.getEntitySpawningPacket(this);
+        }
+        @Override
+        public float getVerticalSpeed() {
+            return MMConstants.PISTON_PUSHCART_AERODYNAMIC_VERTICAL_SPEED;
+        }
+    }
+
+    public static class HSStickyPistonPushcart extends StickyPistonPushcartEntity implements IHSCart {
+        public HSStickyPistonPushcart(EntityType<? extends StickyPistonPushcartEntity> type, World world) { super(type, world); }
+        @Override
+        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        @Override
+        public void destroy(DamageSource source) {
+            super.destroy(source);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+        }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
+        @Override
+        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
+        @Override
+        public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
+        @Override
+        public double getControlSpeed() { return 300; }
+        @Override
+        public IPacket<?> getAddEntityPacket() {
+            return NetworkHooks.getEntitySpawningPacket(this);
+        }
+        @Override
+        public float getVerticalSpeed() {
+            return MMConstants.PISTON_PUSHCART_AERODYNAMIC_VERTICAL_SPEED;
         }
     }
 
