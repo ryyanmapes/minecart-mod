@@ -1,10 +1,10 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "moreminecarts:block/holo_scaffold_particle",
-        "top": "moreminecarts:block/holo_scaffold_top",
-        "side": "moreminecarts:block/holo_scaffold_side",
-        "bottom": "moreminecarts:block/holo_scaffold_bottom"
+        "particle": "moreminecarts:block/broken_holo_scaffold_particle",
+        "top": "moreminecarts:block/broken_holo_scaffold_top",
+        "side": "moreminecarts:block/broken_holo_scaffold_side",
+        "bottom": "moreminecarts:block/broken_holo_scaffold_bottom"
     },
     "elements": [
         {

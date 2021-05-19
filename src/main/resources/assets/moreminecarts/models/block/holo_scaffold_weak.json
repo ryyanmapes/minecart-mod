@@ -1,7 +1,7 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "moreminecarts:block/holo_scaffold_top_weak",
+        "particle": "moreminecarts:block/holo_scaffold_particle",
         "top": "moreminecarts:block/holo_scaffold_top_weak",
         "side": "moreminecarts:block/holo_scaffold_side_weak",
         "bottom": "moreminecarts:block/holo_scaffold_bottom_weak"
