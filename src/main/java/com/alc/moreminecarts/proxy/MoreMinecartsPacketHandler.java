@@ -231,7 +231,7 @@ public class MoreMinecartsPacketHandler {
         player.setShiftKeyDown(p_147340_1_.isUsingSecondaryAction());
         if (entity != null) {
             double d0 = player.distanceToSqr(entity);
-            if (d0 >= 36.0D && d0 < 100.0) {
+            if (d0 >= 36.0D && d0 < 150.0) {
                 Hand hand = p_147340_1_.getHand();
                 ItemStack itemstack = hand != null ? player.getItemInHand(hand).copy() : ItemStack.EMPTY;
                 Optional<ActionResultType> optional = Optional.empty();

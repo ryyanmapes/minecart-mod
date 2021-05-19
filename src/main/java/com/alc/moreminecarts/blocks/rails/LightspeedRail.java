@@ -1,17 +1,17 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.rails;
 
 import com.alc.moreminecarts.MMConstants;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.PoweredRailBlock;
+import net.minecraft.block.RailBlock;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class PoweredLightspeedRail extends PoweredRailBlock {
+public class LightspeedRail extends RailBlock {
 
-    public PoweredLightspeedRail(Properties builder) {
-        super(builder, true);
+    public LightspeedRail(Properties builder) {
+        super(builder);
     }
 
     @Override
@@ -24,4 +24,8 @@ public class PoweredLightspeedRail extends PoweredRailBlock {
         return false;
     }
 
+    @Override
+    public boolean isFlexibleRail(BlockState state, IBlockReader world, BlockPos pos) {
+        return false;
+    }
 }

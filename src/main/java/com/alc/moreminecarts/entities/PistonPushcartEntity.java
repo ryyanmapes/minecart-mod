@@ -97,7 +97,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
         if (going_up) {
             BlockPos test_pos = this.blockPosition().above((int)Math.ceil(height + 1.5));
             BlockState test_state = level.getBlockState( test_pos );
-            if (test_state.isAir()) setHeight(height + getVerticalSpeed());
+            if (!test_state.isCollisionShapeFullBlock(level, test_pos)) setHeight(height + getVerticalSpeed());
             if (getHeight() > MMConstants.PISTON_PUSHCART_MAX_HEIGHT) setHeight(MMConstants.PISTON_PUSHCART_MAX_HEIGHT);
         }
         else {
@@ -246,7 +246,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
 
         // Only used when they are too far away for the normal entity interaction packet.
         double distance = this.distanceToSqr(player);
-        if (result == ActionResultType.SUCCESS && level.isClientSide && distance >= 36.0D && distance < 100.0) {
+        if (result == ActionResultType.SUCCESS && level.isClientSide && distance >= 36.0D && distance < 150.0) {
             MoreMinecartsPacketHandler.INSTANCE.sendToServer(
                     new MoreMinecartsPacketHandler.ExtendedInteractPacket(this, hand, player.isShiftKeyDown()));
         }

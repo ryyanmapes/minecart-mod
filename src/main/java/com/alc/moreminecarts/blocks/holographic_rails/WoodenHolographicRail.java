@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.WoodenRail;
+import com.alc.moreminecarts.blocks.rails.WoodenRail;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;

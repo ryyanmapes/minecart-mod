@@ -5,9 +5,12 @@ import com.alc.moreminecarts.blocks.holographic_rails.*;
 import com.alc.moreminecarts.blocks.parallel_rails.MaglevParallelRail;
 import com.alc.moreminecarts.blocks.parallel_rails.ParallelRail;
 import com.alc.moreminecarts.blocks.parallel_rails.WoodenParallelRail;
+import com.alc.moreminecarts.blocks.powered_rails.PoweredLightspeedRail;
+import com.alc.moreminecarts.blocks.powered_rails.PoweredMaglevRail;
 import com.alc.moreminecarts.blocks.rail_turns.MaglevRailTurn;
 import com.alc.moreminecarts.blocks.rail_turns.RailTurn;
 import com.alc.moreminecarts.blocks.rail_turns.WoodenRailTurn;
+import com.alc.moreminecarts.blocks.rails.*;
 import com.alc.moreminecarts.client.ChunkLoaderScreen;
 import com.alc.moreminecarts.client.PistonPushcartDownKey;
 import com.alc.moreminecarts.client.PistonPushcartUpKey;
@@ -141,6 +144,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> LIGHTSPEED_POWERED_RAIL_BLOCK = BLOCKS.register("lightspeed_powered_rail", () -> new PoweredLightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(1F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
     private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
 
     // Other Blocks
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
@@ -174,6 +178,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> LIGHTSPEED_POWERED_RAIL_ITEM = ITEMS.register("lightspeed_powered_rail", () -> new BlockItem(lightspeed_powered_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> LOCKING_RAIL_ITEM = ITEMS.register("locking_rail", () -> new BlockItem(locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> POWERED_LOCKING_RAIL_ITEM = ITEMS.register("powered_locking_rail", () -> new BlockItem(powered_locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
 
     // Minecart Items
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -322,7 +327,7 @@ public class MoreMinecartsMod
         ClientRegistry.registerKeyBinding(new PistonPushcartDownKey("Piston Pushcart Down", 341, "More Minecarts and Rails"));
 
         RenderType cutout = RenderType.cutout();
-        RenderType translucent = RenderType.translucentMovingBlock();
+
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(parallel_rail, cutout);
         RenderTypeLookup.setRenderLayer(projector_rail, cutout);
@@ -342,9 +347,11 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(lightspeed_powered_rail, cutout);
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(locking_rail, cutout);
+        RenderTypeLookup.setRenderLayer(powered_locking_rail, cutout);
+
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
-        RenderTypeLookup.setRenderLayer(holo_scaffold, translucent);
-        RenderTypeLookup.setRenderLayer(chaotic_holo_scaffold, translucent);
+        RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);
+        RenderTypeLookup.setRenderLayer(chaotic_holo_scaffold, cutout);
         RenderTypeLookup.setRenderLayer(glass_cactus, cutout);
         RenderTypeLookup.setRenderLayer(potted_beet, cutout);
         RenderTypeLookup.setRenderLayer(potted_glass_cactus, cutout);

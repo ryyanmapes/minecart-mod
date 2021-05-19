@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.rails;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;

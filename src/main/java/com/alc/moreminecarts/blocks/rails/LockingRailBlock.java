@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.rails;
 
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
 import net.minecraft.block.AbstractRailBlock;

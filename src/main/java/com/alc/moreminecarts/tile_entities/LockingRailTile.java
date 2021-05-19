@@ -73,7 +73,7 @@ public class LockingRailTile extends TileEntity {
         super.setRemoved();
     }
 
-    private void lockIn(AbstractMinecartEntity cart) {
+    protected void lockIn(AbstractMinecartEntity cart) {
         if (locked_minecart == cart) return;
 
         locked_minecart = cart;
@@ -86,14 +86,14 @@ public class LockingRailTile extends TileEntity {
             saved_push_z = ((FurnaceMinecartEntity)locked_minecart).zPush;
         }
         if (locked_minecart instanceof CampfireCartEntity) {
-            saved_fuel = ((CampfireCartEntity)locked_minecart).isMinecartPowered()? 1 : 0;
-            ((CampfireCartEntity)locked_minecart).setMinecartPowered(false);
-            saved_push_x = ((CampfireCartEntity)locked_minecart).pushX;
-            saved_push_z = ((CampfireCartEntity)locked_minecart).pushZ;
+            saved_fuel = ((CampfireCartEntity) locked_minecart).isMinecartPowered() ? 1 : 0;
+            ((CampfireCartEntity) locked_minecart).setMinecartPowered(false);
+            saved_push_x = ((CampfireCartEntity) locked_minecart).pushX;
+            saved_push_z = ((CampfireCartEntity) locked_minecart).pushZ;
         }
     }
 
-    private void lockOut() {
+    protected void lockOut() {
         if (locked_minecart == null) return;
 
         if (locked_minecart instanceof FurnaceMinecartEntity) {
@@ -115,7 +115,7 @@ public class LockingRailTile extends TileEntity {
 
     // Returns true if there is a comparator signal change.
     public boolean updateLock(boolean locked) {
-        if (!locked && locked_minecart != null)  {
+        if (locked_minecart != null && (!locked || !locked_minecart.isAlive()))  {
             lockOut();
             return true;
         }
