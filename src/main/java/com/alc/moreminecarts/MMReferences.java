@@ -71,6 +71,8 @@ public class MMReferences {
     public static final Block maglev_projector_rail = null;
     public static final Block maglev_hologram_rail = null;
     public static final Block maglev_powered_rail = null;
+    public static final Block lightspeed_rail = null;
+    public static final Block lightspeed_powered_rail = null;
     public static final Block bioluminescent_rail = null;
     public static final Block locking_rail = null;
     public static final Block holo_scaffold_generator = null;

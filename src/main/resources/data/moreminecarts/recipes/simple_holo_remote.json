@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "S"
+  ],
+  "key": {
+    "L": {
+      "item": "moreminecarts:hard_light_lens"
+    },
+    "S": {
+      "item": "moreminecarts:silica_steel"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:backwards_holo_scaffold_remote"
+  }
+}

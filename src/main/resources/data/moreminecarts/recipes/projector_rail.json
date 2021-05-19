@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "R"
+  ],
+  "key": {
+    "L": {
+      "item": "moreminecarts:hard_light_lens"
+    },
+    "R": {
+      "item": "minecraft:rail"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:projector_rail"
+  }
+}

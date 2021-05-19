@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.blocks;
 
 import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.items.HoloRemoteItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -9,6 +10,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
@@ -167,7 +169,10 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     }
 
     public boolean canBeReplaced(BlockState p_196253_1_, BlockItemUseContext p_196253_2_) {
-        return p_196253_2_.getItemInHand().getItem() == this.asItem();
+        Item item_in_hand = p_196253_2_.getItemInHand().getItem();
+        return (item_in_hand instanceof HoloRemoteItem) && (
+                    ((HoloRemoteItem)item_in_hand).remote_type == HoloRemoteItem.HoloRemoteType.regular
+                 || ((HoloRemoteItem)item_in_hand).remote_type == HoloRemoteItem.HoloRemoteType.backwards);
     }
 
     public BlockState updateShape(BlockState p_196271_1_, Direction p_196271_2_, BlockState p_196271_3_, IWorld p_196271_4_, BlockPos p_196271_5_, BlockPos p_196271_6_) {

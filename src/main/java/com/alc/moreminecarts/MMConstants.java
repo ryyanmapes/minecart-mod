@@ -4,6 +4,7 @@ public class MMConstants {
     public static final String modid = "moreminecarts";
 
     public static final float MAGLEV_MAX_SPEED = 1f;
+    public static final float LIGHTSPEED_MAX_SPEED = 2.5f;
 
     public static final float HS_MAX_SPEED = 2f;
     public static final float HS_SLOWDOWN = 0.9999f;
