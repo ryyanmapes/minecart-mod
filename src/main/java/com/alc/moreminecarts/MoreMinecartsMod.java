@@ -137,6 +137,8 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> MAGLEV_PROJECTOR_RAIL = BLOCKS.register("maglev_projector_rail", () -> new MaglevProjectorRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> MAGLEV_HOLOGRAM_RAIL = BLOCKS.register("maglev_hologram_rail", () -> new MaglevHolographicRail(of(Material.GLASS, MaterialColor.COLOR_BLUE).noCollission().strength(0.2F).sound(SoundType.GLASS)));
     private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> LIGHTSPEED_RAIL_BLOCK = BLOCKS.register("lightspeed_rail", () -> new LightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(1F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> LIGHTSPEED_POWERED_RAIL_BLOCK = BLOCKS.register("lightspeed_powered_rail", () -> new PoweredLightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(1F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
     private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
 
@@ -167,6 +169,8 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> MAGLEV_PARALLEL_RAIL_ITEM = ITEMS.register("maglev_parallel_rail", () -> new BlockItem(maglev_parallel_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_PROJECTOR_RAIL_ITEM = ITEMS.register("maglev_projector_rail", () -> new BlockItem(maglev_projector_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_POWERED_RAIL_ITEM = ITEMS.register("maglev_powered_rail", () -> new BlockItem(maglev_powered_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> LIGHTSPEED_RAIL_ITEM = ITEMS.register("lightspeed_rail", () -> new BlockItem(lightspeed_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> LIGHTSPEED_POWERED_RAIL_ITEM = ITEMS.register("lightspeed_powered_rail", () -> new BlockItem(lightspeed_powered_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> LOCKING_RAIL_ITEM = ITEMS.register("locking_rail", () -> new BlockItem(locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
 
@@ -190,7 +194,10 @@ public class MoreMinecartsMod
     // Misc Items
     private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> HIGH_SPEED_UPGRADE_ITEM = ITEMS.register("high_speed_upgrade", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
-    private static final RegistryObject<HoloRemoteItem> HOLO_REMOTE_ITEM = ITEMS.register("holo_remote", () -> new HoloRemoteItem(new Item.Properties().tab(ItemGroup.TAB_TOOLS)));
+    private static final RegistryObject<HoloRemoteItem> HOLO_REMOTE_ITEM = ITEMS.register("holo_remote", () -> new HoloRemoteItem(HoloRemoteItem.HoloRemoteType.regular, new Item.Properties().tab(ItemGroup.TAB_TOOLS)));
+    private static final RegistryObject<HoloRemoteItem> BACKWARDS_HOLO_REMOTE_ITEM = ITEMS.register("backwards_holo_remote", () -> new HoloRemoteItem(HoloRemoteItem.HoloRemoteType.backwards, new Item.Properties().tab(ItemGroup.TAB_TOOLS)));
+    private static final RegistryObject<HoloRemoteItem> SIMPLE_HOLO_REMOTE_ITEM = ITEMS.register("simple_holo_remote", () -> new HoloRemoteItem(HoloRemoteItem.HoloRemoteType.simple, new Item.Properties().tab(ItemGroup.TAB_TOOLS)));
+    private static final RegistryObject<HoloRemoteItem> BROKEN_HOLO_REMOTE_ITEM = ITEMS.register("broken_holo_remote", () -> new HoloRemoteItem(HoloRemoteItem.HoloRemoteType.broken, new Item.Properties().tab(ItemGroup.TAB_TOOLS)));
 
     // Rail Signal Items
     private static final RegistryObject<Item> RAIL_SIGNAL_WHITE = ITEMS.register("rail_signal_white", () -> new Item(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -329,6 +336,8 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(maglev_projector_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_hologram_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_powered_rail, cutout);
+        RenderTypeLookup.setRenderLayer(lightspeed_rail, cutout);
+        RenderTypeLookup.setRenderLayer(lightspeed_powered_rail, cutout);
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
         RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);

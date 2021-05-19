@@ -36,19 +36,24 @@ public class ProjectorRail extends AbstractRailBlock {
 
     @Override
     protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
+        updateState(state, worldIn, pos, blockIn, false);
+    }
+
+    protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn, boolean force) {
         boolean currently_powered = state.getValue(POWERED);
         boolean now_powered = worldIn.hasNeighborSignal(pos);
-        if (currently_powered != now_powered) {
+        if (currently_powered != now_powered || force) {
             worldIn.setBlock(pos, state.setValue(POWERED, now_powered), 3);
 
             Direction direction = state.getValue(FACING);
             RailShape shape = GetAscending(direction, now_powered);
+            RailShape old_shape = GetAscending(direction, !now_powered);
 
             // Remove old holograms
             for (int i = 0; i < getHologramLength(); i++) {
                 BlockPos test_pos = pos.relative(direction, i+1).above(!now_powered? i: 0);
                 BlockState test_state = worldIn.getBlockState(test_pos);
-                if (test_state.is(getHologramRail()) && test_state.getValue(FACING) == direction && test_state.getValue(SHAPE) == shape) {
+                if (test_state.is(getHologramRail()) && test_state.getValue(FACING) == direction && test_state.getValue(SHAPE) == old_shape) {
                     worldIn.setBlock(test_pos, Blocks.AIR.defaultBlockState(), 3);
                 }
             }
@@ -56,7 +61,7 @@ public class ProjectorRail extends AbstractRailBlock {
             // Add new holograms
             for (int i = 0; i < getHologramLength(); i++) {
                 BlockPos test_pos = pos.relative(direction, i+1).above(now_powered? i : 0);
-                if (!worldIn.getBlockState(test_pos).is(Blocks.AIR)) break;
+                if (!worldIn.getBlockState(test_pos).isAir()) break;
                 worldIn.setBlock(test_pos,
                         getHologramRail().defaultBlockState().setValue(FACING, direction).setValue(SHAPE, shape).setValue(HolographicRail.LENGTH, i), 3);
             }
@@ -85,8 +90,8 @@ public class ProjectorRail extends AbstractRailBlock {
 
     @Override
     public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (!oldState.is(state.getBlock())) {
-            this.updateState(state, worldIn, pos, state.getBlock());
+        if (!worldIn.isClientSide()) {
+            this.updateState(state, worldIn, pos, state.getBlock(), true);
         }
         super.onPlace(state, worldIn, pos, oldState, isMoving);
     }
@@ -109,7 +114,7 @@ public class ProjectorRail extends AbstractRailBlock {
     @Override
     public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (!worldIn.isClientSide()) {
-            updateState(state, worldIn, pos, state.getBlock());
+            updateState(state, worldIn, pos, state.getBlock(), true);
             worldIn.playSound((PlayerEntity)null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
         return ActionResultType.sidedSuccess(worldIn.isClientSide());

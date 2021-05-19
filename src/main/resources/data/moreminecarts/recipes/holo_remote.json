@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "S",
+    "R"
+  ],
+  "key": {
+    "L": {
+      "item": "moreminecarts:hard_light_lens"
+    },
+    "S": {
+      "item": "moreminecarts:silica_steel"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:holo_remote"
+  }
+}

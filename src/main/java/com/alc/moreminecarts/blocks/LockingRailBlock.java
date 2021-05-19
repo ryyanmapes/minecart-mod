@@ -35,7 +35,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
 
     public LockingRailBlock(Properties builder) {
         super(true, builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, Boolean.valueOf(false)).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(INVERTED, Boolean.valueOf(false)));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(INVERTED, false));
     }
 
     // Does this ever get called?
