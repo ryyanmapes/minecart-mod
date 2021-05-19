@@ -12,10 +12,12 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -30,6 +32,31 @@ import java.util.Random;
 
 public class HoloScaffold extends Block implements IWaterLoggable {
 
+    public enum HoloScaffoldStrength implements IStringSerializable {
+        weakest,
+        weak,
+        strong;
+
+        @Override
+        public String getSerializedName() {
+            switch(this) {
+                case strong:
+                    return "strong";
+                case weak:
+                    return "weak";
+                case weakest:
+                    return "weakest";
+            }
+            return "ERROR";
+        }
+
+        public static HoloScaffoldStrength getFromLength(int length) {
+            if (length == 20) return HoloScaffoldStrength.weakest;
+            if (length >= 15) return HoloScaffoldStrength.weak;
+            return HoloScaffoldStrength.strong;
+        }
+    }
+
     public static final int MAX_DISTANCE = 20;
 
     private static final VoxelShape STABLE_SHAPE;
@@ -39,16 +66,20 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     public static final IntegerProperty TRUE_DISTANCE = IntegerProperty.create("distance", 0, MAX_DISTANCE);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty BOTTOM = BlockStateProperties.BOTTOM;
+    public static final EnumProperty STRENGTH = EnumProperty.create("strength", HoloScaffoldStrength.class, HoloScaffoldStrength.strong,
+            HoloScaffoldStrength.weak, HoloScaffoldStrength.weakest);
 
 
     public HoloScaffold(Properties p_i48440_1_) {
         super(p_i48440_1_);
-        this.registerDefaultState(this.stateDefinition.any().setValue(TRUE_DISTANCE, MAX_DISTANCE).setValue(WATERLOGGED, false).setValue(BOTTOM, true));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TRUE_DISTANCE, MAX_DISTANCE)
+                .setValue(WATERLOGGED, false).setValue(BOTTOM, true)
+                .setValue(STRENGTH, HoloScaffoldStrength.strong));
     }
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> p_206840_1_) {
-        p_206840_1_.add(TRUE_DISTANCE, WATERLOGGED, BOTTOM);
+        p_206840_1_.add(TRUE_DISTANCE, WATERLOGGED, BOTTOM, STRENGTH);
     }
 
 
@@ -107,7 +138,11 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         }
 
         if (new_distance != old_distance || new_bottom != old_bottom) {
-            world.setBlock(pos, state.setValue(TRUE_DISTANCE, new_distance).setValue(BOTTOM, this.isBottom(world, pos, new_distance)), 2);
+            world.setBlock(pos, state.setValue(TRUE_DISTANCE, new_distance)
+                    .setValue(BOTTOM, this.isBottom(world, pos, new_distance))
+                    .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(new_distance)),
+                    2);
+
         }
     }
 
@@ -140,7 +175,8 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         return this.defaultBlockState()
                 .setValue(WATERLOGGED, world.getFluidState(blockpos).getType() == Fluids.WATER)
                 .setValue(TRUE_DISTANCE, i)
-                .setValue(BOTTOM, this.isBottom(world, blockpos, i));
+                .setValue(BOTTOM, this.isBottom(world, blockpos, i))
+                .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(i));
     }
 
     private boolean isBottom(IBlockReader block_reader, BlockPos pos, int distance) {

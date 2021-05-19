@@ -1,21 +1,21 @@
 {
   "variants": {
-	"bottom=false, distance=20": {
+    "bottom=false,strength=weakest": {
       "model": "moreminecarts:block/holo_scaffold_end"
     },
-    "bottom=true, distance=20": {
+    "bottom=true,strength=weakest": {
       "model": "moreminecarts:block/holo_scaffold_bottom_end"
     },
-    "bottom=false, distance>15": {
+    "bottom=false,strength=weak": {
       "model": "moreminecarts:block/holo_scaffold_weak"
     },
-    "bottom=true, distance>15": {
+    "bottom=true,strength=weak": {
       "model": "moreminecarts:block/holo_scaffold_bottom_weak"
     },
-	"bottom=false, distance<16": {
+	"bottom=false,strength=strong": {
       "model": "moreminecarts:block/holo_scaffold"
     },
-    "bottom=true, distance<16": {
+    "bottom=true,strength=strong": {
       "model": "moreminecarts:block/holo_scaffold_bottom"
 	}
   }
