@@ -1,6 +1,5 @@
 package com.alc.moreminecarts.blocks;
 
-import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
@@ -76,7 +75,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
         if (worldIn.isClientSide()) return;
         if (entityIn instanceof AbstractMinecartEntity) {
             AbstractMinecartEntity locked_minecart = updateLock(state, worldIn, pos);
-            if (locked_minecart != null && entityIn == locked_minecart) {
+            if (entityIn == locked_minecart) {
                 locked_minecart.setPos(pos.getX()+0.5, pos.getY(), pos.getZ() + 0.5);
                 locked_minecart.setDeltaMovement(0,0,0);
             }
@@ -86,7 +85,8 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
     private AbstractMinecartEntity updateLock(BlockState state, World worldIn, BlockPos pos) {
         TileEntity te = worldIn.getBlockEntity(pos);
         if (te instanceof LockingRailTile) {
-            ((LockingRailTile)te).updateLock(state.getValue(POWERED) ^ state.getValue(INVERTED));
+            boolean update_signal = ((LockingRailTile)te).updateLock(state.getValue(POWERED) ^ state.getValue(INVERTED));
+            if (update_signal) worldIn.updateNeighbourForOutputSignal(pos, state.getBlock());
             return ((LockingRailTile)te).locked_minecart;
         }
         return null;
@@ -111,7 +111,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
     @Nullable
     @Override
     public TileEntity newBlockEntity(IBlockReader reader) {
-        return new ChunkLoaderTile();
+        return new LockingRailTile();
     }
 
     // Comparator stuff

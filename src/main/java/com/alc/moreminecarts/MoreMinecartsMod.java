@@ -322,6 +322,7 @@ public class MoreMinecartsMod
         ClientRegistry.registerKeyBinding(new PistonPushcartDownKey("Piston Pushcart Down", 341, "More Minecarts and Rails"));
 
         RenderType cutout = RenderType.cutout();
+        RenderType translucent = RenderType.translucentMovingBlock();
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(parallel_rail, cutout);
         RenderTypeLookup.setRenderLayer(projector_rail, cutout);
@@ -340,9 +341,10 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(lightspeed_rail, cutout);
         RenderTypeLookup.setRenderLayer(lightspeed_powered_rail, cutout);
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
+        RenderTypeLookup.setRenderLayer(locking_rail, cutout);
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
-        RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);
-        RenderTypeLookup.setRenderLayer(chaotic_holo_scaffold, cutout);
+        RenderTypeLookup.setRenderLayer(holo_scaffold, translucent);
+        RenderTypeLookup.setRenderLayer(chaotic_holo_scaffold, translucent);
         RenderTypeLookup.setRenderLayer(glass_cactus, cutout);
         RenderTypeLookup.setRenderLayer(potted_beet, cutout);
         RenderTypeLookup.setRenderLayer(potted_glass_cactus, cutout);

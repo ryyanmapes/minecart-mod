@@ -187,11 +187,11 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         this.entityData.define(POWERED, false);
     }
 
-    protected boolean isMinecartPowered() {
+    public boolean isMinecartPowered() {
         return this.entityData.get(POWERED);
     }
 
-    protected void setMinecartPowered(boolean powered) {
+    public void setMinecartPowered(boolean powered) {
         this.entityData.set(POWERED, powered);
     }
 

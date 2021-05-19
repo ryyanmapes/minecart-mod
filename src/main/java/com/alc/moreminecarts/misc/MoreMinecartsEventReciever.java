@@ -17,7 +17,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -76,11 +75,6 @@ public class MoreMinecartsEventReciever {
             return;
         }
 
-    }
-
-    @SubscribeEvent
-    public static void onItemPickup(PlayerEvent.ItemPickupEvent event) {
-        // todo if health < 5, and is remote, pickup broken remote
     }
 
     @SubscribeEvent

@@ -48,13 +48,13 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         }
 
         public static HoloScaffoldStrength getFromLength(int length) {
-            if (length == 20) return HoloScaffoldStrength.weakest;
-            if (length >= 15) return HoloScaffoldStrength.weak;
+            if (length == 15) return HoloScaffoldStrength.weakest;
+            if (length >= 10) return HoloScaffoldStrength.weak;
             return HoloScaffoldStrength.strong;
         }
     }
 
-    public static final int MAX_DISTANCE = 20;
+    public static final int MAX_DISTANCE = 15;
 
     private static final VoxelShape STABLE_SHAPE;
     private static final VoxelShape UNSTABLE_SHAPE;

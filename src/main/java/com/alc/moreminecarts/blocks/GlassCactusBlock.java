@@ -1,10 +1,14 @@
 package com.alc.moreminecarts.blocks;
 
+import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CactusBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
@@ -41,8 +45,20 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
         return world_reader.getBiome(pos).getBiomeCategory() == Biome.Category.DESERT && super.canSurvive(state, world_reader, pos);
     }
 
-    public void entityInside(BlockState p_196262_1_, World p_196262_2_, BlockPos p_196262_3_, Entity p_196262_4_) {
-        p_196262_4_.hurt(DamageSource.CACTUS, 2.0F);
+    public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {
+
+        // Turn into broken remote if entity is holo remote item.
+        if (entity instanceof ItemEntity) {
+            ItemStack item_stack = ((ItemEntity)entity).getItem();
+            Item item = item_stack.getItem();
+
+            if (item == MMItemReferences.holo_remote || item == MMItemReferences.backwards_holo_remote || item == MMItemReferences.simple_holo_remote){
+                ((ItemEntity)entity).setItem(new ItemStack(MMItemReferences.broken_holo_remote, item_stack.getCount()));
+                return;
+            }
+            else if (item == MMItemReferences.broken_holo_remote) return;
+        }
+        entity.hurt(DamageSource.CACTUS, 2.0F);
     }
 
     @Override

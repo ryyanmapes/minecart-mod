@@ -243,7 +243,10 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     // Weird workaround to extend entity interaction distance limits.
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         ActionResultType result = super.interact(player, hand);
-        if (result == ActionResultType.SUCCESS && level.isClientSide) {
+
+        // Only used when they are too far away for the normal entity interaction packet.
+        double distance = this.distanceToSqr(player);
+        if (result == ActionResultType.SUCCESS && level.isClientSide && distance >= 36.0D && distance < 100.0) {
             MoreMinecartsPacketHandler.INSTANCE.sendToServer(
                     new MoreMinecartsPacketHandler.ExtendedInteractPacket(this, hand, player.isShiftKeyDown()));
         }

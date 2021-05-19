@@ -43,14 +43,18 @@ public class ChaoticHoloScaffold extends HoloScaffold {
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         super.tick(state, world, pos, rand);
 
-        boolean ready_to_grow = state.getValue(READY_TO_GROW);
-        if (!ready_to_grow) return;
-        int distance = state.getValue(TRUE_DISTANCE);
-        if (distance >= MAX_DISTANCE) return;
-        Direction direction = state.getValue(GROW_DIRECTION);
-        int new_distance = distance + 1;
+        BlockState true_state = world.getBlockState(pos);
+        if (true_state.getBlock() != state.getBlock()) return;
 
-        world.setBlock(pos, state.setValue(READY_TO_GROW, false), 2);
+        boolean ready_to_grow = true_state.getValue(READY_TO_GROW);
+        if (!ready_to_grow) return;
+
+        world.setBlock(pos, true_state.setValue(READY_TO_GROW, false), 2);
+
+        int distance = true_state.getValue(TRUE_DISTANCE);
+        if (distance >= MAX_DISTANCE) return;
+        Direction direction = true_state.getValue(GROW_DIRECTION);
+        int new_distance = distance + 1;
 
         if (distance > 1 && rand.nextInt(5) == 0) {
             for (int i = rand.nextInt(3); i < 3; i++) {
@@ -60,11 +64,11 @@ public class ChaoticHoloScaffold extends HoloScaffold {
                 BlockPos new_pos = pos.relative(new_direction);
                 if (!world.getBlockState(new_pos).isAir()) continue;
 
-                world.setBlock(new_pos, state.setValue(TRUE_DISTANCE, new_distance)
+                world.setBlock(new_pos, true_state.setValue(TRUE_DISTANCE, new_distance)
                     .setValue(BOTTOM, this.isBottom(world, new_pos, new_distance))
                     .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(new_distance))
                     .setValue(GROW_DIRECTION, new_direction), 2);
-                world.getBlockTicks().scheduleTick(new_pos, state.getBlock(), 3, TickPriority.VERY_LOW);
+                world.getBlockTicks().scheduleTick(new_pos, true_state.getBlock(), 3, TickPriority.VERY_LOW);
             }
         }
         else {
@@ -72,11 +76,11 @@ public class ChaoticHoloScaffold extends HoloScaffold {
             BlockPos new_pos = pos.relative(direction);
             if (world.getBlockState(new_pos).isAir()) {
 
-                world.setBlock(new_pos, state.setValue(TRUE_DISTANCE, new_distance)
+                world.setBlock(new_pos, true_state.setValue(TRUE_DISTANCE, new_distance)
                     .setValue(BOTTOM, this.isBottom(world, new_pos, new_distance))
                     .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(new_distance))
                     .setValue(GROW_DIRECTION, direction), 2);
-                world.getBlockTicks().scheduleTick(new_pos, state.getBlock(), 3, TickPriority.VERY_LOW);
+                world.getBlockTicks().scheduleTick(new_pos, true_state.getBlock(), 3, TickPriority.VERY_LOW);
             }
         }
 
