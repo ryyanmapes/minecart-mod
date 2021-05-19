@@ -77,6 +77,7 @@ public class MMReferences {
     public static final Block locking_rail = null;
     public static final Block holo_scaffold_generator = null;
     public static final Block holo_scaffold = null;
+    public static final Block chaotic_holo_scaffold = null;
     public static final Block piston_display_block = null;
 
     public static final Block chunk_loader = null;

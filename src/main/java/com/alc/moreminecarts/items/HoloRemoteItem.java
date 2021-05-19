@@ -23,6 +23,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.TickPriority;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -36,7 +37,8 @@ public class HoloRemoteItem extends Item {
         broken
     }
 
-    public Block block = MMReferences.holo_scaffold;
+    public Block regular_block = MMReferences.holo_scaffold;
+    public Block chaotic_block = MMReferences.chaotic_holo_scaffold;
     public HoloRemoteType remote_type;
 
     public HoloRemoteItem(HoloRemoteType remote_type, Item.Properties properties) {
@@ -107,7 +109,7 @@ public class HoloRemoteItem extends Item {
     }
 
     private Block getBlockRaw() {
-        return this.block;
+        return remote_type == HoloRemoteType.broken? chaotic_block : regular_block;
     }
 
     public ActionResultType useOn(ItemUseContext p_195939_1_) {
@@ -132,7 +134,10 @@ public class HoloRemoteItem extends Item {
     }
 
     protected boolean placeBlock(BlockItemUseContext p_195941_1_, BlockState p_195941_2_) {
-        return p_195941_1_.getLevel().setBlock(p_195941_1_.getClickedPos(), p_195941_2_, 11);
+        boolean ret = p_195941_1_.getLevel().setBlock(p_195941_1_.getClickedPos(), p_195941_2_, 11);
+        if (remote_type == HoloRemoteType.broken)
+            p_195941_1_.getLevel().getBlockTicks().scheduleTick(p_195941_1_.getClickedPos(), p_195941_2_.getBlock(), 2, TickPriority.VERY_LOW);
+        return ret;
     }
 
     public ActionResultType place(BlockItemUseContext context) {

@@ -22,10 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
@@ -82,13 +79,16 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         p_206840_1_.add(TRUE_DISTANCE, WATERLOGGED, BOTTOM, STRENGTH);
     }
 
+    public Block getScaffoldBlock() {
+        return MMReferences.holo_scaffold;
+    }
 
     // Gets lowest-distance neighbor in any direction, or -1 if there is none.
-    public static int getDistance(IBlockReader reader, BlockPos pos) {
+    public static int getDistance(IBlockReader reader, BlockPos pos, Block scaffold_block) {
         int min_distance = MAX_DISTANCE + 1;
         for(Direction direction : Direction.values()) {
             BlockState blockstate1 = reader.getBlockState(pos.relative(direction));
-            if (blockstate1.is(MMReferences.holo_scaffold)) {
+            if (blockstate1.is(scaffold_block)) {
                 min_distance = Math.min(min_distance, blockstate1.getValue(TRUE_DISTANCE) + 1);
             }
             else if (blockstate1.is(MMReferences.holo_scaffold_generator)) {
@@ -98,8 +98,8 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         return min_distance;
     }
 
-    public static boolean isValidDistance(IBlockReader reader, BlockPos pos) {
-        int distance = getDistance(reader, pos);
+    public boolean isValidDistance(IBlockReader reader, BlockPos pos) {
+        int distance = getDistance(reader, pos, getScaffoldBlock());
         return distance >= 0 && distance <= MAX_DISTANCE;
     }
 
@@ -107,10 +107,10 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         for(Direction direction : Direction.values()) {
             BlockPos check_pos = pos.relative(direction);
             BlockState blockstate1 = world.getBlockState(check_pos);
-            if (blockstate1.is(MMReferences.holo_scaffold)) {
+            if (blockstate1.is(getScaffoldBlock())) {
                 int distance = blockstate1.getValue(TRUE_DISTANCE);
-                if (only_greater && distance >= value) world.getBlockTicks().scheduleTick(check_pos, this, 1);
-                if (!only_greater && distance <= value) world.getBlockTicks().scheduleTick(check_pos, this, 1);
+                if (only_greater && distance >= value) world.getBlockTicks().scheduleTick(check_pos, this, 1, TickPriority.LOW);
+                if (!only_greater && distance <= value) world.getBlockTicks().scheduleTick(check_pos, this, 1, TickPriority.LOW);
             }
         }
     }
@@ -119,7 +119,7 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         super.tick(state, world, pos, rand);
 
-        int new_distance = getDistance(world, pos);
+        int new_distance = getDistance(world, pos, getScaffoldBlock());
         boolean new_bottom = isBottom(world, pos, new_distance);
 
         if (new_distance == -1 || new_distance > MAX_DISTANCE) {
@@ -139,9 +139,8 @@ public class HoloScaffold extends Block implements IWaterLoggable {
 
         if (new_distance != old_distance || new_bottom != old_bottom) {
             world.setBlock(pos, state.setValue(TRUE_DISTANCE, new_distance)
-                    .setValue(BOTTOM, this.isBottom(world, pos, new_distance))
-                    .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(new_distance)),
-                    2);
+                .setValue(BOTTOM, this.isBottom(world, pos, new_distance))
+                .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(new_distance)), 2);
 
         }
     }
@@ -167,7 +166,7 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     public BlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
         BlockPos blockpos = p_196258_1_.getClickedPos();
         World world = p_196258_1_.getLevel();
-        int i = getDistance(world, blockpos);
+        int i = getDistance(world, blockpos, getScaffoldBlock());
         // These should hopefully never matter.
         if (i < 0) i = 0;
         if (i > MAX_DISTANCE) i = MAX_DISTANCE;
@@ -179,7 +178,7 @@ public class HoloScaffold extends Block implements IWaterLoggable {
                 .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(i));
     }
 
-    private boolean isBottom(IBlockReader block_reader, BlockPos pos, int distance) {
+    protected boolean isBottom(IBlockReader block_reader, BlockPos pos, int distance) {
         return block_reader.getBlockState(pos.below()).is(Blocks.AIR);
     }
 

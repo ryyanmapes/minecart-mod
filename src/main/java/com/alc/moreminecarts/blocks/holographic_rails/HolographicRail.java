@@ -4,7 +4,6 @@ import com.alc.moreminecarts.MMReferences;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DirectionalBlock;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.*;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -19,7 +18,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class HolographicRail extends AbstractRailBlock {
-    public static final DirectionProperty FACING = DirectionalBlock.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     // MAX LENGTH: 16
     public static final IntegerProperty LENGTH = BlockStateProperties.LEVEL;
