@@ -1,0 +1,65 @@
+
+{
+  "variants": {
+    "powered=on,inverted=off,facing=north": {
+      "model": "moreminecarts:block/locking_rail_on"
+    },
+    "powered=off,inverted=off,facing=north": {
+      "model": "moreminecarts:block/locking_rail_off"
+    },
+	"powered=on,inverted=on,facing=north": {
+      "model": "moreminecarts:block/locking_rail_inverted_on"
+    },
+    "powered=off,inverted=on,facing=north": {
+      "model": "moreminecarts:block/locking_rail_inverted_off"
+    },
+	"powered=on,inverted=off,facing=east": {
+      "model": "moreminecarts:block/locking_rail_on",
+	  "y": 90
+    },
+    "powered=off,inverted=off,facing=east": {
+      "model": "moreminecarts:block/locking_rail_off",
+	  "y": 90
+    },
+	"powered=on,inverted=on,facing=east": {
+      "model": "moreminecarts:block/locking_rail_inverted_on",
+	  "y": 90
+    },
+    "powered=off,inverted=on,facing=east": {
+      "model": "moreminecarts:block/locking_rail_inverted_off",
+	  "y": 90
+    },
+	"powered=on,inverted=off,facing=south": {
+      "model": "moreminecarts:block/locking_rail_on",
+	  "y": 180
+    },
+    "powered=off,inverted=off,facing=south": {
+      "model": "moreminecarts:block/locking_rail_off",
+	  "y": 180
+    },
+	"powered=on,inverted=on,facing=south": {
+      "model": "moreminecarts:block/locking_rail_inverted_on",
+	  "y": 180
+    },
+    "powered=off,inverted=on,facing=south": {
+      "model": "moreminecarts:block/locking_rail_inverted_off",
+	  "y": 180
+    },
+	"powered=on,inverted=off,facing=west": {
+      "model": "moreminecarts:block/locking_rail_on",
+	  "y": 270
+    },
+    "powered=off,inverted=off,facing=west": {
+      "model": "moreminecarts:block/locking_rail_off",
+	  "y": 270
+    },
+	"powered=on,inverted=on,facing=west": {
+      "model": "moreminecarts:block/locking_rail_inverted_on",
+	  "y": 270
+    },
+    "powered=off,inverted=on,facing=west": {
+      "model": "moreminecarts:block/locking_rail_inverted_off",
+	  "y": 270
+    }
+  }
+}
