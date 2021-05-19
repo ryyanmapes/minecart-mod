@@ -8,11 +8,11 @@
       "model": "moreminecarts:block/piston_rod"
     },
 	"variant=2": {
-      "model": "minecraft:block/piston_head",
+      "model": "moreminecarts:block/minecart_piston_head",
 	  "x": -90
     },
 	"variant=3": {
-      "model": "minecraft:block/piston_head_sticky",
+      "model": "moreminecarts:block/minecart_piston_head_sticky",
 	  "x": -90
     }
   }
