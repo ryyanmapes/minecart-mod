@@ -1,0 +1,12 @@
+
+{
+  "variants": {
+    "facing=up": {
+      "model": "moreminecarts:block/unloader"
+    },
+    "facing=down": {
+      "model": "moreminecarts:block/unloader",
+      "z": 280
+    }
+  }
+}
