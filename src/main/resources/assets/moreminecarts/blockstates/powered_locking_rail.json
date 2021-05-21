@@ -2,63 +2,63 @@
 {
   "variants": {
     "powered=true,inverted=false,facing=north": {
-      "model": "moreminecarts:block/locking_rail_on"
+      "model": "moreminecarts:block/locking_powered_rail_on"
     },
     "powered=false,inverted=false,facing=north": {
-      "model": "moreminecarts:block/locking_rail_off"
+      "model": "moreminecarts:block/locking_powered_rail_off"
     },
 	"powered=true,inverted=true,facing=north": {
-      "model": "moreminecarts:block/locking_rail_inverted_on"
+      "model": "moreminecarts:block/locking_powered_rail_inverted_on"
     },
     "powered=false,inverted=true,facing=north": {
-      "model": "moreminecarts:block/locking_rail_inverted_off"
+      "model": "moreminecarts:block/locking_powered_rail_inverted_off"
     },
 	"powered=true,inverted=false,facing=east": {
-      "model": "moreminecarts:block/locking_rail_on",
+      "model": "moreminecarts:block/locking_powered_rail_on",
 	  "y": 90
     },
     "powered=false,inverted=false,facing=east": {
-      "model": "moreminecarts:block/locking_rail_off",
+      "model": "moreminecarts:block/locking_powered_rail_off",
 	  "y": 90
     },
 	"powered=true,inverted=true,facing=east": {
-      "model": "moreminecarts:block/locking_rail_inverted_on",
+      "model": "moreminecarts:block/locking_powered_rail_inverted_on",
 	  "y": 90
     },
     "powered=false,inverted=true,facing=east": {
-      "model": "moreminecarts:block/locking_rail_inverted_off",
+      "model": "moreminecarts:block/locking_powered_rail_inverted_off",
 	  "y": 90
     },
 	"powered=true,inverted=false,facing=south": {
-      "model": "moreminecarts:block/locking_rail_on",
+      "model": "moreminecarts:block/locking_powered_rail_on",
 	  "y": 180
     },
     "powered=false,inverted=false,facing=south": {
-      "model": "moreminecarts:block/locking_rail_off",
+      "model": "moreminecarts:block/locking_powered_rail_off",
 	  "y": 180
     },
 	"powered=true,inverted=true,facing=south": {
-      "model": "moreminecarts:block/locking_rail_inverted_on",
+      "model": "moreminecarts:block/locking_powered_rail_inverted_on",
 	  "y": 180
     },
     "powered=false,inverted=true,facing=south": {
-      "model": "moreminecarts:block/locking_rail_inverted_off",
+      "model": "moreminecarts:block/locking_powered_rail_inverted_off",
 	  "y": 180
     },
 	"powered=true,inverted=false,facing=west": {
-      "model": "moreminecarts:block/locking_rail_on",
+      "model": "moreminecarts:block/locking_powered_rail_on",
 	  "y": 270
     },
     "powered=false,inverted=false,facing=west": {
-      "model": "moreminecarts:block/locking_rail_off",
+      "model": "moreminecarts:block/locking_powered_rail_off",
 	  "y": 270
     },
 	"powered=true,inverted=true,facing=west": {
-      "model": "moreminecarts:block/locking_rail_inverted_on",
+      "model": "moreminecarts:block/locking_powered_rail_inverted_on",
 	  "y": 270
     },
     "powered=false,inverted=true,facing=west": {
-      "model": "moreminecarts:block/locking_rail_inverted_off",
+      "model": "moreminecarts:block/locking_powered_rail_inverted_off",
 	  "y": 270
     }
   }
