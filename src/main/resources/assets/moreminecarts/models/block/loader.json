@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "moreminecarts:block/loader_side",
+    "north": "moreminecarts:block/loader_side",
+    "south": "moreminecarts:block/loader_side",
+    "east": "moreminecarts:block/loader_side",
+    "west": "moreminecarts:block/loader_side",
+    "up": "moreminecarts:block/loader_top",
+    "down": "moreminecarts:block/loader_bottom"
+  }
+}
