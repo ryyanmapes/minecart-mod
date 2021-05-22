@@ -8,6 +8,7 @@ import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -20,8 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-// todo does this need to tick?
-public class LockingRailTile extends TileEntity {
+public class LockingRailTile extends TileEntity implements ITickableTileEntity {
     public static String LOCKED_CART_PROPERTY = "locked_cart";
     public static String SAVED_FUEL_PROPERTY = "saved_fuel";
     public static String SAVED_PUSH_X_PROPERTY = "saved_push_x";
@@ -141,5 +141,18 @@ public class LockingRailTile extends TileEntity {
 
     public int getComparatorSignal() {
         return locked_minecart == null ? 0 : 15;
+    }
+
+    @Override
+    public void tick() {
+        if (locked_minecart != null && !level.isClientSide) {
+            if (locked_minecart.isAlive()) {
+                locked_minecart.setPos(getBlockPos().getX() + 0.5, getBlockPos().getY(), getBlockPos().getZ() + 0.5);
+                locked_minecart.setDeltaMovement(0, 0, 0);
+            } else {
+                locked_minecart = null;
+                level.updateNeighbourForOutputSignal(getBlockPos(), this.getBlockState().getBlock());
+            }
+        }
     }
 }

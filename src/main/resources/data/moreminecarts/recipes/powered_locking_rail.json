@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "R"
+  ],
+  "key": {
+    "L": {
+      "item": "moreminecarts:silica_steel"
+    },
+    "R": {
+      "item": "minecraft:powered_rail"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:powered_locking_rail"
+  }
+}

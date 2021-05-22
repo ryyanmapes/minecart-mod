@@ -1,45 +1,68 @@
-package com.alc.moreminecarts.blocks.rails;
+package com.alc.moreminecarts.blocks.utility_rails;
 
-import net.minecraft.block.*;
+import com.alc.moreminecarts.tile_entities.LockingRailTile;
+import net.minecraft.block.AbstractRailBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
-import java.util.function.Predicate;
 
-public class ColorDetectorRailBlock extends AbstractRailBlock {
+public class LockingRailBlock extends AbstractRailBlock implements ITileEntityProvider {
 
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty INVERTED = BooleanProperty.create("inverted");
 
-    public java.util.function.Supplier<Item> detected_item;
 
-
-    public ColorDetectorRailBlock(Properties builder,  java.util.function.Supplier<Item> det) {
+    public LockingRailBlock(Properties builder) {
         super(true, builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, Boolean.valueOf(false)).setValue(SHAPE, RailShape.NORTH_SOUTH));
-        this.detected_item = det;
+        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(INVERTED, false));
+    }
+
+    // Does this ever get called?
+    @Override
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+        super.tick(state, world, pos, rand);
+        this.updateLock(state, world, pos);
+    }
+
+    @Override
+    protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
+        boolean old_powered = state.getValue(POWERED);
+        boolean new_powered = worldIn.hasNeighborSignal(pos);
+        if (old_powered != new_powered) {
+            worldIn.setBlock(pos, state.setValue(POWERED, new_powered), 3);
+            updateLock(state, worldIn, pos);
+            worldIn.updateNeighborsAt(pos.below(), this);
+        }
+
+    }
+
+    @Override
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (!worldIn.isClientSide()) {
+            worldIn.setBlockAndUpdate(pos, state.setValue(INVERTED, !state.getValue(INVERTED)));
+            worldIn.playSound((PlayerEntity)null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        }
+        return ActionResultType.sidedSuccess(worldIn.isClientSide());
     }
 
     @Override
@@ -50,127 +73,61 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     @Override
     public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
         if (worldIn.isClientSide()) return;
-        this.checkPressed(worldIn, pos, state);
+        if (entityIn instanceof AbstractMinecartEntity) {
+            AbstractMinecartEntity locked_minecart = updateLock(state, worldIn, pos);
+            if (entityIn == locked_minecart) {
+                locked_minecart.setPos(pos.getX()+0.5, pos.getY(), pos.getZ() + 0.5);
+                locked_minecart.setDeltaMovement(0,0,0);
+            }
+        }
     }
 
-    @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        this.checkPressed(worldIn, pos, state);
+    private AbstractMinecartEntity updateLock(BlockState state, World worldIn, BlockPos pos) {
+        TileEntity te = worldIn.getBlockEntity(pos);
+        if (te instanceof LockingRailTile) {
+            boolean update_signal = ((LockingRailTile)te).updateLock(state.getValue(POWERED) ^ state.getValue(INVERTED));
+            if (update_signal) worldIn.updateNeighbourForOutputSignal(pos, state.getBlock());
+            return ((LockingRailTile)te).locked_minecart;
+        }
+        return null;
     }
 
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(SHAPE, POWERED);
-    }
-
-    // Below is slightly modified from DetectorRailBlock
-
-    private void checkPressed(World worldIn, BlockPos pos, BlockState state) {
-        if (this.canSurvive(state, worldIn, pos)) {
-            boolean was_powered = state.getValue(POWERED);
-            boolean activate = false;
-            List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (entity) -> true);
-            if (!list.isEmpty()) {
-                if (was_powered) activate = true;
-                else {
-                    for (AbstractMinecartEntity minecart : list) {
-                        if (minecart.getMinecartType() == AbstractMinecartEntity.Type.RIDEABLE) {
-                            List<Entity> passengers = minecart.getPassengers();
-                            if (passengers.isEmpty()) continue;
-                            Entity entity = passengers.get(0);
-                            if (!(entity instanceof PlayerEntity)) continue;
-                            PlayerEntity player = (PlayerEntity) entity;
-                            if (player.getItemInHand(Hand.MAIN_HAND).getItem() == detected_item.get()
-                                    || player.getItemInHand(Hand.OFF_HAND).getItem() == detected_item.get()) {
-                                activate = true;
-                            }
-                        }
-                        else if (minecart.getMinecartType() == AbstractMinecartEntity.Type.CHEST
-                            || minecart.getMinecartType() == AbstractMinecartEntity.Type.HOPPER) {
-                            ContainerMinecartEntity container = (ContainerMinecartEntity)minecart;
-                            HashSet<Item> set = new HashSet<>();
-                            set.add(detected_item.get());
-                            if (container.hasAnyOf(set)) {
-                                activate = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (activate && !was_powered) {
-                BlockState blockstate = state.setValue(POWERED, Boolean.valueOf(true));
-                worldIn.setBlock(pos, blockstate, 3);
-                this.updatePowerToConnected(worldIn, pos, blockstate, true);
-                worldIn.updateNeighborsAt(pos, this);
-                worldIn.updateNeighborsAt(pos.below(), this);
-                worldIn.setBlocksDirty(pos, state, blockstate);
-            }
-
-            if (!activate && was_powered) {
-                BlockState blockstate1 = state.setValue(POWERED, Boolean.valueOf(false));
-                worldIn.setBlock(pos, blockstate1, 3);
-                this.updatePowerToConnected(worldIn, pos, blockstate1, false);
-                worldIn.updateNeighborsAt(pos, this);
-                worldIn.updateNeighborsAt(pos.below(), this);
-                worldIn.setBlocksDirty(pos, state, blockstate1);
-            }
-
-            if (activate) {
-                worldIn.getBlockTicks().scheduleTick(pos, this, 20);
-            }
-
-            worldIn.updateNeighbourForOutputSignal(pos, this);
-        }
-    }
-
-    protected void updatePowerToConnected(World worldIn, BlockPos pos, BlockState state, boolean powered) {
-        RailState railstate = new RailState(worldIn, pos, state);
-
-        for(BlockPos blockpos : railstate.getConnections()) {
-            BlockState blockstate = worldIn.getBlockState(blockpos);
-            blockstate.neighborChanged(worldIn, blockpos, blockstate.getBlock(), pos, false);
-        }
-
+        builder.add(SHAPE, POWERED, INVERTED);
     }
 
     @Override
     public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
-            this.checkPressed(worldIn, pos, this.updateState(state, worldIn, pos, isMoving));
+            this.updateLock(state, worldIn, pos);
         }
     }
 
-    protected <T extends AbstractMinecartEntity> List<T> findMinecarts(World worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
-        return worldIn.getEntitiesOfClass(cartType, this.getDectectionBox(pos), filter);
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 
-    private AxisAlignedBB getDectectionBox(BlockPos pos) {
-        double d0 = 0.2D;
-        return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
+    @Nullable
+    @Override
+    public TileEntity newBlockEntity(IBlockReader reader) {
+        return new LockingRailTile();
     }
+
+    // Comparator stuff
 
     @Override
-    public boolean hasAnalogOutputSignal(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
         return true;
     }
 
     @Override
-    public boolean isSignalSource(BlockState p_149744_1_) {
-        return true;
-    }
-
-    @Override
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        return blockState.getValue(POWERED) ? 15 : 0;
-    }
-
-    @Override
-    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        if (!blockState.getValue(POWERED)) {
-            return 0;
-        } else {
-            return side == Direction.UP ? 15 : 0;
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
+        TileEntity te = world.getBlockEntity(pos);
+        if (te instanceof LockingRailTile) {
+            return ((LockingRailTile) te).getComparatorSignal();
         }
+        return 0;
     }
 
     public BlockState rotate(BlockState state, Rotation rot) {

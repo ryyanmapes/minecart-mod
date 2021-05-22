@@ -1,7 +1,7 @@
-package com.alc.moreminecarts.blocks.powered_rails;
+package com.alc.moreminecarts.blocks.utility_rails;
 
 import com.alc.moreminecarts.MMConstants;
-import com.alc.moreminecarts.blocks.rails.LockingRailBlock;
+import com.alc.moreminecarts.tile_entities.PoweredLockingRailTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -11,11 +11,15 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class PoweredLockingRailBlock extends LockingRailBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -25,6 +29,12 @@ public class PoweredLockingRailBlock extends LockingRailBlock {
         this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false)
                 .setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(INVERTED, false).setValue(FACING, Direction.NORTH));
 
+    }
+
+    @Nullable
+    @Override
+    public TileEntity newBlockEntity(IBlockReader reader) {
+        return new PoweredLockingRailTile();
     }
 
     @Override

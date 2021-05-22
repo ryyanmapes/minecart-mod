@@ -8,11 +8,17 @@
   "block.moreminecarts.maglev_rail_turn": "Maglev Rail Turn",
   "block.moreminecarts.maglev_parallel_rail": "Maglev Parallel Rail",
   "block.moreminecarts.maglev_powered_rail": "Powered Maglev Rail",
+  "block.moreminecarts.lightspeed_rail": "Lightspeed Rail",
+  "block.moreminecarts.lightspeed_powered_rail": "Powered Lightspeed Rail",
   "block.moreminecarts.color_detector_rail": "Color Detector Rail",
   "block.moreminecarts.bioluminescent_rail": "Bioluminescent Rail",
+  "block.moreminecarts.locking_rail": "Locking Rail",
+  "block.moreminecarts.powered_locking_rail": "Powered Locking Rail",
   "block.moreminecarts.chunk_loader": "Chunk Loader",
   "block.moreminecarts.silica_steel_block": "Silica Steel Block",
   "block.moreminecarts.chunkrodite_block": "Chunkrodite Block",
+  "block.moreminecarts.glass_cactus": "Vitrified Cactus",
+  "block.moreminecarts.holo_scaffold_generator": "Holo-Scaffold Generator",
 
   "block.moreminecarts.color_detector_rail_white": "Color Detector Rail (White)",
   "block.moreminecarts.color_detector_rail_orange": "Color Detector Rail (Orange)",
@@ -37,6 +43,8 @@
   "item.moreminecarts.soulfire_cart": "Soul Campfire Cart",
   "item.moreminecarts.wooden_pushcart": "Wooden Pushcart",
   "item.moreminecarts.iron_pushcart": "Iron Pushcart",
+  "item.moreminecarts.piston_pushcart": "Piston Pushcart",
+  "item.moreminecarts.sticky_piston_pushcart": "Sticky Piston Pushcart",
   "item.moreminecarts.coupler": "Mob Spring",
   "item.moreminecarts.high_speed_upgrade": "Aerodynamic Minecart Upgrade Kit",
 
@@ -57,10 +65,16 @@
   "item.moreminecarts.rail_signal_red": "Rail Signal (Red)",
   "item.moreminecarts.rail_signal_black": "Rail Signal (Black)",
 
+  "item.moreminecarts.holo_remote": "Holo-Scaffold Remote",
+  "item.moreminecarts.backwards_holo_remote": "Upside-Down Holo-Scaffold Remote",
+  "item.moreminecarts.simple_holo_remote": "Dead Holo-Scaffold Remote",
+  "item.moreminecarts.broken_holo_remote": "Shattered Holo-Scaffold Remote",
   "item.moreminecarts.levitation_powder": "Levitation Lubricant",
   "item.moreminecarts.silica_steel_mix": "Silica Steel Mix",
   "item.moreminecarts.silica_steel": "Silica Steel",
   "item.moreminecarts.chunkrodite": "Chunkrodite",
+  "item.moreminecarts.hard_light_lens": "Hard Light Lens",
+  "item.moreminecarts.glass_spines": "Glass Spines",
 
   "entity.moreminecarts.minecart_with_net": "Minecart with Spider",
   "entity.moreminecarts.minecart_with_chunk_loader": "Minecart with ChunkLoader",
@@ -68,6 +82,8 @@
   "entity.moreminecarts.soulfire_pushcart": "Soulfire Cart",
   "entity.moreminecarts.wooden_pushcart": "Wooden Pushcart",
   "entity.moreminecarts.iron_pushcart": "Iron Pushcart",
+  "entity.moreminecarts.piston_pushcart": "Piston Pushcart",
+  "entity.moreminecarts.sticky_piston_pushcart": "Sticky Piston Pushcart",
   "entity.moreminecarts.high_speed_minecart": "Aerodynamic Minecart",
   "entity.moreminecarts.high_speed_chest_minecart": "Aerodynamic Minecart with Chest",
   "entity.moreminecarts.high_speed_tnt_minecart": "Aerodynamic Minecart with TNT",
@@ -79,5 +95,7 @@
   "entity.moreminecarts.high_speed_chunk_loader_minecart": "Aerodynamic Minecart with Chunk Loader",
   "entity.moreminecarts.high_speed_campfire_minecart": "Aerodynamic Campfire Cart",
   "entity.moreminecarts.high_speed_soulfire_minecart": "Aerodynamic Soulfire Cart",
-  "entity.moreminecarts.high_speed_pushcart": "Aerodynamic Pushcart"
+  "entity.moreminecarts.high_speed_pushcart": "Aerodynamic Pushcart",
+  "entity.moreminecarts.high_speed_piston_pushcart": "Aerodynamic Piston Pushcart",
+  "entity.moreminecarts.high_speed_sticky_piston_pushcart": "Aerodynamic Sticky Piston Pushcart"
 }
