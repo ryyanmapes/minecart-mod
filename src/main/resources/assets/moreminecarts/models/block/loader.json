@@ -7,6 +7,6 @@
     "east": "moreminecarts:block/loader_side",
     "west": "moreminecarts:block/loader_side",
     "up": "moreminecarts:block/loader_top",
-    "down": "moreminecarts:block/loader_bottom"
+    "down": "moreminecarts:block/loader_top"
   }
 }

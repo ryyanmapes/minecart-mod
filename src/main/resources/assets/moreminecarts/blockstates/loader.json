@@ -1,12 +1,7 @@
-
 {
   "variants": {
-    "facing=up": {
+    "": {
       "model": "moreminecarts:block/loader"
-    },
-    "facing=down": {
-      "model": "moreminecarts:block/loader",
-      "z": 280
     }
   }
 }
