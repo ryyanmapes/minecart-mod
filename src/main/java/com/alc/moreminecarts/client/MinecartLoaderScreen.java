@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.client;
 
-import com.alc.moreminecarts.containers.MinecartLoaderContainer;
+import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -17,11 +17,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Iterator;
 
 @OnlyIn(Dist.CLIENT)
-public class MinecartLoaderScreen extends ContainerScreen<MinecartLoaderContainer>{
+public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/loader_gui.png");
 
-    public MinecartLoaderScreen(MinecartLoaderContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Minecart Loader"));
+    public MinecartLoaderScreen(MinecartUnLoaderContainer container, PlayerInventory inv, ITextComponent titleIn) {
+        super(container, inv, new StringTextComponent(container.getIsUnloader()? "Minecart Unloader" : "Minecart Loader"));
     }
 
     @Override
@@ -73,7 +73,8 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartLoaderContaine
                     text = "Activate comparator during loading inactivity";
                     break;
                 case cart_full:
-                    text = "Activate comparator when cart is full";
+                    if (menu.getIsUnloader()) text = "Activate comparator when cart is empty";
+                    else text = "Activate comparator when cart is full";
                     break;
                 case cart_fullness:
                     text = "Comparator outputs cart contents";
@@ -101,9 +102,11 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartLoaderContaine
                     break;
                 case cart_full:
                     if (mouse_on) {
-                        this.blit(matrix, x,y, 176+18, 0, 18, 18);
+                        if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+18+36, 0, 18, 18);
+                        else this.blit(matrix, x,y, 176+18, 0, 18, 18);
                     }
                     else {
+                        if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+36, 0, 18, 18);
                         //this.blit(matrix, x, y, 176, 0, 18, 18);
                     }
                     break;
@@ -149,10 +152,12 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartLoaderContaine
 
             if (menu.getLockedMinecartsOnly()) {
                 if (mouse_on) {
-                    this.blit(matrix, x,y, 176+18, 108, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+18+36, 108, 18, 18);
+                    else this.blit(matrix, x,y, 176+18, 108, 18, 18);
                 }
                 else {
-                    this.blit(matrix, x, y, 176, 108, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+36, 108, 18, 18);
+                    else this.blit(matrix, x, y, 176, 108, 18, 18);
                 }
             }
             else {
@@ -182,9 +187,14 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartLoaderContaine
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             MinecartLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new StringTextComponent(menu.getLeaveOneInStack()
-                            ? "Leave one item in loader slots"
-                            : "Empty loader slots entirely"
+                    new StringTextComponent(
+                            menu.getIsUnloader()
+                                ? (menu.getLeaveOneInStack()
+                                    ? "Leave one item in minecart slots"
+                                    : "Empty minecart slots entirely")
+                                : (menu.getLeaveOneInStack()
+                                    ? "Leave one item in loader slots"
+                                    : "Empty loader slots entirely")
                     ) , p_230443_2_, p_230443_3_);
         }
 
@@ -195,10 +205,12 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartLoaderContaine
 
             if (menu.getLeaveOneInStack()) {
                 if (mouse_on) {
-                    this.blit(matrix, x,y, 176+18, 72, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+18+36, 72, 18, 18);
+                    else this.blit(matrix, x,y, 176+18, 72, 18, 18);
                 }
                 else {
-                    this.blit(matrix, x, y, 176, 72, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, x, y, 176+36, 72, 18, 18);
+                    else this.blit(matrix, x, y, 176, 72, 18, 18);
                 }
             }
             else {

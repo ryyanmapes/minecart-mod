@@ -2,7 +2,7 @@ package com.alc.moreminecarts.proxy;
 
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
-import com.alc.moreminecarts.containers.MinecartLoaderContainer;
+import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
@@ -308,8 +308,8 @@ public class MoreMinecartsPacketHandler {
 
             ctx.get().enqueueWork(() -> {
                 ServerPlayerEntity sender = ctx.get().getSender();
-                if (sender.containerMenu instanceof MinecartLoaderContainer) {
-                    MinecartLoaderContainer container = ((MinecartLoaderContainer) sender.containerMenu);
+                if (sender.containerMenu instanceof MinecartUnLoaderContainer) {
+                    MinecartUnLoaderContainer container = ((MinecartUnLoaderContainer) sender.containerMenu);
                     container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type);
                 }
             });
