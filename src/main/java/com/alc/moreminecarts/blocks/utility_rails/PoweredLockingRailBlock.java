@@ -4,6 +4,7 @@ import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.tile_entities.PoweredLockingRailTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -21,7 +22,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class PoweredLockingRailBlock extends LockingRailBlock {
+public class PoweredLockingRailBlock extends LockingRailBlock implements ITileEntityProvider {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public PoweredLockingRailBlock(Properties builder) {

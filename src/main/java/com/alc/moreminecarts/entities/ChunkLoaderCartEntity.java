@@ -286,4 +286,10 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         time_left = Math.abs(time_left) * (enabled? 1 : -1);
     }
 
+    public int getComparatorSignal() {
+        float true_time_left = Math.abs(time_left) - 1;
+        double log_proportion = Math.log10( ((true_time_left/ChunkLoaderTile.MAX_TIME)*9 + 1 ));
+        return (int)Math.ceil(log_proportion * 15);
+    }
+
 }

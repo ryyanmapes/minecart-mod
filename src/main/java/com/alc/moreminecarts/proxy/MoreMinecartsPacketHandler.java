@@ -2,8 +2,10 @@ package com.alc.moreminecarts.proxy;
 
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.containers.MinecartLoaderContainer;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
+import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
@@ -69,6 +71,13 @@ public class MoreMinecartsPacketHandler {
                 ExtendedInteractPacket::encode,
                 ExtendedInteractPacket::decode,
                 ExtendedInteractPacket::handle);
+
+        // For changing the minecart loader and unloader client -> server
+        INSTANCE.registerMessage(id++,
+                MinecartLoaderPacket.class,
+                MinecartLoaderPacket::encode,
+                MinecartLoaderPacket::decode,
+                MinecartLoaderPacket::handle);
     }
 
     // Currently unused.
@@ -259,6 +268,54 @@ public class MoreMinecartsPacketHandler {
                 }
             }
         }
+    }
+
+
+    public static class MinecartLoaderPacket {
+        public boolean is_unloader;
+        public boolean locked_minecarts_only;
+        public boolean leave_one_item_in_stack;
+        public MinecartLoaderTile.ComparatorOutputType output_type;
+
+        public MinecartLoaderPacket(){}
+
+        public MinecartLoaderPacket(boolean is_unloader, boolean locked_minecarts_only, boolean leave_one_item_in_stack,
+                                    MinecartLoaderTile.ComparatorOutputType output_type) {
+            this.is_unloader = is_unloader;
+            this.locked_minecarts_only = locked_minecarts_only;
+            this.leave_one_item_in_stack = leave_one_item_in_stack;
+            this.output_type = output_type;
+        }
+
+        public static void encode(MinecartLoaderPacket msg, PacketBuffer buf) {
+            buf.writeBoolean(msg.is_unloader);
+            buf.writeBoolean(msg.locked_minecarts_only);
+            buf.writeBoolean(msg.leave_one_item_in_stack);
+            buf.writeEnum(msg.output_type);
+        }
+
+        public static MinecartLoaderPacket decode(PacketBuffer buf) {
+            MinecartLoaderPacket packet = new MinecartLoaderPacket();
+            packet.is_unloader = buf.readBoolean();
+            packet.locked_minecarts_only = buf.readBoolean();
+            packet.leave_one_item_in_stack = buf.readBoolean();
+            packet.output_type = buf.readEnum(MinecartLoaderTile.ComparatorOutputType.class);
+            return packet;
+        }
+
+
+        public static void handle(MinecartLoaderPacket msg, Supplier<NetworkEvent.Context> ctx) {
+
+            ctx.get().enqueueWork(() -> {
+                ServerPlayerEntity sender = ctx.get().getSender();
+                if (sender.containerMenu instanceof MinecartLoaderContainer) {
+                    MinecartLoaderContainer container = ((MinecartLoaderContainer) sender.containerMenu);
+                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type);
+                }
+            });
+            ctx.get().setPacketHandled(true);
+        }
+
     }
 }
 
