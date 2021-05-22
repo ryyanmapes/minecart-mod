@@ -1,7 +1,6 @@
 package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.MinecartLoaderBlock;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
 import net.minecraft.block.BlockState;
@@ -158,7 +157,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
 
     public void tick() {
 
-        if (!level.isClientSide && this.getBlockState().getValue(MinecartLoaderBlock.ENABLED)) {
+        if (!level.isClientSide) {
 
             if (!isOnCooldown()) {
                 List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
