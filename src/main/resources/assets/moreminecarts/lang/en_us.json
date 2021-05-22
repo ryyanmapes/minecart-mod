@@ -15,6 +15,8 @@
   "block.moreminecarts.locking_rail": "Locking Rail",
   "block.moreminecarts.powered_locking_rail": "Powered Locking Rail",
   "block.moreminecarts.chunk_loader": "Chunk Loader",
+  "block.moreminecarts.minecart_loader": "Minecart Loader",
+  "block.moreminecarts.minecart_unloader": "Minecart Unloader",
   "block.moreminecarts.silica_steel_block": "Silica Steel Block",
   "block.moreminecarts.chunkrodite_block": "Chunkrodite Block",
   "block.moreminecarts.glass_cactus": "Vitrified Cactus",

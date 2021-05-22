@@ -42,7 +42,11 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
     // Dies outside of desert biomes.
     public boolean canSurvive(BlockState state, IWorldReader world_reader, BlockPos pos) {
-        return world_reader.getBiome(pos).getBiomeCategory() == Biome.Category.DESERT && super.canSurvive(state, world_reader, pos);
+
+        Biome.Category category = world_reader.getBiome(pos).getBiomeCategory();
+
+        return (category == Biome.Category.DESERT || category == Biome.Category.NONE)
+                && super.canSurvive(state, world_reader, pos);
     }
 
     public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {

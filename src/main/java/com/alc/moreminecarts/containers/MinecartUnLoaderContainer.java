@@ -3,6 +3,7 @@ package com.alc.moreminecarts.containers;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
+import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -10,6 +11,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraft.util.math.BlockPos;
@@ -17,13 +19,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class MinecartLoaderContainer extends Container {
+public class MinecartUnLoaderContainer extends Container {
 
     private final IInventory inventory;
     private final IIntArray data;
     protected final World level;
 
-    public MinecartLoaderContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public MinecartUnLoaderContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
         super(MMReferences.minecart_loader_c, n);
 
         this.inventory = new Inventory(1);
@@ -34,13 +36,25 @@ public class MinecartLoaderContainer extends Container {
     }
 
     // For use with tile entity loaders.
-    public MinecartLoaderContainer(int n, World world, BlockPos pos, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public MinecartUnLoaderContainer(int n, World world, BlockPos pos, PlayerInventory player_inventory, PlayerEntity player_entity) {
         super(MMReferences.minecart_loader_c, n);
 
-        MinecartLoaderTile tile = (MinecartLoaderTile) world.getBlockEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
 
-        this.inventory = tile;
-        this.data = tile.dataAccess;
+        if (te instanceof MinecartLoaderTile) {
+            MinecartLoaderTile tile = (MinecartLoaderTile) te;
+            this.inventory = tile;
+            this.data = tile.dataAccess;
+        } else if (te instanceof MinecartUnloaderTile) {
+            MinecartUnloaderTile tile = (MinecartUnloaderTile) te;
+            this.inventory = tile;
+            this.data = tile.dataAccess;
+        } else {
+            // should error out?
+            this.inventory = new Inventory(1);
+            this.data = new IntArray(2);
+        }
+
         this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
@@ -49,7 +63,7 @@ public class MinecartLoaderContainer extends Container {
     public void CommonInitialization(PlayerInventory player_inventory) {
 
         checkContainerSize(inventory, 9);
-        checkContainerDataCount(data, 1);
+        checkContainerDataCount(data, 2);
 
         // content slots
         for(int i = 0; i < 9; ++i) {
@@ -133,6 +147,11 @@ public class MinecartLoaderContainer extends Container {
                 getLeaveOneInStack(),
                 getComparatorOutputType()
         );
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public boolean getIsUnloader() {
+        return this.data.get(1) > 0;
     }
 
     public void setOptions(boolean locked_minecarts_only, boolean leave_one_in_stack, MinecartLoaderTile.ComparatorOutputType comparator_output) {
