@@ -82,7 +82,7 @@ public class MinecartUnloaderTile extends LockableTileEntity implements ISidedIn
 
     public MinecartUnloaderTile() {
         super(MMReferences.minecart_unloader_te);
-        locked_minecarts_only = true;
+        locked_minecarts_only = false;
         leave_one_in_stack = false;
         comparator_output = ComparatorOutputType.done_loading;
         comparator_output_value = -1;

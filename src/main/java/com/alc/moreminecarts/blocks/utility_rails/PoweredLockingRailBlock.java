@@ -28,7 +28,7 @@ public class PoweredLockingRailBlock extends LockingRailBlock implements ITileEn
     public PoweredLockingRailBlock(Properties builder) {
         super(builder);
         this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false)
-                .setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(INVERTED, false).setValue(FACING, Direction.NORTH));
+                .setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(INVERTED, true).setValue(FACING, Direction.NORTH));
 
     }
 
