@@ -10,7 +10,12 @@ import com.alc.moreminecarts.blocks.powered_rails.PoweredMaglevRail;
 import com.alc.moreminecarts.blocks.rail_turns.MaglevRailTurn;
 import com.alc.moreminecarts.blocks.rail_turns.RailTurn;
 import com.alc.moreminecarts.blocks.rail_turns.WoodenRailTurn;
-import com.alc.moreminecarts.blocks.rails.*;
+import com.alc.moreminecarts.blocks.rails.LightspeedRail;
+import com.alc.moreminecarts.blocks.rails.MaglevRail;
+import com.alc.moreminecarts.blocks.rails.WoodenRail;
+import com.alc.moreminecarts.blocks.utility_rails.ColorDetectorRailBlock;
+import com.alc.moreminecarts.blocks.utility_rails.LockingRailBlock;
+import com.alc.moreminecarts.blocks.utility_rails.PoweredLockingRailBlock;
 import com.alc.moreminecarts.client.ChunkLoaderScreen;
 import com.alc.moreminecarts.client.PistonPushcartDownKey;
 import com.alc.moreminecarts.client.PistonPushcartUpKey;
@@ -30,6 +35,7 @@ import com.alc.moreminecarts.renderers.highspeed.HSPushcartRenderer;
 import com.alc.moreminecarts.renderers.highspeed.HSStickyPistonPushcartRenderer;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
+import com.alc.moreminecarts.tile_entities.PoweredLockingRailTile;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -144,10 +150,13 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> LIGHTSPEED_POWERED_RAIL_BLOCK = BLOCKS.register("lightspeed_powered_rail", () -> new PoweredLightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(1F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
     private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new PoweredLockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
+
+    // Container Blocks
+    private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
+
 
     // Other Blocks
-    private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
     private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).harvestTool(ToolType.PICKAXE)));
     private static final RegistryObject<Block> CHUNKRODITE_BLOCK = BLOCKS.register("chunkrodite_block", () -> new Block(of(Material.STONE, MaterialColor.COLOR_BLACK).strength(3f, 3f).harvestTool(ToolType.PICKAXE)));
     private static final RegistryObject<Block> GLASS_CACTUS = BLOCKS.register("glass_cactus", () -> new GlassCactusBlock(of(Material.GLASS, MaterialColor.WOOL).randomTicks().strength(2F).sound(SoundType.GLASS).noOcclusion()));
@@ -270,6 +279,7 @@ public class MoreMinecartsMod
     // Tile Entities
     private static final RegistryObject<TileEntityType<ChunkLoaderTile>> CHUNK_LOADER_TILE_ENTITY = TILE_ENTITIES.register("chunk_loader_te", () -> TileEntityType.Builder.<ChunkLoaderTile>of(ChunkLoaderTile::new, MMReferences.chunk_loader).build(null));
     private static final RegistryObject<TileEntityType<LockingRailTile>> LOCKING_RAIL_TILE_ENTITY = TILE_ENTITIES.register("locking_rail_te", () -> TileEntityType.Builder.<LockingRailTile>of(LockingRailTile::new, locking_rail).build(null));
+    private static final RegistryObject<TileEntityType<PoweredLockingRailTile>> POWERED_LOCKING_RAIL_TILE_ENTITY = TILE_ENTITIES.register("powered_locking_rail_te", () -> TileEntityType.Builder.<PoweredLockingRailTile>of(PoweredLockingRailTile::new, powered_locking_rail).build(null));
 
     // Containers
     private static final RegistryObject<ContainerType<ChunkLoaderContainer>> CHUNK_LOADER_CONTAINER = CONTAINERS.register("chunk_loader_c", () -> IForgeContainerType.create(

@@ -39,9 +39,6 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     public static int MAX_MINUTES = 8640;
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
-    // Because of Minecraft stupid, we have to save the time left in two halves
-    // (because when it is sent over the server, it truncates to a short)
-    // So we send the upper and lower bits seperately
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
