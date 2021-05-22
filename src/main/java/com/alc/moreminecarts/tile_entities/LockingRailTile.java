@@ -41,6 +41,11 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
         locked_minecart = null;
     }
 
+    public LockingRailTile(boolean is_powered) {
+        super( is_powered? MMReferences.powered_locking_rail_te : MMReferences.locking_rail_te );
+        locked_minecart = null;
+    }
+
     @Override
     public CompoundNBT save(CompoundNBT compound) {
         compound.putUUID(LOCKED_CART_PROPERTY, locked_minecart.getUUID());

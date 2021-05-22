@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.blocks;
 
-import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
+import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -30,7 +30,7 @@ public class MinecartLoaderBlock extends ContainerBlock {
 
     public MinecartLoaderBlock(Properties builder) {
         super(builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(ENABLED, false));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(ENABLED, true));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class MinecartLoaderBlock extends ContainerBlock {
         if (world.isClientSide) return ActionResultType.SUCCESS;
 
         TileEntity tile_entity = world.getBlockEntity(pos);
-        if (tile_entity instanceof ChunkLoaderTile) {
+        if (tile_entity instanceof MinecartLoaderTile) {
             NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile_entity, pos);
             return ActionResultType.SUCCESS;
         }
@@ -64,16 +64,16 @@ public class MinecartLoaderBlock extends ContainerBlock {
     @Nullable
     @Override
     public TileEntity newBlockEntity(IBlockReader reader) {
-        return new ChunkLoaderTile();
+        return new MinecartLoaderTile();
     }
 
     @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState state_2, boolean bool) {
         if (!state.is(state_2.getBlock())) {
             TileEntity tile_entity = world.getBlockEntity(pos);
-            if (tile_entity instanceof ChunkLoaderTile) {
-                ChunkLoaderTile chunk_loader = (ChunkLoaderTile) tile_entity;
-                InventoryHelper.dropContents(world, pos, chunk_loader);
+            if (tile_entity instanceof MinecartLoaderTile) {
+                MinecartLoaderTile loader = (MinecartLoaderTile) tile_entity;
+                InventoryHelper.dropContents(world, pos, loader);
                 world.updateNeighbourForOutputSignal(pos, this);
             }
             super.onRemove(state, world, pos, state_2, bool);
@@ -86,8 +86,8 @@ public class MinecartLoaderBlock extends ContainerBlock {
     public void setPlacedBy(World p_180633_1_, BlockPos p_180633_2_, BlockState p_180633_3_, LivingEntity p_180633_4_, ItemStack p_180633_5_) {
         if (p_180633_5_.hasCustomHoverName()) {
             TileEntity tileentity = p_180633_1_.getBlockEntity(p_180633_2_);
-            if (tileentity instanceof ChunkLoaderTile) {
-                ((ChunkLoaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
+            if (tileentity instanceof MinecartLoaderTile) {
+                ((MinecartLoaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
             }
         }
     }
@@ -102,8 +102,8 @@ public class MinecartLoaderBlock extends ContainerBlock {
     @Override
     public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
         TileEntity tile_entity = world.getBlockEntity(pos);
-        if (tile_entity instanceof ChunkLoaderTile) {
-            return ((ChunkLoaderTile) tile_entity).getComparatorSignal();
+        if (tile_entity instanceof MinecartLoaderTile) {
+            return ((MinecartLoaderTile) tile_entity).getComparatorSignal();
         }
         return 0;
     }

@@ -1,9 +1,10 @@
 package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.blocks.MinecartLoaderBlock;
+import com.alc.moreminecarts.containers.MinecartLoaderContainer;
+import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HopperBlock;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
@@ -51,6 +52,18 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
             return 3;
         }
 
+        public static ComparatorOutputType next(ComparatorOutputType in) {
+            switch(in) {
+                case done_loading:
+                    return cart_full;
+                case cart_full:
+                    return cart_fullness;
+                case cart_fullness:
+                    return done_loading;
+            }
+            return ComparatorOutputType.done_loading;
+        }
+
         public static ComparatorOutputType fromInt(int n) {
             if (n == 0) return ComparatorOutputType.done_loading;
             else if (n == 1) return ComparatorOutputType.cart_full;
@@ -62,7 +75,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
     public static String LEAVE_ONE_IN_STACK_PROPERTY = "leave_one_in_stack";
     public static String COMPARATOR_OUTPUT_PROPERTY = "comparator_output";
 
-    protected NonNullList<ItemStack> items = NonNullList.withSize(10, ItemStack.EMPTY);
+    protected NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
@@ -79,7 +92,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
             switch(index) {
                 case 0:
                     locked_minecarts_only = set_to % 2 == 1;
-                    leave_one_in_stack = set_to % 4 == 1;
+                    leave_one_in_stack = (set_to & 2) == 2;
                     comparator_output = ComparatorOutputType.fromInt(set_to >> 2);
                     break;
                 default:
@@ -100,7 +113,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
     public int comparator_output_value;
 
     public MinecartLoaderTile() {
-        super(MMReferences.chunk_loader_te);
+        super(MMReferences.minecart_loader_te);
         locked_minecarts_only = true;
         leave_one_in_stack = false;
         comparator_output = ComparatorOutputType.done_loading;
@@ -125,7 +138,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
     }
 
     public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
-        return new ChunkLoaderContainer(i, level, worldPosition, inventory, player);
+        return new MinecartLoaderContainer(i, level, worldPosition, inventory, player);
     }
 
     @Override
@@ -135,7 +148,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
 
     public void tick() {
 
-        if (!level.isClientSide && this.getBlockState().getValue(HopperBlock.ENABLED)) {
+        if (!level.isClientSide && this.getBlockState().getValue(MinecartLoaderBlock.ENABLED)) {
 
             List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
             float criteria_total = 0;
@@ -195,16 +208,19 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
 
                         ItemStack add_to_stack = minecart.getItem(i);
                         if (add_to_stack.isEmpty()) {
-                            minecart.setItem(i, stack);
-                            stack = ItemStack.EMPTY;
+                            ItemStack new_stack = stack.copy();
+                            if (leave_one_in_stack) new_stack.shrink(1);
+                            minecart.setItem(i, new_stack);
+                            stack.setCount(leave_one_in_stack? 1 : 0);
                             changed = true;
                         }
                         else if (canMergeItems(add_to_stack, stack)) {
-                            int j = stack.getMaxStackSize() - add_to_stack.getCount();
-                            int k = Math.min(stack.getCount(), j);
-                            stack.shrink(k);
-                            add_to_stack.grow(k);
-                            changed = k > 0;
+                            int true_count = stack.getCount() - (leave_one_in_stack? 1 : 0);
+                            int to_fill = add_to_stack.getMaxStackSize() - add_to_stack.getCount();
+                            int transfer = Math.min(true_count, to_fill);
+                            stack.shrink(transfer);
+                            add_to_stack.grow(transfer);
+                            changed = transfer > 0;
                         }
                     }
                 }
@@ -212,6 +228,9 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
+        else if (minecart instanceof ChunkLoaderCartEntity && comparator_output == ComparatorOutputType.cart_fullness) {
+            return ((ChunkLoaderCartEntity)minecart).getComparatorSignal() / 15.0f;
+        }
         else {
             float fullness = Container.getRedstoneSignalFromContainer(minecart) / 15.0f;
             if (comparator_output == ComparatorOutputType.cart_full) fullness = (float)Math.floor(fullness);
@@ -237,33 +256,44 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
 
         if (te_at_minecart instanceof LockingRailTile && ((LockingRailTile)te_at_minecart).locked_minecart == minecart) {
             LockingRailTile locking_rail_tile = (LockingRailTile)te_at_minecart;
-            for (ItemStack stack : items) {
-                if (locking_rail_tile.saved_fuel < 32000 && Ingredient.of(new IItemProvider[]{Items.COAL, Items.CHARCOAL}).test(stack)) {
-                    stack.shrink(1);
 
-                    locking_rail_tile.saved_fuel += 3600;
-                    if (locking_rail_tile.saved_fuel > 32000) locking_rail_tile.saved_fuel = 32000;
+            if (locking_rail_tile.saved_fuel + 3600 <= 32000) {
 
-                    changed = true;
+                for (ItemStack stack : items) {
+                    if (Ingredient.of(new IItemProvider[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
+                        stack.shrink(1);
+                        locking_rail_tile.saved_fuel += 3600;
+                        changed = true;
+                    }
                 }
+
             }
         }
         else {
-            for (ItemStack stack : items) {
-                if (minecart.fuel < 32000 && Ingredient.of(new IItemProvider[]{Items.COAL, Items.CHARCOAL}).test(stack)) {
-                    stack.shrink(1);
 
-                    minecart.fuel += 3600;
-                    if (minecart.fuel > 32000) minecart.fuel = 32000;
+            if (minecart.fuel + 3600 <= 32000) {
 
-                    changed = true;
+                for (ItemStack stack : items) {
+                    if (Ingredient.of(new IItemProvider[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
+                        stack.shrink(1);
+                        minecart.fuel += 3600;
+                        changed = true;
+
+                    }
                 }
             }
+
+            if (minecart.xPush == 0 && minecart.zPush == 0)
+            {
+                minecart.xPush = minecart.getDeltaMovement().x;
+                minecart.zPush = minecart.getDeltaMovement().z;
+            }
+
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
         else {
-            float fullness = minecart.fuel / 32000.0f;
+            float fullness = Math.min(minecart.fuel / (32000.0f - 3600.0f), 1.0f);
             if (comparator_output == ComparatorOutputType.cart_full) fullness = (float)Math.floor(fullness);
             return fullness;
         }
@@ -285,7 +315,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements ISidedInve
     }
 
     public int getContainerSize() {
-        return 1;
+        return 9;
     }
 
     public boolean isEmpty() {

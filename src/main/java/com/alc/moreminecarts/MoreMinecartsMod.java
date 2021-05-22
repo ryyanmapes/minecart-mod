@@ -17,9 +17,11 @@ import com.alc.moreminecarts.blocks.utility_rails.ColorDetectorRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.LockingRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.PoweredLockingRailBlock;
 import com.alc.moreminecarts.client.ChunkLoaderScreen;
+import com.alc.moreminecarts.client.MinecartLoaderScreen;
 import com.alc.moreminecarts.client.PistonPushcartDownKey;
 import com.alc.moreminecarts.client.PistonPushcartUpKey;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.containers.MinecartLoaderContainer;
 import com.alc.moreminecarts.entities.*;
 import com.alc.moreminecarts.entities.HSMinecartEntities.*;
 import com.alc.moreminecarts.items.*;
@@ -35,6 +37,7 @@ import com.alc.moreminecarts.renderers.highspeed.HSPushcartRenderer;
 import com.alc.moreminecarts.renderers.highspeed.HSStickyPistonPushcartRenderer;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
+import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import com.alc.moreminecarts.tile_entities.PoweredLockingRailTile;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -154,6 +157,7 @@ public class MoreMinecartsMod
 
     // Container Blocks
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
+    private static final RegistryObject<Block> MINECART_LOADER_BLOCK = BLOCKS.register("minecart_loader", () -> new MinecartLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f).harvestTool(ToolType.PICKAXE)));
 
 
     // Other Blocks
@@ -205,6 +209,8 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> CHUNKRODITE_BLOCK_ITEM = ITEMS.register("chunkrodite_block", () -> new BlockItem(MMReferences.chunkrodite_block, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
     private static final RegistryObject<Item> GLASS_CACTUS_ITEM = ITEMS.register("glass_cactus", () -> new BlockItem(glass_cactus, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
     private static final RegistryObject<Item> HOLO_SCAFFOLD_GENERATOR_ITEM = ITEMS.register("holo_scaffold_generator", () -> new BlockItem(holo_scaffold_generator, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+    private static final RegistryObject<Item> MINECART_LOADER_ITEM = ITEMS.register("minecart_loader", () -> new BlockItem(MMReferences.minecart_loader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+
 
     // Misc Items
     private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -280,6 +286,8 @@ public class MoreMinecartsMod
     private static final RegistryObject<TileEntityType<ChunkLoaderTile>> CHUNK_LOADER_TILE_ENTITY = TILE_ENTITIES.register("chunk_loader_te", () -> TileEntityType.Builder.<ChunkLoaderTile>of(ChunkLoaderTile::new, MMReferences.chunk_loader).build(null));
     private static final RegistryObject<TileEntityType<LockingRailTile>> LOCKING_RAIL_TILE_ENTITY = TILE_ENTITIES.register("locking_rail_te", () -> TileEntityType.Builder.<LockingRailTile>of(LockingRailTile::new, locking_rail).build(null));
     private static final RegistryObject<TileEntityType<PoweredLockingRailTile>> POWERED_LOCKING_RAIL_TILE_ENTITY = TILE_ENTITIES.register("powered_locking_rail_te", () -> TileEntityType.Builder.<PoweredLockingRailTile>of(PoweredLockingRailTile::new, powered_locking_rail).build(null));
+    private static final RegistryObject<TileEntityType<MinecartLoaderTile>> MINECART_LOADER_TILE_ENTITY = TILE_ENTITIES.register("minecart_loader_te", () -> TileEntityType.Builder.<MinecartLoaderTile>of(MinecartLoaderTile::new, minecart_loader).build(null));
+
 
     // Containers
     private static final RegistryObject<ContainerType<ChunkLoaderContainer>> CHUNK_LOADER_CONTAINER = CONTAINERS.register("chunk_loader_c", () -> IForgeContainerType.create(
@@ -287,8 +295,11 @@ public class MoreMinecartsMod
                 if (data != null) return new ChunkLoaderContainer(windowId, PROXY.getWorld(), data.readBlockPos(), inv, PROXY.getPlayer());
                 else return new ChunkLoaderContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
             }));
-
-    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
+    private static final RegistryObject<ContainerType<MinecartLoaderContainer>> MINECART_LOADER_CONTAINER = CONTAINERS.register("minecart_loader_c", () -> IForgeContainerType.create(
+            (windowId, inv, data) -> {
+                if (data != null) return new MinecartLoaderContainer(windowId, PROXY.getWorld(), data.readBlockPos(), inv, PROXY.getPlayer());
+                else return new MinecartLoaderContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
+            }));
 
     public MoreMinecartsMod() {
 
@@ -330,6 +341,7 @@ public class MoreMinecartsMod
         //LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 
         ScreenManager.register(chunk_loader_c, ChunkLoaderScreen::new);
+        ScreenManager.register(minecart_loader_c, MinecartLoaderScreen::new);
 
         // Jump key
         ClientRegistry.registerKeyBinding(new PistonPushcartUpKey("Piston Pushcart Up", 32, "More Minecarts and Rails"));

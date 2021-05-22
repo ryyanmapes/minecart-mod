@@ -1,6 +1,7 @@
 package com.alc.moreminecarts;
 
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.containers.MinecartLoaderContainer;
 import com.alc.moreminecarts.entities.*;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
@@ -33,10 +34,13 @@ public class MMReferences {
 
     public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
     public static final TileEntityType<LockingRailTile> locking_rail_te = null;
+    public static final TileEntityType<LockingRailTile> powered_locking_rail_te = null;
+    public static final TileEntityType<LockingRailTile> minecart_loader_te = null;
 
     // Containers
 
     public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
+    public static final ContainerType<MinecartLoaderContainer> minecart_loader_c = null;
 
     // High Speed Entities
 
@@ -83,6 +87,8 @@ public class MMReferences {
     public static final Block piston_display_block = null;
 
     public static final Block chunk_loader = null;
+    public static final Block minecart_loader = null;
+    public static final Block minecart_unloader = null;
     public static final Block silica_steel_block = null;
     public static final Block chunkrodite_block = null;
     public static final Block glass_cactus = null;
