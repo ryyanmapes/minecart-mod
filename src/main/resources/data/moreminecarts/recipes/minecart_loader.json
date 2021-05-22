@@ -1,18 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "L",
-    "S"
+    "SSS",
+    "SCS",
+    "S S"
   ],
   "key": {
-    "L": {
-      "item": "moreminecarts:hard_light_lens"
-    },
     "S": {
       "item": "moreminecarts:silica_steel"
+    },
+    "C": {
+      "item": "minecraft:chest"
     }
   },
   "result": {
-    "item": "moreminecarts:simple_holo_remote"
+    "item": "moreminecarts:minecart_loader",
+    "count": 1
   }
 }

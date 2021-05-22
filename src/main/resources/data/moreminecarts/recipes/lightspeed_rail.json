@@ -1,0 +1,11 @@
+{"ingredients":[
+  {"tag": "minecraft:packed_ice"},
+  {"tag": "moreminecarts:hard_light_lens"},
+  {"item":"minecraft:packed_ice"},
+  {"item":"moreminecarts:maglev_rail"},
+  {"item":"moreminecarts:maglev_rail"},
+  {"item":"moreminecarts:maglev_rail"},
+  {"item":"moreminecarts:maglev_rail"},
+  {"item":"moreminecarts:maglev_rail"},
+  {"item":"moreminecarts:maglev_rail"}
+],"result":{"count":8,"item":"moreminecarts:lightspeed_rail"},"type":"minecraft:crafting_shapeless"}

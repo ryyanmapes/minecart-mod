@@ -1,9 +1,9 @@
 package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.MinecartLoaderBlock;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
+import com.alc.moreminecarts.tile_entities.MinecartLoaderTile.ComparatorOutputType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
@@ -25,7 +25,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import com.alc.moreminecarts.tile_entities.MinecartLoaderTile.ComparatorOutputType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class MinecartUnloaderTile extends LockableTileEntity implements ISidedIn
 
     public MinecartUnloaderTile() {
         super(MMReferences.minecart_unloader_te);
-        locked_minecarts_only = true;
+        locked_minecarts_only = false;
         leave_one_in_stack = false;
         comparator_output = ComparatorOutputType.done_loading;
         comparator_output_value = -1;
@@ -119,7 +118,7 @@ public class MinecartUnloaderTile extends LockableTileEntity implements ISidedIn
 
     public void tick() {
 
-        if (!level.isClientSide && this.getBlockState().getValue(MinecartLoaderBlock.ENABLED)) {
+        if (!level.isClientSide) {
 
             if (!isOnCooldown()) {
                 List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
@@ -181,13 +180,15 @@ public class MinecartUnloaderTile extends LockableTileEntity implements ISidedIn
             if (stack.isEmpty() || (leave_one_in_stack && stack.getCount() == 1)) continue;
             all_empty = false;
 
-            for (ItemStack add_to_stack : items) {
+            for (int j = 0; j < this.getContainerSize(); j++) {
+                ItemStack add_to_stack = this.getItem(j);
+
                 boolean did_load = false;
 
                 if (add_to_stack.isEmpty()) {
                     ItemStack new_stack = stack.copy();
                     new_stack.setCount(1);
-                    this.setItem(i, new_stack);
+                    this.setItem(j, new_stack);
                     stack.shrink(1);
                     did_load = true;
                 }

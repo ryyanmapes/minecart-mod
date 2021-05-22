@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P",
+    "C"
+  ],
+  "key": {
+    "C": {
+      "item": "moreminecarts:iron_pushcart"
+    },
+    "P": {
+      "item": "minecraft:sticky_piston"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:sticky_piston_pushcart"
+  }
+}
