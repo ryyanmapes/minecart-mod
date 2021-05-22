@@ -27,9 +27,9 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContai
     @Override
     protected void init() {
         super.init();
-        this.addButton(new OnlyLockedButton(leftPos + 57, topPos + 13));
-        this.addButton(new ComparatorOutputButton(leftPos + 79, topPos + 13));
-        this.addButton(new LeaveOneInStackButton(leftPos + 101, topPos + 13));
+        this.addButton(new OnlyLockedButton(leftPos + 57, topPos + 19));
+        this.addButton(new ComparatorOutputButton(leftPos + 79, topPos + 19));
+        this.addButton(new LeaveOneInStackButton(leftPos + 101, topPos + 19));
     }
 
     @Override
@@ -47,6 +47,8 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContai
 
     // Taken from BeaconScreen, for tooltip rendering.
     protected void renderLabels(MatrixStack matrix, int p_230451_2_, int p_230451_3_) {
+        super.renderLabels(matrix, p_230451_2_, p_230451_3_);
+
         Iterator var4 = this.buttons.iterator();
 
         while(var4.hasNext()) {

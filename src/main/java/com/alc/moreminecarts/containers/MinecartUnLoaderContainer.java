@@ -67,7 +67,7 @@ public class MinecartUnLoaderContainer extends Container {
 
         // content slots
         for(int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(inventory, i, 8 + i * 18, 36));
+            this.addSlot(new Slot(inventory, i, 8 + i * 18, 42));
         }
 
         // player inventory slots, taken from the AbstractFurnaceContainer code.
