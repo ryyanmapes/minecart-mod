@@ -84,11 +84,11 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     }
 
     // Gets lowest-distance neighbor in any direction, or -1 if there is none.
-    public static int getDistance(IBlockReader reader, BlockPos pos, Block scaffold_block) {
+    public static int getDistance(IBlockReader reader, BlockPos pos) {
         int min_distance = MAX_DISTANCE + 1;
         for(Direction direction : Direction.values()) {
             BlockState blockstate1 = reader.getBlockState(pos.relative(direction));
-            if (blockstate1.is(scaffold_block)) {
+            if (blockstate1.is(MMReferences.holo_scaffold) || blockstate1.is(MMReferences.chaotic_holo_scaffold)) {
                 min_distance = Math.min(min_distance, blockstate1.getValue(TRUE_DISTANCE) + 1);
             }
             else if (blockstate1.is(MMReferences.holo_scaffold_generator)) {
@@ -99,7 +99,7 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     }
 
     public boolean isValidDistance(IBlockReader reader, BlockPos pos) {
-        int distance = getDistance(reader, pos, getScaffoldBlock());
+        int distance = getDistance(reader, pos);
         return distance >= 0 && distance <= MAX_DISTANCE;
     }
 
@@ -119,7 +119,7 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         super.tick(state, world, pos, rand);
 
-        int new_distance = getDistance(world, pos, getScaffoldBlock());
+        int new_distance = getDistance(world, pos);
         boolean new_bottom = isBottom(world, pos, new_distance);
 
         if (new_distance == -1 || new_distance > MAX_DISTANCE) {
@@ -166,7 +166,7 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     public BlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
         BlockPos blockpos = p_196258_1_.getClickedPos();
         World world = p_196258_1_.getLevel();
-        int i = getDistance(world, blockpos, getScaffoldBlock());
+        int i = getDistance(world, blockpos);
         // These should hopefully never matter.
         if (i < 0) i = 0;
         if (i > MAX_DISTANCE) i = MAX_DISTANCE;

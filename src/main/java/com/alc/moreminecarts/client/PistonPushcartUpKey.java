@@ -6,7 +6,10 @@ import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class PistonPushcartUpKey extends KeyBinding {
 
 

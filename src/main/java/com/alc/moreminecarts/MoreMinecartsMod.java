@@ -18,8 +18,6 @@ import com.alc.moreminecarts.blocks.utility_rails.LockingRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.PoweredLockingRailBlock;
 import com.alc.moreminecarts.client.ChunkLoaderScreen;
 import com.alc.moreminecarts.client.MinecartLoaderScreen;
-import com.alc.moreminecarts.client.PistonPushcartDownKey;
-import com.alc.moreminecarts.client.PistonPushcartUpKey;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.*;
@@ -64,7 +62,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -131,26 +128,26 @@ public class MoreMinecartsMod
 
 
     // Rail Blocks
-    private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> PARALLEL_RAIL_BLOCK = BLOCKS.register("parallel_rail", () -> new ParallelRail(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> PROJECTOR_RAIL = BLOCKS.register("projector_rail", () -> new ProjectorRail(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> HOLOGRAM_RAIL = BLOCKS.register("hologram_rail", () -> new HolographicRail(of(Material.GLASS).noCollission().strength(0.2F).sound(SoundType.GLASS)));
-    private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> WOODEN_PARALLEL_RAIL_BLOCK = BLOCKS.register("wooden_parallel_rail", () -> new WoodenParallelRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> WOODEN_PROJECTOR_RAIL = BLOCKS.register("wooden_projector_rail", () -> new WoodenProjectorRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO)));
-    private static final RegistryObject<Block> WOODEN_HOLOGRAM_RAIL = BLOCKS.register("wooden_hologram_rail", () -> new WoodenHolographicRail(of(Material.GLASS, MaterialColor.WOOD).noCollission().strength(0.2F).sound(SoundType.GLASS)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_PROJECTOR_RAIL = BLOCKS.register("maglev_projector_rail", () -> new MaglevProjectorRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_HOLOGRAM_RAIL = BLOCKS.register("maglev_hologram_rail", () -> new MaglevHolographicRail(of(Material.GLASS, MaterialColor.COLOR_BLUE).noCollission().strength(0.2F).sound(SoundType.GLASS)));
-    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> LIGHTSPEED_RAIL_BLOCK = BLOCKS.register("lightspeed_rail", () -> new LightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(1F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> LIGHTSPEED_POWERED_RAIL_BLOCK = BLOCKS.register("lightspeed_powered_rail", () -> new PoweredLightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().strength(1F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> RAIL_TURN = BLOCKS.register("rail_turn", () -> new RailTurn(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> PARALLEL_RAIL_BLOCK = BLOCKS.register("parallel_rail", () -> new ParallelRail(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> PROJECTOR_RAIL = BLOCKS.register("projector_rail", () -> new ProjectorRail(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> HOLOGRAM_RAIL = BLOCKS.register("hologram_rail", () -> new HolographicRail(of(Material.GLASS).noCollission().harvestTool(ToolType.PICKAXE).strength(0.2F).sound(SoundType.GLASS)));
+    private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> WOODEN_PARALLEL_RAIL_BLOCK = BLOCKS.register("wooden_parallel_rail", () -> new WoodenParallelRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> WOODEN_PROJECTOR_RAIL = BLOCKS.register("wooden_projector_rail", () -> new WoodenProjectorRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.7F).sound(SoundType.BAMBOO)));
+    private static final RegistryObject<Block> WOODEN_HOLOGRAM_RAIL = BLOCKS.register("wooden_hologram_rail", () -> new WoodenHolographicRail(of(Material.GLASS, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.2F).sound(SoundType.GLASS)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_BLOCK = BLOCKS.register("maglev_rail", () -> new MaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> MAGLEV_RAIL_TURN = BLOCKS.register("maglev_rail_turn", () -> new MaglevRailTurn(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> MAGLEV_PARALLEL_RAIL_BLOCK = BLOCKS.register("maglev_parallel_rail", () -> new MaglevParallelRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> MAGLEV_PROJECTOR_RAIL = BLOCKS.register("maglev_projector_rail", () -> new MaglevProjectorRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).harvestTool(ToolType.PICKAXE).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> MAGLEV_HOLOGRAM_RAIL = BLOCKS.register("maglev_hologram_rail", () -> new MaglevHolographicRail(of(Material.GLASS, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(0.2F).sound(SoundType.GLASS)));
+    private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> LIGHTSPEED_RAIL_BLOCK = BLOCKS.register("lightspeed_rail", () -> new LightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(1F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> LIGHTSPEED_POWERED_RAIL_BLOCK = BLOCKS.register("lightspeed_powered_rail", () -> new PoweredLightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(1F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
-    private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new PoweredLockingRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new PoweredLockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
 
     // Container Blocks
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
@@ -337,13 +334,10 @@ public class MoreMinecartsMod
         // do something that can only be done on the client
         //LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 
+        PROXY.setupKeybindings();
+
         ScreenManager.register(chunk_loader_c, ChunkLoaderScreen::new);
         ScreenManager.register(minecart_loader_c, MinecartLoaderScreen::new);
-
-        // Jump key
-        ClientRegistry.registerKeyBinding(new PistonPushcartUpKey("Piston Pushcart Up", 32, "More Minecarts and Rails"));
-        // Left control key
-        ClientRegistry.registerKeyBinding(new PistonPushcartDownKey("Piston Pushcart Down", 341, "More Minecarts and Rails"));
 
         RenderType cutout = RenderType.cutout();
 

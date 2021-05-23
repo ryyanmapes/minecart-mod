@@ -56,7 +56,7 @@ public class HoloRemoteItem extends Item {
 
         //if (!HoloScaffold.isValidDistance(world, blockpos)) return null;
 
-        if (!blockstate.is(this.getBlock()) || remote_type == HoloRemoteType.simple || remote_type == HoloRemoteType.broken) {
+        if (!(blockstate.is(regular_block) || blockstate.is(chaotic_block)) || remote_type == HoloRemoteType.simple || remote_type == HoloRemoteType.broken) {
             return context;
         } else {
             Direction direction;
