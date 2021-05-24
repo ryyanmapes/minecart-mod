@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/rail_flat",
+  "textures": {
+	"rail": "moreminecarts:block/piston_lift_rail_down_off"
+  }
+}

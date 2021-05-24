@@ -1,0 +1,47 @@
+
+{
+  "variants": {
+    "effect=lift,powered=false,shape=north_south": {
+      "model": "moreminecarts:block/piston_lift_rail_up_off"
+    },
+	"effect=lift,powered=true,shape=north_south": {
+      "model": "moreminecarts:block/piston_lift_rail_up_on"
+    },
+	"effect=lift,powered=true,shape=east_west": {
+      "model": "moreminecarts:block/piston_lift_rail_up_on",
+	  "y": 90
+    },
+	"effect=lift,powered=false,shape=east_west": {
+      "model": "moreminecarts:block/piston_lift_rail_up_off",
+	  "y": 90
+    },
+	"effect=delift,powered=false,shape=north_south": {
+      "model": "moreminecarts:block/piston_lift_rail_down_off"
+    },
+	"effect=delift,powered=true,shape=north_south": {
+      "model": "moreminecarts:block/piston_lift_rail_down_on"
+    },
+	"effect=delift,powered=true,shape=east_west": {
+      "model": "moreminecarts:block/piston_lift_rail_down_on",
+	  "y": 90
+    },
+	"effect=delift,powered=false,shape=east_west": {
+      "model": "moreminecarts:block/piston_lift_rail_down_off",
+	  "y": 90
+    },
+	"effect=snap,powered=false,shape=north_south": {
+      "model": "moreminecarts:block/piston_lift_rail_snap_off"
+    },
+	"effect=snap,powered=true,shape=north_south": {
+      "model": "moreminecarts:block/piston_lift_rail_snap_on"
+    },
+	"effect=snap,powered=true,shape=east_west": {
+      "model": "moreminecarts:block/piston_lift_rail_snap_on",
+	  "y": 90
+    },
+	"effect=snap,powered=false,shape=east_west": {
+      "model": "moreminecarts:block/piston_lift_rail_snap_off",
+	  "y": 90
+    }
+  }
+}
