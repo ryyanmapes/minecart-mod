@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G",
+	"R"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:activator_rail"
+    },
+	"G": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:piston_lifter_rail",
+    "count": 1
+  }
+}

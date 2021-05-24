@@ -25,17 +25,23 @@ public class StickyPistonPushcartEntity extends PistonPushcartEntity{
         super.tick();
 
         if (ContainsPlayerPassenger()) {
-            if (going_up && going_down && getHeight() > 1) {
-                this.moveTo(this.position().add(0, getHeight(), 0));
-                setLastHeight(0);
-                setHeight(0);
-
-                if (this.level.isClientSide) {
-                    level.playLocalSound(position().x, position().y, position().z, SoundEvents.PISTON_CONTRACT, SoundCategory.NEUTRAL, 0.3F, 1.0F, false);
-                }
+            if (going_up && going_down) {
+                attempt_contract();
             }
         }
 
+    }
+
+    public void attempt_contract() {
+        if (getHeight() <= 1) return;
+
+        this.moveTo(this.position().add(0, getHeight(), 0));
+        setLastHeight(0);
+        setHeight(0);
+
+        if (this.level.isClientSide) {
+            level.playLocalSound(position().x, position().y, position().z, SoundEvents.PISTON_CONTRACT, SoundCategory.NEUTRAL, 0.3F, 1.0F, false);
+        }
     }
 
     @Override

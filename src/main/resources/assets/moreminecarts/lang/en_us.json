@@ -19,6 +19,7 @@
   "block.moreminecarts.bioluminescent_rail": "Bioluminescent Rail",
   "block.moreminecarts.locking_rail": "Locking Rail",
   "block.moreminecarts.powered_locking_rail": "Powered Locking Rail",
+  "block.moreminecarts.piston_lifter_rail": "Piston Adjuster Rail",
   "block.moreminecarts.chunk_loader": "Chunk Loader",
   "block.moreminecarts.minecart_loader": "Minecart Loader",
   "block.moreminecarts.minecart_unloader": "Minecart Unloader",

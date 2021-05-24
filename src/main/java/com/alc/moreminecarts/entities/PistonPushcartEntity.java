@@ -118,12 +118,6 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     }
 
     @Override
-    public void activateMinecart(int x, int y, int z, boolean receivingPower) {
-        if (receivingPower) attemptMove(true);
-        else attemptMove(false);
-    }
-
-    @Override
     protected void removePassenger(Entity p_184225_1_) {
         going_up = false;
         going_down = false;
