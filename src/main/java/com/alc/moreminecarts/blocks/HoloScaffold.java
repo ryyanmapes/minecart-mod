@@ -79,10 +79,6 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         p_206840_1_.add(TRUE_DISTANCE, WATERLOGGED, BOTTOM, STRENGTH);
     }
 
-    public Block getScaffoldBlock() {
-        return MMReferences.holo_scaffold;
-    }
-
     // Gets lowest-distance neighbor in any direction, or -1 if there is none.
     public static int getDistance(IBlockReader reader, BlockPos pos) {
         int min_distance = MAX_DISTANCE + 1;
@@ -107,7 +103,7 @@ public class HoloScaffold extends Block implements IWaterLoggable {
         for(Direction direction : Direction.values()) {
             BlockPos check_pos = pos.relative(direction);
             BlockState blockstate1 = world.getBlockState(check_pos);
-            if (blockstate1.is(getScaffoldBlock())) {
+            if (blockstate1.is(MMReferences.holo_scaffold) || blockstate1.is(MMReferences.chaotic_holo_scaffold)) {
                 int distance = blockstate1.getValue(TRUE_DISTANCE);
                 if (only_greater && distance >= value) world.getBlockTicks().scheduleTick(check_pos, this, 1, TickPriority.LOW);
                 if (!only_greater && distance <= value) world.getBlockTicks().scheduleTick(check_pos, this, 1, TickPriority.LOW);
@@ -146,8 +142,8 @@ public class HoloScaffold extends Block implements IWaterLoggable {
     }
 
     @Override
-    public void neighborChanged(BlockState p_220069_1_, World p_220069_2_, BlockPos p_220069_3_, Block p_220069_4_, BlockPos p_220069_5_, boolean p_220069_6_) {
-        if (!p_220069_2_.isClientSide()) {
+    public void neighborChanged(BlockState p_220069_1_, World p_220069_2_, BlockPos p_220069_3_, Block block, BlockPos p_220069_5_, boolean p_220069_6_) {
+        if (!p_220069_2_.isClientSide() && !(block instanceof HoloScaffold)) {
             p_220069_2_.getBlockTicks().scheduleTick(p_220069_5_, this, 1);
         }
     }

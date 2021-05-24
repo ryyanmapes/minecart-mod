@@ -99,9 +99,11 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
     @Override
     public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
+            this.updateState(state, worldIn, pos, state.getBlock());
             this.updateLock(state, worldIn, pos);
         }
     }
+
 
     @Override
     public boolean hasTileEntity(BlockState state) {

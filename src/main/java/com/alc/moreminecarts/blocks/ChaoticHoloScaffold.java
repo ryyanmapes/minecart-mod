@@ -1,6 +1,5 @@
 package com.alc.moreminecarts.blocks;
 
-import com.alc.moreminecarts.MMReferences;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -27,11 +26,6 @@ public class ChaoticHoloScaffold extends HoloScaffold {
                 .setValue(STRENGTH, HoloScaffoldStrength.strong)
                 .setValue(GROW_DIRECTION, Direction.UP)
                 .setValue(READY_TO_GROW, true));
-    }
-
-    @Override
-    public Block getScaffoldBlock() {
-        return MMReferences.chaotic_holo_scaffold;
     }
 
     @Override

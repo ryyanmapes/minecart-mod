@@ -163,7 +163,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     public AxisAlignedBB getBoundingBoxForCulling() {
         AxisAlignedBB axisalignedbb = this.getBoundingBox();
         AxisAlignedBB true_axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ,
-                axisalignedbb.maxX, axisalignedbb.maxY + 0.65 + getHeight(), axisalignedbb.maxZ);
+                axisalignedbb.maxX, axisalignedbb.maxY + 0.2 + getHeight(), axisalignedbb.maxZ);
         return this.hasCustomDisplay() ? true_axisalignedbb.inflate((double)Math.abs(this.getDisplayOffset()) / 16.0D) : true_axisalignedbb;
     }
 
@@ -184,7 +184,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     public AxisAlignedBB getBoundingBox() {
         AxisAlignedBB bounding_box = super.getBoundingBox();
         return new AxisAlignedBB(bounding_box.minX, bounding_box.minY, bounding_box.minZ,
-                bounding_box.maxX, bounding_box.maxY + 0.65 + getHeight(), bounding_box.maxZ);
+                bounding_box.maxX, bounding_box.maxY + 0.2 + getHeight(), bounding_box.maxZ);
     }
 
     // Copied from AbstractMinecartEntity
