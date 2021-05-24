@@ -81,6 +81,7 @@ public class MMReferences {
     public static final Block bioluminescent_rail = null;
     public static final Block locking_rail = null;
     public static final Block powered_locking_rail = null;
+    public static final Block piston_lifter_rail = null;
 
     public static final Block holo_scaffold_generator = null;
     public static final Block holo_scaffold = null;

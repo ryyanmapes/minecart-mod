@@ -15,6 +15,7 @@ import com.alc.moreminecarts.blocks.rails.MaglevRail;
 import com.alc.moreminecarts.blocks.rails.WoodenRail;
 import com.alc.moreminecarts.blocks.utility_rails.ColorDetectorRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.LockingRailBlock;
+import com.alc.moreminecarts.blocks.utility_rails.PistonLifterRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.PoweredLockingRailBlock;
 import com.alc.moreminecarts.client.ChunkLoaderScreen;
 import com.alc.moreminecarts.client.MinecartLoaderScreen;
@@ -148,6 +149,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
     private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new PoweredLockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> PISTON_LIFTER_RAIL = BLOCKS.register("piston_lifter_rail", () -> new PistonLifterRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
 
     // Container Blocks
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
@@ -186,6 +188,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> LOCKING_RAIL_ITEM = ITEMS.register("locking_rail", () -> new BlockItem(locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> POWERED_LOCKING_RAIL_ITEM = ITEMS.register("powered_locking_rail", () -> new BlockItem(powered_locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> PISTON_LIFTER_RAIL_ITEM = ITEMS.register("piston_lifter_rail", () -> new BlockItem(piston_lifter_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
 
     // Minecart Items
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -361,6 +364,7 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(locking_rail, cutout);
         RenderTypeLookup.setRenderLayer(powered_locking_rail, cutout);
+        RenderTypeLookup.setRenderLayer(piston_lifter_rail, cutout);
 
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
         RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);
