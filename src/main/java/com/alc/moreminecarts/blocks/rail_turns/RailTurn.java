@@ -139,12 +139,4 @@ public class RailTurn extends AbstractRailBlock {
         return state;
     }
 
-    // Not sure what these are for.
-    public static boolean isXFacing(Direction facing) {
-        return facing == Direction.NORTH || facing == Direction.SOUTH;
-    }
-    public static boolean getIsSimple(RailShape dir) {
-        return dir == RailShape.EAST_WEST || dir == RailShape.NORTH_SOUTH;
-    }
-
 }

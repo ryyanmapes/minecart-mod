@@ -85,23 +85,23 @@ public class PistonPushcartEntity extends IronPushcartEntity {
         if (height != last_height) setLastHeight(height);
 
         if (ContainsPlayerPassenger()) {
-            if (going_up) attemptMove(true);
-            if (going_down) attemptMove(false);
+            if (going_up) attemptMove(true, false);
+            if (going_down) attemptMove(false, false);
         }
 
     }
 
-    public void attemptMove(boolean going_up) {
+    public void attemptMove(boolean going_up, boolean is_reduced) {
         final float height = getHeight();
 
         if (going_up) {
             BlockPos test_pos = this.blockPosition().above((int)Math.ceil(height + 1.5));
             BlockState test_state = level.getBlockState( test_pos );
-            if (!test_state.isCollisionShapeFullBlock(level, test_pos)) setHeight(height + getVerticalSpeed());
+            if (!test_state.isCollisionShapeFullBlock(level, test_pos)) setHeight(height + getVerticalSpeed() * (is_reduced? 0.2f : 1) );
             if (getHeight() > MMConstants.PISTON_PUSHCART_MAX_HEIGHT) setHeight(MMConstants.PISTON_PUSHCART_MAX_HEIGHT);
         }
         else {
-            setHeight(height - getVerticalSpeed());
+            setHeight(height - getVerticalSpeed() * (is_reduced? 0.2f : 1) );
             if (getHeight() < 0) setHeight(0);
         }
     }

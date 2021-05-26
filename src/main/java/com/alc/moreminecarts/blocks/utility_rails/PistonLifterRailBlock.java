@@ -108,7 +108,7 @@ public class PistonLifterRailBlock extends AbstractRailBlock {
 
                 }
                 else if (minecart instanceof PistonPushcartEntity) {
-                    ((PistonPushcartEntity)minecart).attemptMove(state.getValue(EFFECT) == PistonLifterEffect.lift);
+                    ((PistonPushcartEntity)minecart).attemptMove(state.getValue(EFFECT) == PistonLifterEffect.lift, true);
                 }
 
             }
@@ -140,6 +140,17 @@ public class PistonLifterRailBlock extends AbstractRailBlock {
             worldIn.playSound((PlayerEntity)null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
         return ActionResultType.sidedSuccess(worldIn.isClientSide());
+    }
+
+    @Override
+    protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
+        boolean flag1 = state.getValue(POWERED);
+        boolean flag2 = worldIn.hasNeighborSignal(pos);
+        if (flag1 != flag2) {
+            worldIn.setBlock(pos, state.setValue(POWERED, flag2), 3);
+            worldIn.updateNeighborsAt(pos.below(), this);
+        }
+
     }
 
 
