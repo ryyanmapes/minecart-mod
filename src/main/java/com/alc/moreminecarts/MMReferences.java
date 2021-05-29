@@ -3,6 +3,7 @@ package com.alc.moreminecarts;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.*;
+import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
 import net.minecraft.block.Block;

@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
 import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.misc.RailUtil;
 import net.minecraft.block.*;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,8 +47,8 @@ public class ProjectorRail extends AbstractRailBlock {
             worldIn.setBlock(pos, state.setValue(POWERED, now_powered), 3);
 
             Direction direction = state.getValue(FACING);
-            RailShape shape = GetAscending(direction, now_powered);
-            RailShape old_shape = GetAscending(direction, !now_powered);
+            RailShape shape = RailUtil.FacingToShape(direction, now_powered);
+            RailShape old_shape = RailUtil.FacingToShape(direction, !now_powered);
 
             // Remove old holograms
             for (int i = 0; i < getHologramLength(); i++) {
@@ -126,23 +127,6 @@ public class ProjectorRail extends AbstractRailBlock {
     public BlockState rotate(BlockState state, Rotation rot) {
         state = state.setValue(FACING, rot.rotate(state.getValue(FACING)));
         return state;
-    }
-
-    // Static Helper Methods
-
-    public static RailShape GetAscending(Direction direction, boolean ascending) {
-        switch (direction) {
-            case NORTH:
-                return ascending? RailShape.ASCENDING_NORTH : RailShape.NORTH_SOUTH;
-            case EAST:
-                return ascending? RailShape.ASCENDING_EAST : RailShape.EAST_WEST;
-            case SOUTH:
-                return ascending? RailShape.ASCENDING_SOUTH : RailShape.NORTH_SOUTH;
-            case WEST:
-                return ascending? RailShape.ASCENDING_WEST : RailShape.EAST_WEST;
-        }
-        // TODO error here
-        return RailShape.NORTH_SOUTH;
     }
 
 }

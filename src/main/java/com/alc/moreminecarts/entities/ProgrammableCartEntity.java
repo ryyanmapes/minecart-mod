@@ -1,8 +1,8 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
@@ -31,10 +31,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 // Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
 // but we force it if it's a player
-public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
-    private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(ChunkLoaderCartEntity.class, DataSerializers.BOOLEAN);
+public class ProgrammableCartEntity extends ContainerMinecartEntity {
+    private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(ProgrammableCartEntity.class, DataSerializers.BOOLEAN);
 
-    public ChunkLoaderCartEntity(EntityType<?> type, World world) {
+    public ProgrammableCartEntity(EntityType<?> type, World world) {
         super(type, world);
         lit_last_tick = false;
         time_left = -1;
@@ -42,7 +42,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         last_chunk_z = getOnPos().getZ() >> 4;
     }
 
-    public ChunkLoaderCartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public ProgrammableCartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
         super(type, x, y, z, worldIn);
         lit_last_tick = false;
         time_left = -1;
@@ -148,9 +148,9 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return (int)Math.ceil( (Math.abs(ChunkLoaderCartEntity.this.time_left) - 1) / 1200.0) * get(1);
+                    return (int)Math.ceil( (Math.abs(ProgrammableCartEntity.this.time_left) - 1) / 1200.0) * get(1);
                 case 1:
-                    return ChunkLoaderCartEntity.this.time_left > 0? 1 : -1;
+                    return ProgrammableCartEntity.this.time_left > 0? 1 : -1;
                 default:
                     return 0;
             }
@@ -160,10 +160,10 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         public void set(int index, int set_to) {
             switch(index) {
                 case 0:
-                    ChunkLoaderCartEntity.this.time_left = set_to * 1200;
+                    ProgrammableCartEntity.this.time_left = set_to * 1200;
                     break;
                 case 1:
-                    ChunkLoaderCartEntity.this.time_left = Math.abs(ChunkLoaderCartEntity.this.time_left) * (set_to > 0? 1 : -1);
+                    ProgrammableCartEntity.this.time_left = Math.abs(ProgrammableCartEntity.this.time_left) * (set_to > 0? 1 : -1);
                     break;
                 default:
                     break;

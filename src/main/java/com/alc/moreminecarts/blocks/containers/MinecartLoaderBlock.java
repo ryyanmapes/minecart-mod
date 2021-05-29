@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.containers;
 
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import net.minecraft.block.Block;

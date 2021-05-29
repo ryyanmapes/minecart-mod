@@ -13,6 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Iterator;
 
@@ -43,6 +44,18 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContai
     protected void renderBg(MatrixStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         this.minecraft.getTextureManager().bind(display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
+
+        FluidStack fluid_stack = menu.getFluids();
+        if (fluid_stack == null || fluid_stack.isEmpty()) {
+            this.font.draw(matrix, "0/2000 mB fluid", leftPos + 7, topPos + 66, 4210752);
+        }
+        else {
+            this.font.draw(matrix, fluid_stack.getAmount() + "/2000 mB " + fluid_stack.getDisplayName(), leftPos + 7, topPos + 66, 4210752);
+        }
+
+        int energy_amount = menu.getEnergy();
+        this.font.draw(matrix, energy_amount + "/2000 RF", leftPos + 90, topPos + 66, 4210752);
+
     }
 
     // Taken from BeaconScreen, for tooltip rendering.

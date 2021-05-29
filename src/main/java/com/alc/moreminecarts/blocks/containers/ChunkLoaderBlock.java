@@ -1,6 +1,6 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.containers;
 
-import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
+import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -25,17 +25,17 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class MinecartUnloaderBlock extends ContainerBlock {
-    public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+public class ChunkLoaderBlock extends ContainerBlock {
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    public MinecartUnloaderBlock(Properties builder) {
+    public ChunkLoaderBlock(Properties builder) {
         super(builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(ENABLED, true));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(ENABLED);
+        builder.add(POWERED);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class MinecartUnloaderBlock extends ContainerBlock {
         if (world.isClientSide) return ActionResultType.SUCCESS;
 
         TileEntity tile_entity = world.getBlockEntity(pos);
-        if (tile_entity instanceof MinecartUnloaderTile) {
+        if (tile_entity instanceof ChunkLoaderTile) {
             NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile_entity, pos);
             return ActionResultType.SUCCESS;
         }
@@ -61,19 +61,21 @@ public class MinecartUnloaderBlock extends ContainerBlock {
         return true;
     }
 
+
     @Nullable
     @Override
     public TileEntity newBlockEntity(IBlockReader reader) {
-        return new MinecartUnloaderTile();
+        return new ChunkLoaderTile();
     }
 
     @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState state_2, boolean bool) {
         if (!state.is(state_2.getBlock())) {
             TileEntity tile_entity = world.getBlockEntity(pos);
-            if (tile_entity instanceof MinecartUnloaderTile) {
-                MinecartUnloaderTile loader = (MinecartUnloaderTile) tile_entity;
-                InventoryHelper.dropContents(world, pos, loader);
+            if (tile_entity instanceof ChunkLoaderTile) {
+                ChunkLoaderTile chunk_loader = (ChunkLoaderTile) tile_entity;
+                InventoryHelper.dropContents(world, pos, chunk_loader);
+                ChunkLoaderTile.dropExtras(world, chunk_loader.time_left, pos);
                 world.updateNeighbourForOutputSignal(pos, this);
             }
             super.onRemove(state, world, pos, state_2, bool);
@@ -86,10 +88,11 @@ public class MinecartUnloaderBlock extends ContainerBlock {
     public void setPlacedBy(World p_180633_1_, BlockPos p_180633_2_, BlockState p_180633_3_, LivingEntity p_180633_4_, ItemStack p_180633_5_) {
         if (p_180633_5_.hasCustomHoverName()) {
             TileEntity tileentity = p_180633_1_.getBlockEntity(p_180633_2_);
-            if (tileentity instanceof MinecartUnloaderTile) {
-                ((MinecartUnloaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
+            if (tileentity instanceof ChunkLoaderTile) {
+                ((ChunkLoaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
             }
         }
+
     }
 
     // Comparator stuff
@@ -102,31 +105,10 @@ public class MinecartUnloaderBlock extends ContainerBlock {
     @Override
     public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
         TileEntity tile_entity = world.getBlockEntity(pos);
-        if (tile_entity instanceof MinecartUnloaderTile) {
-            return ((MinecartUnloaderTile) tile_entity).getComparatorSignal();
+        if (tile_entity instanceof ChunkLoaderTile) {
+            return ((ChunkLoaderTile) tile_entity).getComparatorSignal();
         }
         return 0;
-    }
-
-    // Redstone stuff (taken from HopperBlock)
-
-    @Override
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState old_state, boolean p_220082_5_) {
-        if (!old_state.is(state.getBlock())) {
-            this.checkPoweredState(world, pos, state);
-        }
-    }
-
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos changed_pos, boolean p_220069_6_) {
-        this.checkPoweredState(world, pos, state);
-    }
-
-    private void checkPoweredState(World world, BlockPos pos, BlockState state) {
-        boolean flag = !world.hasNeighborSignal(pos);
-        if (flag != state.getValue(ENABLED)) {
-            world.setBlock(pos, state.setValue(ENABLED, flag), 4);
-        }
-
     }
 
 }

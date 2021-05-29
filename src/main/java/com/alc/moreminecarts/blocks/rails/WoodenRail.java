@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.blocks.rails;
 
+import com.alc.moreminecarts.MMConstants;
 import net.minecraft.block.*;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.Direction;
@@ -8,7 +9,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class WoodenRail extends RailBlock {
-    public static final float WOODEN_MAX_SPEED = 0.2f;
 
     public WoodenRail(Properties builder) {
         super(builder);
@@ -16,7 +16,7 @@ public class WoodenRail extends RailBlock {
 
     @Override
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        return WOODEN_MAX_SPEED;
+        return MMConstants.WOODEN_MAX_SPEED;
     }
 
     @Override

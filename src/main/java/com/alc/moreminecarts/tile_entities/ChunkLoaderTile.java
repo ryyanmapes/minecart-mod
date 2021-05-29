@@ -3,7 +3,7 @@ package com.alc.moreminecarts.tile_entities;
 import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.ChunkLoaderBlock;
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;

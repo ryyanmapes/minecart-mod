@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.holo_scaffolds;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.items.HoloRemoteItem;

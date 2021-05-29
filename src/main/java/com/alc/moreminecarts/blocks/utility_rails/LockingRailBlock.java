@@ -41,7 +41,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
     @Override
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         super.tick(state, world, pos, rand);
-        this.updateLock(state, world, pos);
+        this.updateTileEntity(state, world, pos);
     }
 
     @Override
@@ -50,10 +50,9 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
         boolean new_powered = worldIn.hasNeighborSignal(pos);
         if (old_powered != new_powered) {
             worldIn.setBlock(pos, state.setValue(POWERED, new_powered), 3);
-            updateLock(state, worldIn, pos);
+            updateTileEntity(state, worldIn, pos);
             worldIn.updateNeighborsAt(pos.below(), this);
         }
-
     }
 
     @Override
@@ -74,7 +73,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
     public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
         if (worldIn.isClientSide()) return;
         if (entityIn instanceof AbstractMinecartEntity) {
-            AbstractMinecartEntity locked_minecart = updateLock(state, worldIn, pos);
+            AbstractMinecartEntity locked_minecart = updateTileEntity(state, worldIn, pos);
             if (entityIn == locked_minecart) {
                 locked_minecart.setPos(pos.getX()+0.5, pos.getY(), pos.getZ() + 0.5);
                 locked_minecart.setDeltaMovement(0,0,0);
@@ -82,7 +81,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
         }
     }
 
-    private AbstractMinecartEntity updateLock(BlockState state, World worldIn, BlockPos pos) {
+    private AbstractMinecartEntity updateTileEntity(BlockState state, World worldIn, BlockPos pos) {
         TileEntity te = worldIn.getBlockEntity(pos);
         if (te instanceof LockingRailTile) {
             boolean update_signal = ((LockingRailTile)te).updateLock(state.getValue(POWERED) ^ state.getValue(INVERTED));
@@ -100,7 +99,7 @@ public class LockingRailBlock extends AbstractRailBlock implements ITileEntityPr
     public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
             this.updateState(state, worldIn, pos, state.getBlock());
-            this.updateLock(state, worldIn, pos);
+            this.updateTileEntity(state, worldIn, pos);
         }
     }
 

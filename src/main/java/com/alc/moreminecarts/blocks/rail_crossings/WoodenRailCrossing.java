@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks.rail_turns;
+package com.alc.moreminecarts.blocks.rail_crossings;
 
 import com.alc.moreminecarts.MMConstants;
 import net.minecraft.block.BlockState;
@@ -8,9 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class WoodenRailTurn extends RailTurn {
+public class WoodenRailCrossing extends RailCrossing {
 
-    public WoodenRailTurn(Properties builder) {
+    public WoodenRailCrossing(Properties builder) {
         super(builder);
     }
 

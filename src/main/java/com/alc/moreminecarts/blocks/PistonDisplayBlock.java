@@ -7,7 +7,7 @@ import net.minecraft.state.StateContainer;
 
 public class PistonDisplayBlock extends Block {
 
-    public static final IntegerProperty VARIANT = IntegerProperty.create("variant", 0, 4);
+    public static final IntegerProperty VARIANT = IntegerProperty.create("variant", 0, 7);
 
     public PistonDisplayBlock(Properties p_i48440_1_) {
         super(p_i48440_1_);

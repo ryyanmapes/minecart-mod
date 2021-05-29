@@ -9,13 +9,10 @@ import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -25,12 +22,21 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MinecartUnloaderTile extends LockableTileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
+public class MinecartUnloaderTile extends LockableTileEntity implements IMinecartUnLoaderTile {
 
     public static int MAX_COOLDOWN_TIME = 2;
 
@@ -80,12 +86,25 @@ public class MinecartUnloaderTile extends LockableTileEntity implements ISidedIn
     public int comparator_output_value;
     public int cooldown_time;
 
+    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new FluidTank(2000));
+    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new EnergyStorage(2000));
+
     public MinecartUnloaderTile() {
         super(MMReferences.minecart_unloader_te);
         locked_minecarts_only = false;
         leave_one_in_stack = false;
         comparator_output = ComparatorOutputType.done_loading;
         comparator_output_value = -1;
+    }
+
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return fluid_handler.cast();
+        }
+        else if (cap == CapabilityEnergy.ENERGY) {
+            return energy_handler.cast();
+        }
+        return super.getCapability(cap, side);
     }
 
     @Override
@@ -248,6 +267,21 @@ public class MinecartUnloaderTile extends LockableTileEntity implements ISidedIn
     public void decCooldown() {
         cooldown_time -= 1;
         if (cooldown_time < 0) cooldown_time = 0;
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        fluid_handler.invalidate();
+        energy_handler.invalidate();
+    }
+
+    public FluidStack getFluidStack() {
+        return fluid_handler.resolve().get().getFluidInTank(0);
+    }
+
+    public int getEnergyAmount() {
+        return energy_handler.resolve().get().getEnergyStored();
     }
 
 

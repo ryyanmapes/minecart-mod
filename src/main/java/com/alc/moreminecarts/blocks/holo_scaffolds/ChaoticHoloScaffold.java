@@ -1,4 +1,4 @@
-package com.alc.moreminecarts.blocks;
+package com.alc.moreminecarts.blocks.holo_scaffolds;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
