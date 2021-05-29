@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "moreminecarts:block/transport_battery_top",
+    "north": "moreminecarts:block/transport_battery_side",
+    "south": "moreminecarts:block/transport_battery_side",
+    "east": "moreminecarts:block/transport_battery_side",
+    "west": "moreminecarts:block/transport_battery_side",
+    "up": "moreminecarts:block/transport_battery_top",
+    "down": "moreminecarts:block/transport_battery_top"
+  }
+}

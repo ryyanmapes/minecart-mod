@@ -14,6 +14,12 @@
 	"variant=3": {
       "model": "moreminecarts:block/minecart_piston_head_sticky",
 	  "x": -90
+    },
+	"variant=4": {
+      "model": "moreminecarts:block/transport_tank"
+    },
+	"variant=5": {
+      "model": "moreminecarts:block/transport_battery"
     }
   }
 }
