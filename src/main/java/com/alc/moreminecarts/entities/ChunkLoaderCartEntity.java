@@ -29,8 +29,6 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 
-// Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
-// but we force it if it's a player
 public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(ChunkLoaderCartEntity.class, DataSerializers.BOOLEAN);
 

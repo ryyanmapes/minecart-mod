@@ -78,6 +78,8 @@ public class MinecartLoaderTile extends LockableTileEntity implements IMinecartU
     }
 
     public static int MAX_COOLDOWN_TIME = 2;
+    public static int FLUID_CAPACITY = 2000;
+    public static int ENERGY_CAPACITY = 2000;
 
     public static String LOCKED_MINECARTS_ONLY_PROPERTY = "locked_minecarts_only";
     public static String LEAVE_ONE_IN_STACK_PROPERTY = "leave_one_in_stack";
@@ -125,8 +127,8 @@ public class MinecartLoaderTile extends LockableTileEntity implements IMinecartU
     public int comparator_output_value;
     public int cooldown_time;
 
-    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new FluidTank(2000));
-    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new EnergyStorage(2000));
+    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new FluidTank(FLUID_CAPACITY));
+    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new EnergyStorage(ENERGY_CAPACITY));
 
     public MinecartLoaderTile() {
         super(MMReferences.minecart_loader_te);
@@ -136,6 +138,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements IMinecartU
         comparator_output_value = -1;
     }
 
+    @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return fluid_handler.cast();
@@ -152,6 +155,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements IMinecartU
         compound.putBoolean(LEAVE_ONE_IN_STACK_PROPERTY, leave_one_in_stack);
         compound.putInt(COMPARATOR_OUTPUT_PROPERTY, comparator_output.toInt());
         compound.putInt(COOLDOWN_PROPERTY, cooldown_time);
+        ((FluidTank)fluid_handler.resolve().get()).writeToNBT(compound);
         return super.save(compound);
     }
 
@@ -162,6 +166,7 @@ public class MinecartLoaderTile extends LockableTileEntity implements IMinecartU
         comparator_output = ComparatorOutputType.fromInt( compound.getInt(COMPARATOR_OUTPUT_PROPERTY) );
         cooldown_time = compound.getInt(COOLDOWN_PROPERTY);
         comparator_output_value = -1;
+        ((FluidTank)fluid_handler.resolve().get()).readFromNBT(compound);
         super.load(state, compound);
     }
 
@@ -182,7 +187,13 @@ public class MinecartLoaderTile extends LockableTileEntity implements IMinecartU
                 List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
                 float criteria_total = 0;
                 for (AbstractMinecartEntity minecart : minecarts) {
-                    if (minecart instanceof ContainerMinecartEntity) {
+
+                    LazyOptional<IFluidHandler> tankCapability = minecart.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+                    if (tankCapability.isPresent()) {
+                        IFluidHandler fluid_handler = tankCapability.orElse(null);
+                        criteria_total += doFluidLoads(fluid_handler);
+                    }
+                    else if (minecart instanceof ContainerMinecartEntity) {
                         criteria_total += doMinecartLoads((ContainerMinecartEntity) minecart);
                     } else if (minecart instanceof FurnaceMinecartEntity) {
                         criteria_total += doFuranceCartLoads((FurnaceMinecartEntity) minecart);
@@ -227,6 +238,58 @@ public class MinecartLoaderTile extends LockableTileEntity implements IMinecartU
         BlockPos pos = getBlockPos();
         double d0 = 0.2D;
         return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY() - 1, (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 2) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
+    }
+
+    public float doFluidLoads(IFluidHandler handler) {
+        boolean changed = false;
+
+        IFluidHandler our_fluid_handler = fluid_handler.orElse(null);
+        FluidStack our_fluid_stack = our_fluid_handler.getFluidInTank(0);
+
+        for (int i = 0; i < handler.getTanks() && our_fluid_stack.getAmount() > (leave_one_in_stack? 1 : 0); i++) {
+
+            boolean did_load = false;
+
+            if (handler.isFluidValid(i, our_fluid_stack)) {
+
+                FluidStack add_to_stack = handler.getFluidInTank(i);
+
+                if (add_to_stack.isEmpty()) {
+                    FluidStack new_stack = our_fluid_stack.copy();
+                    int transfer_amount = Math.min(1000, new_stack.getAmount());
+                    new_stack.setAmount(transfer_amount);
+                    handler.fill(new_stack, IFluidHandler.FluidAction.EXECUTE);
+                    our_fluid_stack.shrink(transfer_amount);
+                    did_load = true;
+                }
+                else if (add_to_stack.containsFluid(our_fluid_stack)) {
+                    int true_count = our_fluid_stack.getAmount() - (leave_one_in_stack? 1 : 0);
+                    int to_fill = handler.getTankCapacity(i) - add_to_stack.getAmount();
+                    int transfer = Math.min(1000, Math.min(true_count, to_fill));
+
+                    add_to_stack.grow(transfer);
+                    our_fluid_stack.shrink(transfer);
+                    did_load = transfer > 0;
+                }
+            }
+
+            if (did_load) {
+                changed = true;
+                break;
+            }
+        }
+
+        if (changed) {
+            resetCooldown();
+            setChanged();
+        }
+
+        if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
+        else {
+            float fullness = (int)Math.floor((float)((FluidTank)fluid_handler.resolve().get()).getFluidAmount() / ((FluidTank)fluid_handler.resolve().get()).getCapacity() * 15.0);
+            if (comparator_output == ComparatorOutputType.cart_full) fullness = (float)Math.floor(fullness);
+            return fullness;
+        }
     }
 
     public float doMinecartLoads(ContainerMinecartEntity minecart) {

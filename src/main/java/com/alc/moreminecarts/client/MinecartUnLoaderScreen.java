@@ -18,10 +18,10 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.Iterator;
 
 @OnlyIn(Dist.CLIENT)
-public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContainer>{
+public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/loader_gui.png");
 
-    public MinecartLoaderScreen(MinecartUnLoaderContainer container, PlayerInventory inv, ITextComponent titleIn) {
+    public MinecartUnLoaderScreen(MinecartUnLoaderContainer container, PlayerInventory inv, ITextComponent titleIn) {
         super(container, inv, new StringTextComponent(container.getIsUnloader()? "Minecart Unloader" : "Minecart Loader"));
     }
 
@@ -45,16 +45,19 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContai
         this.minecraft.getTextureManager().bind(display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
+        String contents_text = "";
         FluidStack fluid_stack = menu.getFluids();
         if (fluid_stack == null || fluid_stack.isEmpty()) {
-            this.font.draw(matrix, "0/2000 mB fluid", leftPos + 7, topPos + 66, 4210752);
+            contents_text += "0/2,000 mB fluid, ";
         }
         else {
-            this.font.draw(matrix, fluid_stack.getAmount() + "/2000 mB " + fluid_stack.getDisplayName(), leftPos + 7, topPos + 66, 4210752);
+            contents_text += "/2,000 mB " + fluid_stack.getDisplayName() + ", ";
         }
 
         int energy_amount = menu.getEnergy();
-        this.font.draw(matrix, energy_amount + "/2000 RF", leftPos + 90, topPos + 66, 4210752);
+        contents_text += energy_amount + "/2,000 RF";
+
+        this.font.draw(matrix, contents_text, leftPos + 7, topPos + 62, 4210752);
 
     }
 
@@ -98,7 +101,7 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContai
                     text = "ERROR";
             }
 
-            MinecartLoaderScreen.this.renderTooltip(p_230443_1_, new StringTextComponent(text) , p_230443_2_, p_230443_3_);
+            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_, new StringTextComponent(text) , p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -153,7 +156,7 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContai
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            MinecartLoaderScreen.this.renderTooltip(p_230443_1_,
+            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
                     new StringTextComponent(menu.getLockedMinecartsOnly()
                             ? "Consider only locked minecarts"
                             : "Consider all minecarts"
@@ -201,7 +204,7 @@ public class MinecartLoaderScreen extends ContainerScreen<MinecartUnLoaderContai
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            MinecartLoaderScreen.this.renderTooltip(p_230443_1_,
+            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
                     new StringTextComponent(
                             menu.getIsUnloader()
                                 ? (menu.getLeaveOneInStack()

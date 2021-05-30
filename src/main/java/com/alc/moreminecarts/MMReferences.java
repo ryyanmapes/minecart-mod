@@ -2,6 +2,7 @@ package com.alc.moreminecarts;
 
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
+import com.alc.moreminecarts.containers.TankCartContainer;
 import com.alc.moreminecarts.entities.*;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
@@ -29,6 +30,7 @@ public class MMReferences {
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<PistonPushcartEntity> piston_pushcart = null;
     public static final EntityType<StickyPistonPushcartEntity> sticky_piston_pushcart = null;
+    public static final EntityType<StickyPistonPushcartEntity> tank_cart = null;
     public static final EntityType<CouplerEntity> coupler = null;
 
     // Tile Entities
@@ -43,6 +45,7 @@ public class MMReferences {
 
     public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
     public static final ContainerType<MinecartUnLoaderContainer> minecart_loader_c = null;
+    public static final ContainerType<TankCartContainer> tank_cart_c = null;
 
     // High Speed Entities
 
