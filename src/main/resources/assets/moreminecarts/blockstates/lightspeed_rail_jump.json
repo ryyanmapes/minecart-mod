@@ -1,34 +1,19 @@
 
 {
   "variants": {
-    "facing=north,powered=false": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_off"
+    "facing=north": {
+      "model": "moreminecarts:block/lightspeed_rail_jump"
     },
-	"facing=south,powered=false": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_off",
+	"facing=south": {
+      "model": "moreminecarts:block/lightspeed_rail_jump",
 	  "y": 180
     },
-	"facing=east,powered=false": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_off",
+	"facing=east": {
+      "model": "moreminecarts:block/lightspeed_rail_jump",
 	  "y": 90
     },
-	"facing=west,powered=false": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_off",
-	  "y": 270
-    },
-	"facing=north,powered=true": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_on"
-    },
-	"facing=south,powered=true": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_on",
-	  "y": 180
-    },
-	"facing=east,powered=true": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_on",
-	  "y": 90
-    },
-	"facing=west,powered=true": {
-      "model": "moreminecarts:block/lightspeed_rail_jump_on",
+	"facing=west": {
+      "model": "moreminecarts:block/lightspeed_rail_jump",
 	  "y": 270
     }
   }

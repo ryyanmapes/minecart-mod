@@ -2,8 +2,8 @@
 	"parent": "block/block",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "moreminecarts:block/maglev_rail_jump_on",
-		"particle": "moreminecarts:block/maglev_rail_jump_on"
+		"0": "moreminecarts:block/maglev_rail_jump",
+		"particle": "moreminecarts:block/maglev_rail_jump"
 	},
 	"elements": [
 		{
