@@ -3,7 +3,7 @@ package com.alc.moreminecarts.entities;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
-import com.alc.moreminecarts.containers.TankCartContainer;
+import com.alc.moreminecarts.containers.BatteryCartContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -20,31 +20,32 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
 
-public class TankCartEntity extends AbstractMinecartEntity implements INamedContainerProvider {
+public class BatteryCartEntity extends AbstractMinecartEntity implements INamedContainerProvider {
 
-    public TankCartEntity(EntityType<?> type, World world) {
+    public static String ENERGY_PROPERTY = "energy";
+
+    public BatteryCartEntity(EntityType<?> type, World world) {
         super(type, world);
     }
 
-    public TankCartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public BatteryCartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
         super(type, worldIn, x, y, z);
     }
 
-    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new FluidTank(40000));
+    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new EnergyStorage(40000));
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap) {
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return fluid_handler.cast();
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energy_handler.cast();
         }
         return super.getCapability(cap);
     }
@@ -64,7 +65,7 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 4);
+        return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 5);
     }
 
     @Override
@@ -79,28 +80,28 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
     @Override
     protected void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
-        ((FluidTank)fluid_handler.resolve().get()).writeToNBT(compound);
+        compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
-        ((FluidTank)fluid_handler.resolve().get()).readFromNBT(compound);
+        energy_handler.orElse(null).receiveEnergy( compound.getInt(ENERGY_PROPERTY), false );
     }
 
-    public FluidStack getFluidStack() {
-        return fluid_handler.resolve().get().getFluidInTank(0);
+    public int getEnergyAmount() {
+        return energy_handler.orElse(null).getEnergyStored();
     }
 
     public int getComparatorSignal() {
-        return (int)Math.floor((float)((FluidTank)fluid_handler.resolve().get()).getFluidAmount() / ((FluidTank)fluid_handler.resolve().get()).getCapacity() * 15.0);
+        return (int)Math.floor((float)energy_handler.resolve().get().getEnergyStored() / energy_handler.resolve().get().getMaxEnergyStored() * 15.0);
     }
 
     // Container stuff
 
     @Nullable
     public Container createMenu(int i, PlayerInventory inv, PlayerEntity player) {
-        return new TankCartContainer(i, level, this, inv, player);
+        return new BatteryCartContainer(i, level, this, inv, player);
     }
 
     public ActionResultType interact(PlayerEntity p_184230_1_, Hand p_184230_2_) {
@@ -109,7 +110,5 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
         p_184230_1_.openMenu(this);
         return ActionResultType.SUCCESS;
     }
-
-
 
 }

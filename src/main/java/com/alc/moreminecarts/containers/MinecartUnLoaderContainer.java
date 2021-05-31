@@ -2,7 +2,7 @@ package com.alc.moreminecarts.containers;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
-import com.alc.moreminecarts.tile_entities.IMinecartUnLoaderTile;
+import com.alc.moreminecarts.tile_entities.AbstractCommonLoader;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 public class MinecartUnLoaderContainer extends Container {
 
-    private final IMinecartUnLoaderTile tile;
+    private final AbstractCommonLoader tile;
     private final IInventory inventory;
     private final IIntArray data;
     protected final World level;

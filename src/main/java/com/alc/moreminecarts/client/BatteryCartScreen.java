@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.client;
 
-import com.alc.moreminecarts.containers.TankCartContainer;
+import com.alc.moreminecarts.containers.BatteryCartContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -9,14 +9,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class TankCartScreen extends ContainerScreen<TankCartContainer>{
+public class BatteryCartScreen extends ContainerScreen<BatteryCartContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/loader_gui.png");
 
-    public TankCartScreen(TankCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Minecart with Tank"));
+    public BatteryCartScreen(BatteryCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
+        super(container, inv, new StringTextComponent("Minecart with Battery"));
     }
 
     @Override
@@ -31,14 +30,8 @@ public class TankCartScreen extends ContainerScreen<TankCartContainer>{
         this.minecraft.getTextureManager().bind(display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
-        FluidStack fluid_stack = menu.getFluids();
-        if (fluid_stack == null || fluid_stack.isEmpty()) {
-            this.font.draw(matrix, "0/40,000 mB fluid", leftPos + 7, topPos + 20, 4210752);
-        }
-        else {
-            this.font.draw(matrix, fluid_stack.getAmount() + "/40,000 mB " + fluid_stack.getDisplayName(), leftPos + 7, topPos + 20, 4210752);
-        }
-
+        int energy = menu.getEnergy();
+        this.font.draw(matrix, energy+"/40,000 RF", leftPos + 7, topPos + 20, 4210752);
     }
 
 }

@@ -23,9 +23,11 @@ import com.alc.moreminecarts.blocks.utility_rails.ColorDetectorRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.LockingRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.PistonLifterRailBlock;
 import com.alc.moreminecarts.blocks.utility_rails.PoweredLockingRailBlock;
+import com.alc.moreminecarts.client.BatteryCartScreen;
 import com.alc.moreminecarts.client.ChunkLoaderScreen;
 import com.alc.moreminecarts.client.MinecartUnLoaderScreen;
 import com.alc.moreminecarts.client.TankCartScreen;
+import com.alc.moreminecarts.containers.BatteryCartContainer;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.containers.TankCartContainer;
@@ -118,6 +120,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<EntityType<PistonPushcartEntity>> PISTON_PUSHCART_ENTITY = ENTITIES.register("piston_pushcart", () -> EntityType.Builder.<PistonPushcartEntity>of(PistonPushcartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("piston_pushcart"));
     private static final RegistryObject<EntityType<StickyPistonPushcartEntity>> STICKY_PISTON_PUSHCART_ENTITY = ENTITIES.register("sticky_piston_pushcart", () -> EntityType.Builder.<StickyPistonPushcartEntity>of(StickyPistonPushcartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("sticky_piston_pushcart"));
     private static final RegistryObject<EntityType<TankCartEntity>> TANK_CART_ENTITY = ENTITIES.register("tank_cart", () -> EntityType.Builder.<TankCartEntity>of(TankCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("tank_cart"));
+    private static final RegistryObject<EntityType<BatteryCartEntity>> BATTERY_CART_ENTITY = ENTITIES.register("battery_cart", () -> EntityType.Builder.<BatteryCartEntity>of(BatteryCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("battery_cart"));
     private static final RegistryObject<EntityType<CouplerEntity>> COUPLER_ENTITY = ENTITIES.register("coupler", () -> EntityType.Builder.<CouplerEntity>of(CouplerEntity::new, EntityClassification.MISC ).sized(0.3F, 0.3F).noSummon().setCustomClientFactory(CouplerClientFactory.get()).build("coupler"));
 
     // High Speed Cart Entities
@@ -227,6 +230,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> PISTON_PUSHCART_ITEM = ITEMS.register("piston_pushcart", () -> new PistonPushcartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> STICKY_PISTON_PUSHCART_ITEM = ITEMS.register("sticky_piston_pushcart", () -> new StickyPistonPushcartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> TANK_CART_ITEM = ITEMS.register("tank_cart", () -> new TankCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> BATTERY_CART_ITEM = ITEMS.register("battery_cart", () -> new BatteryCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
 
     // Block Items
     private static final RegistryObject<Item> CHUNK_LOADER_ITEM = ITEMS.register("chunk_loader", () -> new BlockItem(MMReferences.chunk_loader, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
@@ -312,6 +316,10 @@ public class MoreMinecartsMod
             (windowId, inv, data) -> {
                 return new TankCartContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
             }));
+    private static final RegistryObject<ContainerType<BatteryCartContainer>> BATTERY_CART_CONTAINER = CONTAINERS.register("battery_cart_c", () -> IForgeContainerType.create(
+            (windowId, inv, data) -> {
+                return new BatteryCartContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
+            }));
 
     public MoreMinecartsMod() {
 
@@ -357,6 +365,7 @@ public class MoreMinecartsMod
         ScreenManager.register(chunk_loader_c, ChunkLoaderScreen::new);
         ScreenManager.register(minecart_loader_c, MinecartUnLoaderScreen::new);
         ScreenManager.register(tank_cart_c, TankCartScreen::new);
+        ScreenManager.register(battery_cart_c, BatteryCartScreen::new);
 
         RenderType cutout = RenderType.cutout();
 
@@ -415,6 +424,7 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.piston_pushcart, PistonPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.sticky_piston_pushcart, StickyPistonPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(tank_cart, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(battery_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.coupler, CouplerRenderer::new);
 
         RenderingRegistry.registerEntityRenderingHandler(high_speed_minecart, HSMinecartRenderer::new);
