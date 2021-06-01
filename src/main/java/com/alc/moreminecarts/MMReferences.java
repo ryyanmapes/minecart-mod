@@ -27,6 +27,7 @@ public class MMReferences {
     public static final EntityType<ChunkLoaderCartEntity> minecart_with_chunk_loader = null;
     public static final EntityType<CampfireCartEntity> campfire_cart = null;
     public static final EntityType<SoulfireCartEntity> soulfire_cart = null;
+    public static final EntityType<EndfireCartEntity> endfire_cart = null;
     public static final EntityType<WoodenPushcartEntity> wooden_pushcart = null;
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<PistonPushcartEntity> piston_pushcart = null;
@@ -34,21 +35,6 @@ public class MMReferences {
     public static final EntityType<TankCartEntity> tank_cart = null;
     public static final EntityType<BatteryCartEntity> battery_cart = null;
     public static final EntityType<CouplerEntity> coupler = null;
-
-    // Tile Entities
-
-    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
-    public static final TileEntityType<LockingRailTile> locking_rail_te = null;
-    public static final TileEntityType<LockingRailTile> powered_locking_rail_te = null;
-    public static final TileEntityType<LockingRailTile> minecart_loader_te = null;
-    public static final TileEntityType<LockingRailTile> minecart_unloader_te = null;
-
-    // Containers
-
-    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
-    public static final ContainerType<MinecartUnLoaderContainer> minecart_loader_c = null;
-    public static final ContainerType<TankCartContainer> tank_cart_c = null;
-    public static final ContainerType<BatteryCartContainer> battery_cart_c = null;
 
     // High Speed Entities
 
@@ -66,6 +52,21 @@ public class MMReferences {
     public static final EntityType<HSMinecartEntities.HSPushcart> high_speed_pushcart = null;
     public static final EntityType<HSMinecartEntities.HSPistonPushcart> high_speed_piston_pushcart = null;
     public static final EntityType<HSMinecartEntities.HSStickyPistonPushcart> high_speed_sticky_piston_pushcart = null;
+
+    // Tile Entities
+
+    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
+    public static final TileEntityType<LockingRailTile> locking_rail_te = null;
+    public static final TileEntityType<LockingRailTile> powered_locking_rail_te = null;
+    public static final TileEntityType<LockingRailTile> minecart_loader_te = null;
+    public static final TileEntityType<LockingRailTile> minecart_unloader_te = null;
+
+    // Containers
+
+    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
+    public static final ContainerType<MinecartUnLoaderContainer> minecart_loader_c = null;
+    public static final ContainerType<TankCartContainer> tank_cart_c = null;
+    public static final ContainerType<BatteryCartContainer> battery_cart_c = null;
 
     // Blocks
     public static final Block rail_turn = null;

@@ -113,16 +113,21 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     }
 
     public static int getBurnDuration(Item item) {
-        if (item == Items.AIR) return -1;
-        if (item == Items.QUARTZ) return 600;
-        if (item == Items.EMERALD) return 6000;
-        if (item == Items.EMERALD_BLOCK) return 54000;
-        if (item == Items.DIAMOND) return 72000;
-        if (item == Items.DIAMOND_BLOCK) return 648000;
-        if (item == Items.NETHER_STAR) return 3456000;
-        if (item == MMItemReferences.chunkrodite) return 18000;
-        if (item == MMItemReferences.chunkrodite_block) return 162000;
-        return -1;
+        double multiplier = MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER.get();
+        double fuel = -1;
+
+        if (item == Items.QUARTZ) fuel = 600;
+        else if (item == Items.EMERALD) fuel = 6000;
+        else if (item == Items.EMERALD_BLOCK) fuel = 54000;
+        else if (item == Items.DIAMOND) fuel = 72000;
+        else if (item == Items.DIAMOND_BLOCK) fuel = 648000;
+        else if (item == Items.NETHER_STAR) fuel = 3456000;
+        else if (item == MMItemReferences.chunkrodite) fuel = 18000;
+        else if (item == MMItemReferences.chunkrodite_block) fuel = 162000;
+
+        fuel *= multiplier;
+        if (fuel <= 0) return -1;
+        else return (int)Math.ceil(fuel);
     }
 
     public void tick() {

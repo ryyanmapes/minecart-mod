@@ -1,5 +1,7 @@
 package com.alc.moreminecarts;
 
+import net.minecraftforge.common.ForgeConfigSpec;
+
 public class MMConstants {
     public static final String modid = "moreminecarts";
 
@@ -15,5 +17,7 @@ public class MMConstants {
     public static final float PISTON_PUSHCART_VERTICAL_SPEED = 0.2f;
     public static final float PISTON_PUSHCART_AERODYNAMIC_VERTICAL_SPEED = 0.4f;
     public static final float PISTON_PUSHCART_MAX_HEIGHT = 10f;
+
+    public static ForgeConfigSpec.DoubleValue CONFIG_CHUNK_LOADER_MULTIPLIER;
 
 }
