@@ -1,9 +1,11 @@
 package com.alc.moreminecarts.blocks.rail_crossings;
 
 import net.minecraft.block.AbstractRailBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.util.math.BlockPos;
@@ -17,6 +19,11 @@ public class RailCrossing extends AbstractRailBlock {
 
     public RailCrossing(Properties builder) {
         super(false, builder);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(SHAPE);
     }
 
     @Override
@@ -36,8 +43,10 @@ public class RailCrossing extends AbstractRailBlock {
 
     @Override
     public RailShape getRailDirection(BlockState state, IBlockReader world, BlockPos pos, @Nullable AbstractMinecartEntity cart) {
+        if (cart == null) return RailShape.NORTH_SOUTH;
+
         Vector3d movement = cart.getDeltaMovement();
-        if (movement.x > movement.z) return RailShape.EAST_WEST;
+        if (Math.abs(movement.x) > Math.abs(movement.z)) return RailShape.EAST_WEST;
         else return RailShape.NORTH_SOUTH;
     }
 }

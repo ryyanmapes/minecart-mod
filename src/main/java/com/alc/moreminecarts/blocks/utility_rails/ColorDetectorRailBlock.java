@@ -145,7 +145,6 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     }
 
     private AxisAlignedBB getDectectionBox(BlockPos pos) {
-        double d0 = 0.2D;
         return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
     }
 

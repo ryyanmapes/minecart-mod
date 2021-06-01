@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class BatteryCartScreen extends ContainerScreen<BatteryCartContainer>{
-    private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/loader_gui.png");
+    private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/blank.png");
 
     public BatteryCartScreen(BatteryCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
         super(container, inv, new StringTextComponent("Minecart with Battery"));
@@ -31,7 +31,7 @@ public class BatteryCartScreen extends ContainerScreen<BatteryCartContainer>{
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
         int energy = menu.getEnergy();
-        this.font.draw(matrix, energy+"/40,000 RF", leftPos + 7, topPos + 20, 4210752);
+        this.font.draw(matrix, energy+"/40,000 RF", leftPos + 8, topPos + 20, 4210752);
     }
 
 }

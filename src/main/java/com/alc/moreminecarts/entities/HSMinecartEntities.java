@@ -32,7 +32,7 @@ public class HSMinecartEntities {
             }
             new_minecart = newer_minecart;
         }
-        else if (minecart instanceof ChestMinecartEntity) new_minecart = MMReferences.high_speed_minecart.create(minecart.level);
+        else if (minecart instanceof ChestMinecartEntity) new_minecart = MMReferences.high_speed_chest_minecart.create(minecart.level);
         else if (minecart instanceof TNTMinecartEntity) new_minecart = MMReferences.high_speed_tnt_minecart.create(minecart.level);
         else if (minecart instanceof CommandBlockMinecartEntity) new_minecart = MMReferences.high_speed_command_block_minecart.create(minecart.level);
         else if (minecart instanceof HopperMinecartEntity) new_minecart = MMReferences.high_speed_hopper_minecart.create(minecart.level);
@@ -76,7 +76,12 @@ public class HSMinecartEntities {
         }
         public HSMinecart(World worldIn, double x, double y, double z) { super(worldIn, x, y, z);}
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -84,8 +89,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -100,7 +103,12 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -108,8 +116,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -124,7 +130,12 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -132,8 +143,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -146,7 +155,12 @@ public class HSMinecartEntities {
         public HSCommandBlockMinecart(EntityType<? extends CommandBlockMinecartEntity> type, World world) { super(type, world); }
         public HSCommandBlockMinecart(World worldIn, double x, double y, double z) { super(worldIn, x, y, z); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -154,8 +168,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -170,7 +182,12 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -178,8 +195,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -194,7 +209,12 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -202,8 +222,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -218,7 +236,12 @@ public class HSMinecartEntities {
             super(worldIn, x, y, z);
         }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -227,8 +250,6 @@ public class HSMinecartEntities {
         // Turned off because it actually makes them slower on maglev rails.
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -242,7 +263,12 @@ public class HSMinecartEntities {
     public static class HSNetMinecart extends NetMinecartEntity implements IHSCart {
         public HSNetMinecart(EntityType<? extends NetMinecartEntity> type, World world) { super(type, world); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -250,8 +276,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -263,7 +287,12 @@ public class HSMinecartEntities {
     public static class HSChunkLoaderMinecart extends ChunkLoaderCartEntity implements IHSCart {
         public HSChunkLoaderMinecart(EntityType<? extends ChunkLoaderCartEntity> type, World world) { super(type, world); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -271,8 +300,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -284,7 +311,12 @@ public class HSMinecartEntities {
     public static class HSCampfireMinecart extends CampfireCartEntity implements IHSCart {
         public HSCampfireMinecart(EntityType<? extends CampfireCartEntity> type, World world) { super(type, world); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -292,8 +324,6 @@ public class HSMinecartEntities {
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -305,7 +335,12 @@ public class HSMinecartEntities {
     public static class HSSoulfireMinecart extends SoulfireCartEntity implements IHSCart {
         public HSSoulfireMinecart(EntityType<? extends SoulfireCartEntity> type, World world) { super(type, world); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -313,8 +348,6 @@ public class HSMinecartEntities {
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -326,7 +359,12 @@ public class HSMinecartEntities {
     public static class HSPushcart extends IronPushcartEntity implements IHSCart {
         public HSPushcart(EntityType<? extends IronPushcartEntity> type, World world) { super(type, world); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -334,8 +372,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -349,7 +385,12 @@ public class HSMinecartEntities {
     public static class HSPistonPushcart extends PistonPushcartEntity implements IHSCart {
         public HSPistonPushcart(EntityType<? extends PistonPushcartEntity> type, World world) { super(type, world); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -357,8 +398,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
@@ -376,7 +415,12 @@ public class HSMinecartEntities {
     public static class HSStickyPistonPushcart extends StickyPistonPushcartEntity implements IHSCart {
         public HSStickyPistonPushcart(EntityType<? extends StickyPistonPushcartEntity> type, World world) { super(type, world); }
         @Override
-        protected double getMaxSpeed() { return MMConstants.HS_MAX_SPEED; }
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
@@ -384,8 +428,6 @@ public class HSMinecartEntities {
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
-        @Override
-        public float getMaxSpeedAirLateral() { return MMConstants.HS_FLYING_MAX_SPEED; }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
