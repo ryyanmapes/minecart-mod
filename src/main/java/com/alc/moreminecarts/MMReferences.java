@@ -47,6 +47,8 @@ public class MMReferences {
     public static final EntityType<HSMinecartEntities.HSFurnaceMinecart> high_speed_furnace_minecart = null;
     public static final EntityType<HSMinecartEntities.HSNetMinecart> high_speed_net_minecart = null;
     public static final EntityType<HSMinecartEntities.HSChunkLoaderMinecart> high_speed_chunk_loader_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSTankMinecart> high_speed_tank_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSBatteryMinecart> high_speed_battery_minecart = null;
     public static final EntityType<HSMinecartEntities.HSCampfireMinecart> high_speed_campfire_minecart = null;
     public static final EntityType<HSMinecartEntities.HSSoulfireMinecart> high_speed_soulfire_minecart = null;
     public static final EntityType<HSMinecartEntities.HSPushcart> high_speed_pushcart = null;
@@ -60,6 +62,7 @@ public class MMReferences {
     public static final TileEntityType<LockingRailTile> powered_locking_rail_te = null;
     public static final TileEntityType<LockingRailTile> minecart_loader_te = null;
     public static final TileEntityType<LockingRailTile> minecart_unloader_te = null;
+    public static final TileEntityType<ChunkLoaderTile> pearl_stasis_chamber_te = null;
 
     // Containers
 
@@ -104,6 +107,7 @@ public class MMReferences {
     public static final Block piston_display_block = null;
 
     public static final Block chunk_loader = null;
+    public static final Block pearl_stasis_chamber = null;
     public static final Block minecart_loader = null;
     public static final Block minecart_unloader = null;
     public static final Block silica_steel_block = null;
