@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 public class OrbStasisBlock extends Block implements ITileEntityProvider {
 
-    public static final BooleanProperty CONTAINS_PEARL = BooleanProperty.create("contains_orb");
+    public static final BooleanProperty CONTAINS_PEARL = BooleanProperty.create("has_orb");
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public OrbStasisBlock(Properties properties) {
@@ -53,9 +53,10 @@ public class OrbStasisBlock extends Block implements ITileEntityProvider {
         boolean old_powered = state.getValue(POWERED);
         boolean new_powered = worldIn.hasNeighborSignal(pos);
         if (old_powered != new_powered) {
-            worldIn.setBlock(pos, state.setValue(POWERED, new_powered), 3);
+            BlockState new_state = state.setValue(POWERED, new_powered);
+            worldIn.setBlock(pos, new_state, 3);
             worldIn.updateNeighborsAt(pos, this);
-            updateTileEntity(state, worldIn, pos, null);
+            updateTileEntity(new_state, worldIn, pos, null);
         }
     }
 
@@ -66,7 +67,7 @@ public class OrbStasisBlock extends Block implements ITileEntityProvider {
         ItemStack item_used = playerEntity.getItemBySlot(hand == Hand.MAIN_HAND? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND);
         if (item_used.getItem() == Items.ENDER_PEARL) {
             if (world instanceof ClientWorld) return ActionResultType.sidedSuccess(true);
-            if (updateTileEntity(state, world, pos, playerEntity)) {
+            if (updateTileEntity(state, world, pos, playerEntity) && !playerEntity.isCreative()) {
                 item_used.shrink(1);
             }
         }
@@ -96,6 +97,16 @@ public class OrbStasisBlock extends Block implements ITileEntityProvider {
     @Nullable
     @Override
     public TileEntity newBlockEntity(IBlockReader p_196283_1_) {
-        return null;
+        return new OrbStasisTile();
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, World p_180641_2_, BlockPos p_180641_3_) {
+        return state.getValue(CONTAINS_PEARL)? 15 : 0;
     }
 }

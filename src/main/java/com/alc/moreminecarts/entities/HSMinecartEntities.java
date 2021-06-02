@@ -40,6 +40,8 @@ public class HSMinecartEntities {
         else if (minecart instanceof FurnaceMinecartEntity) new_minecart = MMReferences.high_speed_furnace_minecart.create(minecart.level);
         else if (minecart instanceof NetMinecartEntity) new_minecart = MMReferences.high_speed_net_minecart.create(minecart.level);
         else if (minecart instanceof ChunkLoaderCartEntity) new_minecart = MMReferences.high_speed_chunk_loader_minecart.create(minecart.level);
+        else if (minecart instanceof TankCartEntity) new_minecart = MMReferences.high_speed_tank_minecart.create(minecart.level);
+        else if (minecart instanceof BatteryCartEntity) new_minecart = MMReferences.high_speed_battery_minecart.create(minecart.level);
         else if (minecart instanceof SoulfireCartEntity) new_minecart = MMReferences.high_speed_soulfire_minecart.create(minecart.level);
         else if (minecart instanceof CampfireCartEntity) new_minecart = MMReferences.high_speed_campfire_minecart.create(minecart.level);
         else if (minecart instanceof StickyPistonPushcartEntity) new_minecart = MMReferences.high_speed_sticky_piston_pushcart.create(minecart.level);
@@ -286,6 +288,54 @@ public class HSMinecartEntities {
 
     public static class HSChunkLoaderMinecart extends ChunkLoaderCartEntity implements IHSCart {
         public HSChunkLoaderMinecart(EntityType<? extends ChunkLoaderCartEntity> type, World world) { super(type, world); }
+        @Override
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
+        @Override
+        public void destroy(DamageSource source) {
+            super.destroy(source);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+        }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
+        @Override
+        public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
+        @Override
+        public IPacket<?> getAddEntityPacket() {
+            return NetworkHooks.getEntitySpawningPacket(this);
+        }
+    }
+
+    public static class HSTankMinecart extends TankCartEntity implements IHSCart {
+        public HSTankMinecart(EntityType<? extends TankCartEntity> type, World world) { super(type, world); }
+        @Override
+        public double getMaxSpeedWithRail() {
+            double max_speed = super.getMaxSpeedWithRail();
+            this.setMaxSpeedAirLateral((float) max_speed);
+            this.setMaxSpeedAirVertical((float) max_speed);
+            return max_speed;
+        }
+        @Override
+        public void destroy(DamageSource source) {
+            super.destroy(source);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+        }
+        @Override
+        protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
+        @Override
+        public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
+        @Override
+        public IPacket<?> getAddEntityPacket() {
+            return NetworkHooks.getEntitySpawningPacket(this);
+        }
+    }
+
+    public static class HSBatteryMinecart extends BatteryCartEntity implements IHSCart {
+        public HSBatteryMinecart(EntityType<? extends BatteryCartEntity> type, World world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
             double max_speed = super.getMaxSpeedWithRail();
