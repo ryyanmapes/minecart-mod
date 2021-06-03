@@ -144,6 +144,12 @@ public class MinecartUnLoaderContainer extends Container {
     }
 
     @OnlyIn(Dist.CLIENT)
+    public boolean getRedstoneOutput()
+    {
+        return (this.data.get(0) & 16) == 16;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public boolean getLockedMinecartsOnly()
     {
         return this.data.get(0) % 2 == 1;
@@ -158,7 +164,7 @@ public class MinecartUnLoaderContainer extends Container {
     @OnlyIn(Dist.CLIENT)
     public MinecartLoaderTile.ComparatorOutputType getComparatorOutputType()
     {
-        return MinecartLoaderTile.ComparatorOutputType.fromInt(this.data.get(0) >> 2);
+        return MinecartLoaderTile.ComparatorOutputType.fromInt((this.data.get(0) & 12) >> 2);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -167,7 +173,8 @@ public class MinecartUnLoaderContainer extends Container {
                 false,
                 getLockedMinecartsOnly(),
                 getLeaveOneInStack(),
-                getComparatorOutputType()
+                getComparatorOutputType(),
+                getRedstoneOutput()
         );
     }
 
@@ -176,8 +183,8 @@ public class MinecartUnLoaderContainer extends Container {
         return this.data.get(1) > 0;
     }
 
-    public void setOptions(boolean locked_minecarts_only, boolean leave_one_in_stack, MinecartLoaderTile.ComparatorOutputType comparator_output) {
-       int options = (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2);
+    public void setOptions(boolean locked_minecarts_only, boolean leave_one_in_stack, MinecartLoaderTile.ComparatorOutputType comparator_output, boolean redstone_output) {
+       int options = (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4);
        this.setData(0, options);
        this.broadcastChanges();
     }

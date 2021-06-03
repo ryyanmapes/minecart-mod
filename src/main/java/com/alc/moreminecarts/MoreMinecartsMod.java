@@ -124,6 +124,7 @@ public class MoreMinecartsMod
     // Entities
     private static final RegistryObject<EntityType<NetMinecartEntity>> MINECART_WITH_NET_ENTITY = ENTITIES.register("minecart_with_net", () -> EntityType.Builder.<NetMinecartEntity>of(NetMinecartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("minecart_with_net"));
     private static final RegistryObject<EntityType<ChunkLoaderCartEntity>> CHUNK_LOADER_CART = ENTITIES.register("minecart_with_chunk_loader", () -> EntityType.Builder.<ChunkLoaderCartEntity>of(ChunkLoaderCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("minecart_with_chunk_loader"));
+    private static final RegistryObject<EntityType<OrbStasisCart>> ORB_STASIS_CART = ENTITIES.register("minecart_with_stasis", () -> EntityType.Builder.<OrbStasisCart>of(OrbStasisCart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("minecart_with_stasis"));
     private static final RegistryObject<EntityType<CampfireCartEntity>> CAMPFIRE_CART_ENTITY = ENTITIES.register("campfire_cart", () -> EntityType.Builder.<CampfireCartEntity>of(CampfireCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("campfire_cart"));
     private static final RegistryObject<EntityType<SoulfireCartEntity>> SOULFIRE_CART_ENTITY = ENTITIES.register("soulfire_cart", () -> EntityType.Builder.<SoulfireCartEntity>of(SoulfireCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("soulfire_cart"));
     private static RegistryObject<EntityType<EndfireCartEntity>> ENDFIRE_CART_ENTITY;
@@ -252,6 +253,7 @@ public class MoreMinecartsMod
     // Minecart Items
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_CHUNK_LOADER_ITEM = ITEMS.register("minecart_with_chunk_loader", () -> new ChunkLoaderCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> MINECART_WITH_STASIS_ITEM = ITEMS.register("pearl_stasis_minecart", () -> new OrbStasisCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> CAMPFIRE_CART_ITEM = ITEMS.register("campfire_cart", () -> new CampfireCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> SOULFIRE_CART_ITEM = ITEMS.register("soulfire_cart", () -> new SoulfireCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static RegistryObject<Item> ENDFIRE_CART_ITEM;
@@ -270,7 +272,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> HOLO_SCAFFOLD_GENERATOR_ITEM = ITEMS.register("holo_scaffold_generator", () -> new BlockItem(holo_scaffold_generator, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
     private static final RegistryObject<Item> MINECART_LOADER_ITEM = ITEMS.register("minecart_loader", () -> new BlockItem(MMReferences.minecart_loader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_UNLOADER_ITEM = ITEMS.register("minecart_unloader", () -> new BlockItem(MMReferences.minecart_unloader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
-    private static final RegistryObject<Item> PEARL_STASIS_CHAMBER_ITEM = ITEMS.register("pearl_stasis_chamber", () -> new BlockItem(pearl_stasis_chamber, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
+    private static final RegistryObject<Item> PEARL_STASIS_CHAMBER_ITEM = ITEMS.register("pearl_stasis_chamber", () -> new BlockItem(MMReferences.pearl_stasis_chamber, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
 
     // Misc Items
     private static final RegistryObject<Item> COUPLER_ITEM = ITEMS.register("coupler", () -> new CouplerItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -331,7 +333,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<TileEntityType<PoweredLockingRailTile>> POWERED_LOCKING_RAIL_TILE_ENTITY = TILE_ENTITIES.register("powered_locking_rail_te", () -> TileEntityType.Builder.<PoweredLockingRailTile>of(PoweredLockingRailTile::new, powered_locking_rail).build(null));
     private static final RegistryObject<TileEntityType<MinecartLoaderTile>> MINECART_LOADER_TILE_ENTITY = TILE_ENTITIES.register("minecart_loader_te", () -> TileEntityType.Builder.<MinecartLoaderTile>of(MinecartLoaderTile::new, minecart_loader).build(null));
     private static final RegistryObject<TileEntityType<MinecartUnloaderTile>> MINECART_UNLOADER_TILE_ENTITY = TILE_ENTITIES.register("minecart_unloader_te", () -> TileEntityType.Builder.<MinecartUnloaderTile>of(MinecartUnloaderTile::new, minecart_unloader).build(null));
-    private static final RegistryObject<TileEntityType<OrbStasisTile>> PEARL_STASIS_CHAMBER_TILE_ENTITY = TILE_ENTITIES.register("pearl_stasis_chamber_te", () -> TileEntityType.Builder.<OrbStasisTile>of(OrbStasisTile::new, pearl_stasis_chamber).build(null));
+    private static final RegistryObject<TileEntityType<OrbStasisTile>> PEARL_STASIS_CHAMBER_TILE_ENTITY = TILE_ENTITIES.register("pearl_stasis_chamber_te", () -> TileEntityType.Builder.<OrbStasisTile>of(OrbStasisTile::new, MMReferences.pearl_stasis_chamber).build(null));
 
     // Containers
     private static final RegistryObject<ContainerType<ChunkLoaderContainer>> CHUNK_LOADER_CONTAINER = CONTAINERS.register("chunk_loader_c", () -> IForgeContainerType.create(
@@ -442,7 +444,7 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(piston_lifter_rail, cutout);
 
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
-        RenderTypeLookup.setRenderLayer(pearl_stasis_chamber, cutout);
+        RenderTypeLookup.setRenderLayer(MMReferences.pearl_stasis_chamber, cutout);
         RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);
         RenderTypeLookup.setRenderLayer(chaotic_holo_scaffold, cutout);
         RenderTypeLookup.setRenderLayer(glass_cactus, cutout);
@@ -468,6 +470,7 @@ public class MoreMinecartsMod
 
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_chunk_loader, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(minecart_with_stasis, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.campfire_cart, CampfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.soulfire_cart, SoulfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.wooden_pushcart, WoodenPushcartRenderer::new);

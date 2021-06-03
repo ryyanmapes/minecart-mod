@@ -275,16 +275,18 @@ public class MoreMinecartsPacketHandler {
         public boolean is_unloader;
         public boolean locked_minecarts_only;
         public boolean leave_one_item_in_stack;
+        public boolean redstone_output;
         public MinecartLoaderTile.ComparatorOutputType output_type;
 
         public MinecartLoaderPacket(){}
 
         public MinecartLoaderPacket(boolean is_unloader, boolean locked_minecarts_only, boolean leave_one_item_in_stack,
-                                    MinecartLoaderTile.ComparatorOutputType output_type) {
+                                    MinecartLoaderTile.ComparatorOutputType output_type, boolean redstone_output) {
             this.is_unloader = is_unloader;
             this.locked_minecarts_only = locked_minecarts_only;
             this.leave_one_item_in_stack = leave_one_item_in_stack;
             this.output_type = output_type;
+            this.redstone_output = redstone_output;
         }
 
         public static void encode(MinecartLoaderPacket msg, PacketBuffer buf) {
@@ -292,6 +294,7 @@ public class MoreMinecartsPacketHandler {
             buf.writeBoolean(msg.locked_minecarts_only);
             buf.writeBoolean(msg.leave_one_item_in_stack);
             buf.writeEnum(msg.output_type);
+            buf.writeBoolean(msg.redstone_output);
         }
 
         public static MinecartLoaderPacket decode(PacketBuffer buf) {
@@ -300,6 +303,7 @@ public class MoreMinecartsPacketHandler {
             packet.locked_minecarts_only = buf.readBoolean();
             packet.leave_one_item_in_stack = buf.readBoolean();
             packet.output_type = buf.readEnum(MinecartLoaderTile.ComparatorOutputType.class);
+            packet.redstone_output = buf.readBoolean();
             return packet;
         }
 
@@ -310,7 +314,7 @@ public class MoreMinecartsPacketHandler {
                 ServerPlayerEntity sender = ctx.get().getSender();
                 if (sender.containerMenu instanceof MinecartUnLoaderContainer) {
                     MinecartUnLoaderContainer container = ((MinecartUnLoaderContainer) sender.containerMenu);
-                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type);
+                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output);
                 }
             });
             ctx.get().setPacketHandled(true);

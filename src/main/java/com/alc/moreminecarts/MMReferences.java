@@ -25,6 +25,7 @@ public class MMReferences {
 
     public static final EntityType<NetMinecartEntity> minecart_with_net = null;
     public static final EntityType<ChunkLoaderCartEntity> minecart_with_chunk_loader = null;
+    public static final EntityType<OrbStasisCart> minecart_with_stasis = null;
     public static final EntityType<CampfireCartEntity> campfire_cart = null;
     public static final EntityType<SoulfireCartEntity> soulfire_cart = null;
     public static final EntityType<EndfireCartEntity> endfire_cart = null;
