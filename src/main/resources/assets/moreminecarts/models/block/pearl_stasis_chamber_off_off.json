@@ -1,8 +1,8 @@
 {
 	"parent": "block/block",
 	"textures": {
-		"0": "moreminecarts:block/pearl_stasis_chamber_off",
-		"particle": "moreminecarts:block/pearl_stasis_chamber_off"
+		"0": "moreminecarts:block/pearl_stasis_chamber_off_off",
+		"particle": "moreminecarts:block/pearl_stasis_chamber_off_off"
 	},
 	"elements": [
 		{
