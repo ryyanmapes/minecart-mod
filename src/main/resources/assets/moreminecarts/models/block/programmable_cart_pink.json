@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "Documents/moreminecarts:block/programmable_cart_pink"
+		"0": "moreminecarts:block/programmable_cart_pink"
 	},
 	"elements": [
 		{
