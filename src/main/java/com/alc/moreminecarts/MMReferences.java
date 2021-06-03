@@ -23,6 +23,7 @@ public class MMReferences {
     public static final EntityType<NetMinecartEntity> minecart_with_net = null;
     public static final EntityType<ChunkLoaderCartEntity> minecart_with_chunk_loader = null;
     public static final EntityType<OrbStasisCart> minecart_with_stasis = null;
+    public static final EntityType<FlagCartEntity> flag_cart = null;
     public static final EntityType<CampfireCartEntity> campfire_cart = null;
     public static final EntityType<SoulfireCartEntity> soulfire_cart = null;
     public static final EntityType<EndfireCartEntity> endfire_cart = null;
@@ -99,6 +100,7 @@ public class MMReferences {
     public static final Block locking_rail = null;
     public static final Block powered_locking_rail = null;
     public static final Block piston_lifter_rail = null;
+    public static final Block arithmetic_rail = null;
 
     public static final Block holo_scaffold_generator = null;
     public static final Block holo_scaffold = null;

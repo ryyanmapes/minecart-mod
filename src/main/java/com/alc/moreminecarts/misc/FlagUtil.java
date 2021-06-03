@@ -22,7 +22,7 @@ public class FlagUtil {
             return 7;
         } else if (MMItemReferences.rail_signal_gray.equals(flag)) {
             return 8;
-        } else if (MMItemReferences.rail_signal_light_grey.equals(flag)) {
+        } else if (MMItemReferences.rail_signal_light_gray.equals(flag)) {
             return 9;
         } else if (MMItemReferences.rail_signal_cyan.equals(flag)) {
             return 10;

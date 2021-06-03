@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
-    private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/loader_gui.png");
+    private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/programmable_cart.png");
 
     public FlagCartScreen(FlagCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
         super(container, inv, new StringTextComponent("Flag Minecart"));
@@ -42,11 +42,11 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
         for (int i = 0; i < menu.getDiscludedSlots(); i++) {
-            this.blit(matrix, 151 - (18*i), 41, 176, 36, 18, 18);
+            this.blit(matrix, leftPos + 151 - (18*i), topPos + 41, 176, 36, 18, 18);
         }
 
         int s = menu.getSelectedSlot();
-        this.blit(matrix, 4 + (18*s), 38, 196, 36, 24, 24);
+        this.blit(matrix, leftPos + 4 + (18*s), topPos + 38, 194, 36, 24, 24);
     }
 
     @OnlyIn(Dist.CLIENT)

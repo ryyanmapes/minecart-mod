@@ -36,7 +36,7 @@ public class MMItemReferences {
     public static final Item rail_signal_lime = null;
     public static final Item rail_signal_pink = null;
     public static final Item rail_signal_gray = null;
-    public static final Item rail_signal_light_grey = null;
+    public static final Item rail_signal_light_gray = null;
     public static final Item rail_signal_cyan = null;
     public static final Item rail_signal_purple = null;
     public static final Item rail_signal_blue = null;

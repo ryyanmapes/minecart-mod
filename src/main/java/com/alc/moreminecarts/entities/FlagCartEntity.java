@@ -2,7 +2,7 @@ package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
-import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.misc.FlagUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
@@ -19,9 +19,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -57,12 +55,12 @@ public class FlagCartEntity extends ContainerMinecartEntity {
 
     @Override
     protected Container createMenu(int i, PlayerInventory inv) {
-        return new ChunkLoaderContainer(i, level, this, dataAccess, inv, inv.player);
+        return new FlagCartContainer(i, level, this, inv, inv.player);
     }
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        int variant = 5 + FlagUtil.getFlagColorValue(getItem(selected_slot).getItem());
+        int variant = 6 + FlagUtil.getFlagColorValue(getItem(selected_slot).getItem());
         return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, variant);
     }
 
@@ -78,7 +76,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     // Container stuff
 
     public int getContainerSize() {
-        return 9-discluded_slots;
+        return 9;
     }
 
     public boolean isEmpty() {
@@ -185,6 +183,8 @@ public class FlagCartEntity extends ContainerMinecartEntity {
         else {
             selected_slot += is_minus? -1 : 1;
         }
+
+        level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, false);
     }
 
     /*

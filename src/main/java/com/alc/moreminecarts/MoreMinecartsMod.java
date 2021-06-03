@@ -27,18 +27,9 @@ import com.alc.moreminecarts.blocks.rail_turns.WoodenRailTurn;
 import com.alc.moreminecarts.blocks.rails.LightspeedRail;
 import com.alc.moreminecarts.blocks.rails.MaglevRail;
 import com.alc.moreminecarts.blocks.rails.WoodenRail;
-import com.alc.moreminecarts.blocks.utility_rails.ColorDetectorRailBlock;
-import com.alc.moreminecarts.blocks.utility_rails.LockingRailBlock;
-import com.alc.moreminecarts.blocks.utility_rails.PistonLifterRailBlock;
-import com.alc.moreminecarts.blocks.utility_rails.PoweredLockingRailBlock;
-import com.alc.moreminecarts.client.BatteryCartScreen;
-import com.alc.moreminecarts.client.ChunkLoaderScreen;
-import com.alc.moreminecarts.client.MinecartUnLoaderScreen;
-import com.alc.moreminecarts.client.TankCartScreen;
-import com.alc.moreminecarts.containers.BatteryCartContainer;
-import com.alc.moreminecarts.containers.ChunkLoaderContainer;
-import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
-import com.alc.moreminecarts.containers.TankCartContainer;
+import com.alc.moreminecarts.blocks.utility_rails.*;
+import com.alc.moreminecarts.client.*;
+import com.alc.moreminecarts.containers.*;
 import com.alc.moreminecarts.entities.*;
 import com.alc.moreminecarts.entities.HSMinecartEntities.*;
 import com.alc.moreminecarts.items.*;
@@ -125,6 +116,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<EntityType<NetMinecartEntity>> MINECART_WITH_NET_ENTITY = ENTITIES.register("minecart_with_net", () -> EntityType.Builder.<NetMinecartEntity>of(NetMinecartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("minecart_with_net"));
     private static final RegistryObject<EntityType<ChunkLoaderCartEntity>> CHUNK_LOADER_CART = ENTITIES.register("minecart_with_chunk_loader", () -> EntityType.Builder.<ChunkLoaderCartEntity>of(ChunkLoaderCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("minecart_with_chunk_loader"));
     private static final RegistryObject<EntityType<OrbStasisCart>> ORB_STASIS_CART = ENTITIES.register("minecart_with_stasis", () -> EntityType.Builder.<OrbStasisCart>of(OrbStasisCart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("minecart_with_stasis"));
+    private static final RegistryObject<EntityType<FlagCartEntity>> FLAG_CART = ENTITIES.register("flag_cart", () -> EntityType.Builder.<FlagCartEntity>of(FlagCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("flag_cart"));
     private static final RegistryObject<EntityType<CampfireCartEntity>> CAMPFIRE_CART_ENTITY = ENTITIES.register("campfire_cart", () -> EntityType.Builder.<CampfireCartEntity>of(CampfireCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("campfire_cart"));
     private static final RegistryObject<EntityType<SoulfireCartEntity>> SOULFIRE_CART_ENTITY = ENTITIES.register("soulfire_cart", () -> EntityType.Builder.<SoulfireCartEntity>of(SoulfireCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("soulfire_cart"));
     private static RegistryObject<EntityType<EndfireCartEntity>> ENDFIRE_CART_ENTITY;
@@ -184,6 +176,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new PoweredLockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> PISTON_LIFTER_RAIL = BLOCKS.register("piston_lifter_rail", () -> new PistonLifterRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> ARITHMETIC_RAIL = BLOCKS.register("arithmetic_rail", () -> new ArithmeticRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
 
     // Container Blocks
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
@@ -213,7 +206,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> DETECTOR_RAIL_LIME = BLOCKS.register("color_detector_rail_lime", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()->rail_signal_lime));
     private static final RegistryObject<Block> DETECTOR_RAIL_PINK = BLOCKS.register("color_detector_rail_pink", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()->rail_signal_pink));
     private static final RegistryObject<Block> DETECTOR_RAIL_GRAY = BLOCKS.register("color_detector_rail_gray", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()->rail_signal_gray));
-    private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_GRAY = BLOCKS.register("color_detector_rail_light_gray", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()->rail_signal_light_grey));
+    private static final RegistryObject<Block> DETECTOR_RAIL_LIGHT_GRAY = BLOCKS.register("color_detector_rail_light_gray", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()-> rail_signal_light_gray));
     private static final RegistryObject<Block> DETECTOR_RAIL_CYAN = BLOCKS.register("color_detector_rail_cyan", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()->rail_signal_cyan));
     private static final RegistryObject<Block> DETECTOR_RAIL_PURPLE = BLOCKS.register("color_detector_rail_purple", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()->rail_signal_purple));
     private static final RegistryObject<Block> DETECTOR_RAIL_BLUE = BLOCKS.register("color_detector_rail_blue", () -> new ColorDetectorRailBlock(of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL), ()->rail_signal_blue));
@@ -249,11 +242,13 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> LOCKING_RAIL_ITEM = ITEMS.register("locking_rail", () -> new BlockItem(locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> POWERED_LOCKING_RAIL_ITEM = ITEMS.register("powered_locking_rail", () -> new BlockItem(powered_locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> PISTON_LIFTER_RAIL_ITEM = ITEMS.register("piston_lifter_rail", () -> new BlockItem(piston_lifter_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> ARITHMETIC_RAIL_ITEM = ITEMS.register("arithmetic_rail", () -> new BlockItem(arithmetic_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
 
     // Minecart Items
     private static final RegistryObject<Item> MINECART_WITH_NET_ITEM = ITEMS.register("minecart_with_net", () -> new MinecartWithNetItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_CHUNK_LOADER_ITEM = ITEMS.register("minecart_with_chunk_loader", () -> new ChunkLoaderCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_WITH_STASIS_ITEM = ITEMS.register("pearl_stasis_minecart", () -> new OrbStasisCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> FLAG_CART_ITEM = ITEMS.register("flag_cart", () -> new FlagCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> CAMPFIRE_CART_ITEM = ITEMS.register("campfire_cart", () -> new CampfireCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> SOULFIRE_CART_ITEM = ITEMS.register("soulfire_cart", () -> new SoulfireCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
     private static RegistryObject<Item> ENDFIRE_CART_ITEM;
@@ -354,6 +349,10 @@ public class MoreMinecartsMod
             (windowId, inv, data) -> {
                 return new BatteryCartContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
             }));
+    private static final RegistryObject<ContainerType<FlagCartContainer>> FLAG_CART_CONTAINER = CONTAINERS.register("flag_cart_c", () -> IForgeContainerType.create(
+            (windowId, inv, data) -> {
+                return new FlagCartContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
+            }));
 
     public MoreMinecartsMod() {
 
@@ -411,6 +410,7 @@ public class MoreMinecartsMod
         ScreenManager.register(minecart_loader_c, MinecartUnLoaderScreen::new);
         ScreenManager.register(tank_cart_c, TankCartScreen::new);
         ScreenManager.register(battery_cart_c, BatteryCartScreen::new);
+        ScreenManager.register(flag_cart_c, FlagCartScreen::new);
 
         RenderType cutout = RenderType.cutout();
 
@@ -442,6 +442,7 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(locking_rail, cutout);
         RenderTypeLookup.setRenderLayer(powered_locking_rail, cutout);
         RenderTypeLookup.setRenderLayer(piston_lifter_rail, cutout);
+        RenderTypeLookup.setRenderLayer(arithmetic_rail, cutout);
 
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
         RenderTypeLookup.setRenderLayer(MMReferences.pearl_stasis_chamber, cutout);
@@ -471,6 +472,7 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_chunk_loader, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_stasis, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(flag_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.campfire_cart, CampfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.soulfire_cart, SoulfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.wooden_pushcart, WoodenPushcartRenderer::new);
