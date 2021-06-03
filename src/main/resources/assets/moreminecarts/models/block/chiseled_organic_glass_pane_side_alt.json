@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_side_alt",
+  "textures": {
+    "pane": "moreminecarts:block/chiseled_organic_glass",
+    "edge": "moreminecarts:block/chiseled_organic_glass_pane_top"
+  }
+}
