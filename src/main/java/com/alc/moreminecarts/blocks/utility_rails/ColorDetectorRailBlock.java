@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
+import com.alc.moreminecarts.entities.FlagCartEntity;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -84,8 +85,12 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
                                 activate = true;
                             }
                         }
-                        else if (minecart.getMinecartType() == AbstractMinecartEntity.Type.CHEST
-                            || minecart.getMinecartType() == AbstractMinecartEntity.Type.HOPPER) {
+                        else if (minecart instanceof FlagCartEntity) {
+                            if (((FlagCartEntity)minecart).getSelectedFlag() == detected_item.get()) {
+                                activate = true;
+                            }
+                        }
+                        else if (minecart instanceof ContainerMinecartEntity) {
                             ContainerMinecartEntity container = (ContainerMinecartEntity)minecart;
                             HashSet<Item> set = new HashSet<>();
                             set.add(detected_item.get());

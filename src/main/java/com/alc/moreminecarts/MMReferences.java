@@ -1,9 +1,6 @@
 package com.alc.moreminecarts;
 
-import com.alc.moreminecarts.containers.BatteryCartContainer;
-import com.alc.moreminecarts.containers.ChunkLoaderContainer;
-import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
-import com.alc.moreminecarts.containers.TankCartContainer;
+import com.alc.moreminecarts.containers.*;
 import com.alc.moreminecarts.entities.*;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
@@ -71,6 +68,7 @@ public class MMReferences {
     public static final ContainerType<MinecartUnLoaderContainer> minecart_loader_c = null;
     public static final ContainerType<TankCartContainer> tank_cart_c = null;
     public static final ContainerType<BatteryCartContainer> battery_cart_c = null;
+    public static final ContainerType<FlagCartContainer> flag_cart_c = null;
 
     // Blocks
     public static final Block rail_turn = null;
