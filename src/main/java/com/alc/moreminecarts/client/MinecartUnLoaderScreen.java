@@ -28,9 +28,10 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
     @Override
     protected void init() {
         super.init();
-        this.addButton(new OnlyLockedButton(leftPos + 57, topPos + 19));
-        this.addButton(new ComparatorOutputButton(leftPos + 79, topPos + 19));
-        this.addButton(new LeaveOneInStackButton(leftPos + 101, topPos + 19));
+        this.addButton(new OutputTypeButton(leftPos + 46, topPos + 19));
+        this.addButton(new OnlyLockedButton(leftPos + 68, topPos + 19));
+        this.addButton(new ComparatorOutputButton(leftPos + 90, topPos + 19));
+        this.addButton(new LeaveOneInStackButton(leftPos + 112, topPos + 19));
     }
 
     @Override
@@ -88,14 +89,14 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
             String text;
             switch (menu.getComparatorOutputType()) {
                 case done_loading:
-                    text = "Activate comparator during loading inactivity";
+                    text = "Activate output during loading inactivity";
                     break;
                 case cart_full:
-                    if (menu.getIsUnloader()) text = "Activate comparator when cart is empty";
-                    else text = "Activate comparator when cart is full";
+                    if (menu.getIsUnloader()) text = "Activate output when cart is empty";
+                    else text = "Activate output when cart is full";
                     break;
                 case cart_fullness:
-                    text = "Comparator outputs cart contents";
+                    text = "Output cart contents";
                     break;
                 default:
                     text = "ERROR";
@@ -248,4 +249,51 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
             MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
     }
+
+    @OnlyIn(Dist.CLIENT)
+    class OutputTypeButton extends AbstractButton {
+
+        protected OutputTypeButton(int x, int y) {
+            super(x, y, 18, 18, StringTextComponent.EMPTY);
+        }
+
+        public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
+            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
+                    new StringTextComponent(menu.getRedstoneOutput()
+                            ? "Output redstone activation"
+                            : "Output to comparator"
+                    ) , p_230443_2_, p_230443_3_);
+        }
+
+        public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+            minecraft.getTextureManager().bind(display);
+
+            boolean mouse_on = isDragging() && this.isHovered;
+
+            if (menu.getRedstoneOutput()) {
+                if (mouse_on) {
+                    this.blit(matrix, x,y, 212+18, 36, 18, 18);
+                }
+                else {
+                    this.blit(matrix, x, y, 212, 36, 18, 18);
+                }
+            }
+            else {
+                if (mouse_on) {
+                    this.blit(matrix, x,y, 230, 18, 18, 18);
+                }
+                else {
+                    // Render nothing. This is already on the backdrop.
+                }
+            }
+        }
+
+        @Override
+        public void onPress() {
+            MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
+            packet.redstone_output = !packet.redstone_output;
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
+        }
+    }
+
 }

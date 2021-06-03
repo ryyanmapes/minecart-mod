@@ -2,6 +2,7 @@ package com.alc.moreminecarts.proxy;
 
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
@@ -78,6 +79,13 @@ public class MoreMinecartsPacketHandler {
                 MinecartLoaderPacket::encode,
                 MinecartLoaderPacket::decode,
                 MinecartLoaderPacket::handle);
+
+        // For changing the flag cart via GUI client -> server
+        INSTANCE.registerMessage(id++,
+                FlagCartPacket.class,
+                FlagCartPacket::encode,
+                FlagCartPacket::decode,
+                FlagCartPacket::handle);
     }
 
     // Currently unused.
@@ -275,16 +283,18 @@ public class MoreMinecartsPacketHandler {
         public boolean is_unloader;
         public boolean locked_minecarts_only;
         public boolean leave_one_item_in_stack;
+        public boolean redstone_output;
         public MinecartLoaderTile.ComparatorOutputType output_type;
 
         public MinecartLoaderPacket(){}
 
         public MinecartLoaderPacket(boolean is_unloader, boolean locked_minecarts_only, boolean leave_one_item_in_stack,
-                                    MinecartLoaderTile.ComparatorOutputType output_type) {
+                                    MinecartLoaderTile.ComparatorOutputType output_type, boolean redstone_output) {
             this.is_unloader = is_unloader;
             this.locked_minecarts_only = locked_minecarts_only;
             this.leave_one_item_in_stack = leave_one_item_in_stack;
             this.output_type = output_type;
+            this.redstone_output = redstone_output;
         }
 
         public static void encode(MinecartLoaderPacket msg, PacketBuffer buf) {
@@ -292,6 +302,7 @@ public class MoreMinecartsPacketHandler {
             buf.writeBoolean(msg.locked_minecarts_only);
             buf.writeBoolean(msg.leave_one_item_in_stack);
             buf.writeEnum(msg.output_type);
+            buf.writeBoolean(msg.redstone_output);
         }
 
         public static MinecartLoaderPacket decode(PacketBuffer buf) {
@@ -300,6 +311,7 @@ public class MoreMinecartsPacketHandler {
             packet.locked_minecarts_only = buf.readBoolean();
             packet.leave_one_item_in_stack = buf.readBoolean();
             packet.output_type = buf.readEnum(MinecartLoaderTile.ComparatorOutputType.class);
+            packet.redstone_output = buf.readBoolean();
             return packet;
         }
 
@@ -310,7 +322,42 @@ public class MoreMinecartsPacketHandler {
                 ServerPlayerEntity sender = ctx.get().getSender();
                 if (sender.containerMenu instanceof MinecartUnLoaderContainer) {
                     MinecartUnLoaderContainer container = ((MinecartUnLoaderContainer) sender.containerMenu);
-                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type);
+                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output);
+                }
+            });
+            ctx.get().setPacketHandled(true);
+        }
+
+    }
+
+    public static class FlagCartPacket {
+        public boolean is_decrement;
+        public boolean is_disclude;
+
+        public FlagCartPacket(boolean is_decrement, boolean is_disclude) {
+            this.is_decrement = is_decrement;
+            this.is_disclude = is_disclude;
+        }
+
+        public static void encode(FlagCartPacket msg, PacketBuffer buf) {
+            buf.writeBoolean(msg.is_decrement);
+            buf.writeBoolean(msg.is_disclude);
+        }
+
+        public static FlagCartPacket decode(PacketBuffer buf) {
+            FlagCartPacket packet = new FlagCartPacket(false, false);
+            packet.is_decrement = buf.readBoolean();
+            packet.is_disclude = buf.readBoolean();
+            return packet;
+        }
+
+
+        public static void handle(FlagCartPacket msg, Supplier<NetworkEvent.Context> ctx) {
+
+            ctx.get().enqueueWork(() -> {
+                ServerPlayerEntity sender = ctx.get().getSender();
+                if (sender.containerMenu instanceof FlagCartContainer) {
+                    ((FlagCartContainer)sender.containerMenu).changeSelection(msg.is_decrement, msg.is_disclude);
                 }
             });
             ctx.get().setPacketHandled(true);

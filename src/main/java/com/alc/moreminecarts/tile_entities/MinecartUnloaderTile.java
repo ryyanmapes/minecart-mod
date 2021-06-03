@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.LazyOptional;
@@ -21,10 +22,11 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.List;
 
-public class MinecartUnloaderTile extends AbstractCommonLoader {
+public class MinecartUnloaderTile extends AbstractCommonLoader implements ITickableTileEntity {
 
     public MinecartUnloaderTile() {
         super(MMReferences.minecart_unloader_te);
+        last_redstone_output = !redstone_output;
     }
 
     public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
@@ -68,9 +70,11 @@ public class MinecartUnloaderTile extends AbstractCommonLoader {
                     criteria_total = (float) Math.floor(criteria_total);
 
                 int new_comparator_output_value = (int) (criteria_total * 15);
-                if (new_comparator_output_value != comparator_output_value) {
+                if (new_comparator_output_value != comparator_output_value || last_redstone_output != redstone_output) {
                     comparator_output_value = new_comparator_output_value;
+                    last_redstone_output = redstone_output;
                     level.updateNeighbourForOutputSignal(getBlockPos(), this.getBlockState().getBlock());
+                    level.updateNeighborsAt(getBlockPos(), this.getBlockState().getBlock());
                 }
             } else {
                 decCooldown();

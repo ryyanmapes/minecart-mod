@@ -16,6 +16,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class MinecartLoaderBlock extends ContainerBlock {
+public class MinecartLoaderBlock extends ContainerBlock{
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
     public MinecartLoaderBlock(Properties builder) {
@@ -92,7 +93,22 @@ public class MinecartLoaderBlock extends ContainerBlock {
         }
     }
 
-    // Comparator stuff
+    // Signal stuff
+
+    @Override
+    public boolean isSignalSource(BlockState p_149744_1_) {
+        return true;
+    }
+
+    @Override
+    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        TileEntity tile_entity = blockAccess.getBlockEntity(pos);
+        if (tile_entity instanceof MinecartLoaderTile) {
+            if (!((MinecartLoaderTile) tile_entity).getOutputsRedstone()) return 0;
+            return ((MinecartLoaderTile) tile_entity).getSignal();
+        }
+        return 0;
+    }
 
     @Override
     public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
@@ -103,7 +119,8 @@ public class MinecartLoaderBlock extends ContainerBlock {
     public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
         TileEntity tile_entity = world.getBlockEntity(pos);
         if (tile_entity instanceof MinecartLoaderTile) {
-            return ((MinecartLoaderTile) tile_entity).getComparatorSignal();
+            if (((MinecartLoaderTile) tile_entity).getOutputsRedstone()) return 0;
+            return ((MinecartLoaderTile) tile_entity).getSignal();
         }
         return 0;
     }

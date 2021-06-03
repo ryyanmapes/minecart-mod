@@ -14,6 +14,7 @@ public class MMItemReferences {
     // Items
 
     public static final Item chunk_loader = null;
+    public static final Item pearl_stasis_chamber = null;
     public static final Item chunkrodite = null;
     public static final Item chunkrodite_block = null;
     public static final Item coupler = null;

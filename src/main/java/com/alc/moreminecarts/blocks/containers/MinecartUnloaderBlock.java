@@ -16,6 +16,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -95,6 +96,21 @@ public class MinecartUnloaderBlock extends ContainerBlock {
     // Comparator stuff
 
     @Override
+    public boolean isSignalSource(BlockState p_149744_1_) {
+        return true;
+    }
+
+    @Override
+    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        TileEntity tile_entity = blockAccess.getBlockEntity(pos);
+        if (tile_entity instanceof MinecartUnloaderTile) {
+            if (!((MinecartUnloaderTile) tile_entity).getOutputsRedstone()) return 0;
+            return ((MinecartUnloaderTile) tile_entity).getSignal();
+        }
+        return 0;
+    }
+
+    @Override
     public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
         return true;
     }
@@ -103,7 +119,8 @@ public class MinecartUnloaderBlock extends ContainerBlock {
     public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
         TileEntity tile_entity = world.getBlockEntity(pos);
         if (tile_entity instanceof MinecartUnloaderTile) {
-            return ((MinecartUnloaderTile) tile_entity).getComparatorSignal();
+            if (((MinecartUnloaderTile) tile_entity).getOutputsRedstone()) return 0;
+            return ((MinecartUnloaderTile) tile_entity).getSignal();
         }
         return 0;
     }

@@ -71,6 +71,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public static int ENERGY_CAPACITY = 2000;
     public static String ENERGY_PROPERTY = "energy";
 
+    public static String REDSTONE_OUTPUT_PROPERTY = "redstone_output";
     public static String LOCKED_MINECARTS_ONLY_PROPERTY = "locked_minecarts_only";
     public static String LEAVE_ONE_IN_STACK_PROPERTY = "leave_one_in_stack";
     public static String COMPARATOR_OUTPUT_PROPERTY = "comparator_output";
@@ -82,7 +83,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2);
+                    return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4);
                 case 1:
                     // 0 for loader
                     return 0;
@@ -97,7 +98,8 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
                 case 0:
                     locked_minecarts_only = set_to % 2 == 1;
                     leave_one_in_stack = (set_to & 2) == 2;
-                    comparator_output = MinecartLoaderTile.ComparatorOutputType.fromInt(set_to >> 2);
+                    comparator_output = MinecartLoaderTile.ComparatorOutputType.fromInt((set_to & 12) >> 2);
+                    redstone_output = (set_to & 16) == 16;
                     break;
                 default:
                     break;
@@ -110,10 +112,12 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         }
     };
 
+    public boolean redstone_output;
     public boolean locked_minecarts_only;
     public boolean leave_one_in_stack;
     public MinecartLoaderTile.ComparatorOutputType comparator_output;
 
+    public boolean last_redstone_output;
     public int comparator_output_value;
     public int cooldown_time;
 
@@ -143,6 +147,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public CompoundNBT save(CompoundNBT compound) {
         compound.putBoolean(LOCKED_MINECARTS_ONLY_PROPERTY, locked_minecarts_only);
         compound.putBoolean(LEAVE_ONE_IN_STACK_PROPERTY, leave_one_in_stack);
+        compound.putBoolean(REDSTONE_OUTPUT_PROPERTY, redstone_output);
         compound.putInt(COMPARATOR_OUTPUT_PROPERTY, comparator_output.toInt());
         compound.putInt(COOLDOWN_PROPERTY, cooldown_time);
         ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
@@ -154,9 +159,11 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public void load(BlockState state, CompoundNBT compound) {
         locked_minecarts_only = compound.getBoolean(LOCKED_MINECARTS_ONLY_PROPERTY);
         leave_one_in_stack = compound.getBoolean(LEAVE_ONE_IN_STACK_PROPERTY);
+        redstone_output = compound.getBoolean(REDSTONE_OUTPUT_PROPERTY);
         comparator_output = MinecartLoaderTile.ComparatorOutputType.fromInt( compound.getInt(COMPARATOR_OUTPUT_PROPERTY) );
         cooldown_time = compound.getInt(COOLDOWN_PROPERTY);
         comparator_output_value = -1;
+        last_redstone_output = !redstone_output;
         ((FluidTank)fluid_handler.orElse(null)).readFromNBT(compound);
         energy_handler.orElse(null).receiveEnergy(compound.getInt(ENERGY_PROPERTY), false);
         super.load(state, compound);
@@ -285,7 +292,11 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         this.items.clear();
     }
 
-    public int getComparatorSignal() {
+    public boolean getOutputsRedstone() {
+        return redstone_output;
+    }
+
+    public int getSignal() {
         if (comparator_output_value < 0) return 0;
         return comparator_output_value;
     }
