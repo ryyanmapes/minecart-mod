@@ -1,8 +1,8 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
@@ -11,9 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -21,7 +19,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -103,35 +100,6 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         return 1;
     }
 
-    public boolean isEmpty() {
-        for(ItemStack itemstack : this.items) {
-            if (!itemstack.isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public ItemStack getItem(int p_70301_1_) {
-        return this.items.get(p_70301_1_);
-    }
-
-    public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
-        return ItemStackHelper.removeItem(this.items, p_70298_1_, p_70298_2_);
-    }
-
-    public ItemStack removeItemNoUpdate(int p_70304_1_) {
-        return ItemStackHelper.takeItem(this.items, p_70304_1_);
-    }
-
-    public void setItem(int p_70299_1_, ItemStack p_70299_2_) {
-        this.items.set(p_70299_1_, p_70299_2_);
-        if (p_70299_2_.getCount() > this.getMaxStackSize()) {
-            p_70299_2_.setCount(this.getMaxStackSize());
-        }
-    }
-
     @Override
     public boolean stillValid(PlayerEntity player) {
         return player.distanceToSqr((double)this.position().x + 0.5D, (double)this.position().y + 0.5D, (double)this.position().z + 0.5D) <= 64.0D;
@@ -139,7 +107,6 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
 
     // Mostly copied from ChunkLoaderBlock
 
-    protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     // See ChunkLoaderBlock for an explanation of this monstrosity.
     public final IIntArray dataAccess = new IIntArray() {
         @Override
@@ -211,14 +178,14 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
 
         if (!level.isClientSide()) {
 
-            int burn_duration = ChunkLoaderTile.getBurnDuration(items.get(0).getItem());
+            int burn_duration = ChunkLoaderTile.getBurnDuration(itemStacks.get(0).getItem());
             if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= ChunkLoaderTile.MAX_TIME) {
                 changed_flag = true;
 
                 if (time_left > 0) time_left += burn_duration;
                 else time_left -= burn_duration;
 
-                items.get(0).shrink(1);
+                itemStacks.get(0).shrink(1);
             }
 
             int chunk_x = getOnPos().getX() >> 4;
