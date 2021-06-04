@@ -11,6 +11,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -81,6 +83,8 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
     protected void lockIn(AbstractMinecartEntity cart) {
         if (locked_minecart == cart) return;
 
+        level.playLocalSound(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ()+0.5, SoundEvents.CHAIN_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, false);
+
         locked_minecart = cart;
         locked_minecart.setPos(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ() + 0.5);
         locked_minecart.setDeltaMovement(0,0,0);
@@ -100,6 +104,8 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
 
     protected void lockOut() {
         if (locked_minecart == null) return;
+
+        level.playLocalSound(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ()+0.5, SoundEvents.CHAIN_BREAK, SoundCategory.BLOCKS, 0, 0.5f, false);
 
         if (locked_minecart instanceof FurnaceMinecartEntity) {
             FurnaceMinecartEntity furnace_minecart = ((FurnaceMinecartEntity)locked_minecart);

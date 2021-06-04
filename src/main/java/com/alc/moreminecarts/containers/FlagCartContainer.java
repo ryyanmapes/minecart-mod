@@ -1,9 +1,7 @@
 package com.alc.moreminecarts.containers;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.tile_entities.AbstractCommonLoader;
-import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
-import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
+import com.alc.moreminecarts.entities.FlagCartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -11,55 +9,35 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class FlagCartContainer extends Container {
 
-    private final AbstractCommonLoader tile;
     private final IInventory inventory;
     private final IIntArray data;
     protected final World level;
 
+    // For use on the client.
     public FlagCartContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
         super(MMReferences.flag_cart_c, n);
 
-        this.tile = null;
         this.inventory = new Inventory(9);
         this.data = new IntArray(2);
-        this.level = player_inventory.player.level;
+        this.level = world;
 
         CommonInitialization(player_inventory);
     }
 
-    // For use with tile entity loaders.
-    public FlagCartContainer(int n, World world, BlockPos pos, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    // For use with the entity cart.
+    public FlagCartContainer(int n, World world, FlagCartEntity entity, PlayerInventory player_inventory, PlayerEntity player_entity) {
         super(MMReferences.flag_cart_c, n);
 
-        TileEntity te = world.getBlockEntity(pos);
-
-        if (te instanceof MinecartLoaderTile) {
-            MinecartLoaderTile loader = (MinecartLoaderTile) te;
-            this.inventory = loader;
-            this.data = loader.dataAccess;
-            this.tile = loader;
-        } else if (te instanceof MinecartUnloaderTile) {
-            MinecartUnloaderTile unloader = (MinecartUnloaderTile) te;
-            this.inventory = unloader;
-            this.data = unloader.dataAccess;
-            this.tile = unloader;
-        } else {
-            // should error out?
-            this.inventory = new Inventory(9);
-            this.data = new IntArray(2);
-            this.tile = null;
-        }
-
+        this.inventory = entity;
+        this.data = entity.dataAccess;
         this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
@@ -67,7 +45,7 @@ public class FlagCartContainer extends Container {
 
     public void CommonInitialization(PlayerInventory player_inventory) {
 
-        //checkContainerSize(inventory, 9);
+        checkContainerSize(inventory, 9);
         checkContainerDataCount(data, 2);
 
         // content slots
