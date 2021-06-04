@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.PistonDisplayBlock;
+import com.alc.moreminecarts.blocks.FlagDisplayBlock;
 import com.alc.moreminecarts.blocks.utility_rails.ArithmeticRailBlock;
 import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.misc.FlagUtil;
@@ -19,7 +19,10 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IIntArray;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -30,7 +33,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     public static String SELECTED_SLOT_PROPERTY = "selected_slot";
     public static String DISCLUDED_SLOTS_PROPERTY = "discluded_slots";
 
-    private static final DataParameter<Byte> DISPLAY_TYPE = EntityDataManager.defineId(FlagCartEntity.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> DISPLAY_TYPE = EntityDataManager.defineId(FlagCartEntity.class, DataSerializers.INT);
 
     public FlagCartEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -61,8 +64,14 @@ public class FlagCartEntity extends ContainerMinecartEntity {
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        int variant = 6 + getDisplayType();
-        return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, variant);
+        int raw_display = getDisplayType();
+        int main_variant = raw_display & 31;
+        int next_variant = (raw_display & 992) >> 5;
+        int last_variant = (raw_display & 31744) >> 10;
+        return MMReferences.flag_display_block.defaultBlockState()
+                .setValue(FlagDisplayBlock.MAIN, main_variant)
+                .setValue(FlagDisplayBlock.NEXT, next_variant)
+                .setValue(FlagDisplayBlock.LAST, last_variant);
     }
 
     @Override
@@ -97,8 +106,8 @@ public class FlagCartEntity extends ContainerMinecartEntity {
         return player.distanceToSqr((double)this.position().x + 0.5D, (double)this.position().y + 0.5D, (double)this.position().z + 0.5D) <= 64.0D;
     }
 
-    public byte selected_slot = 0;
-    public byte discluded_slots = 0;
+    public int selected_slot = 0;
+    public int discluded_slots = 0;
 
     public BlockPos old_block_pos;
 
@@ -141,22 +150,22 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     @Override
     protected void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
-        compound.putByte(SELECTED_SLOT_PROPERTY, this.selected_slot);
-        compound.putByte(DISCLUDED_SLOTS_PROPERTY, this.discluded_slots);
+        compound.putInt(SELECTED_SLOT_PROPERTY, this.selected_slot);
+        compound.putInt(DISCLUDED_SLOTS_PROPERTY, this.discluded_slots);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
-        this.selected_slot = compound.getByte(SELECTED_SLOT_PROPERTY);
-        this.discluded_slots = compound.getByte(DISCLUDED_SLOTS_PROPERTY);
+        this.selected_slot = compound.getInt(SELECTED_SLOT_PROPERTY);
+        this.discluded_slots = compound.getInt(DISCLUDED_SLOTS_PROPERTY);
         updateDisplayType();
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DISPLAY_TYPE, (byte)0);
+        this.entityData.define(DISPLAY_TYPE, 0);
     }
 
     public Item getSelectedFlag() {
@@ -164,11 +173,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     }
 
     public void cycleFlag(boolean is_minus) {
-        if (!is_minus && selected_slot == 8-discluded_slots) selected_slot = 0;
-        else if (is_minus && selected_slot == 0) selected_slot = (byte)(8-discluded_slots);
-        else {
-            selected_slot += is_minus? -1 : 1;
-        }
+        selected_slot = FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, is_minus);
 
         level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, false);
         updateDisplayType();
@@ -179,7 +184,16 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     }
 
     public void updateDisplayType() {
-        if (!level.isClientSide) entityData.set(DISPLAY_TYPE, FlagUtil.getFlagColorValue( getItem(selected_slot).getItem() ) );
+        if (!level.isClientSide) {
+            Item this_item = getItem(selected_slot).getItem();
+            Item next_item = getItem( FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, false) ).getItem();
+            Item last_item = getItem( FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, true) ).getItem();
+            int full_display = 0;
+            full_display += FlagUtil.getFlagColorValue( this_item );
+            full_display += FlagUtil.getFlagColorValue( next_item ) << 5;
+            full_display += FlagUtil.getFlagColorValue( last_item ) << 10;
+            entityData.set(DISPLAY_TYPE, full_display);
+        }
     }
 
     @Override

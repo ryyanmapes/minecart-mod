@@ -42,4 +42,13 @@ public class FlagUtil {
         return 0;
     }
 
+    public static int getNextSelectedSlot(int selected_slot, int discluded_slots, boolean is_decrement) {
+        if (!is_decrement && selected_slot == 8-discluded_slots) selected_slot = 0;
+        else if (is_decrement && selected_slot == 0) selected_slot = (byte)(8-discluded_slots);
+        else {
+            selected_slot += is_decrement? -1 : 1;
+        }
+        return selected_slot;
+    }
+
 }
