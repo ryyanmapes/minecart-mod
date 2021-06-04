@@ -117,6 +117,12 @@ public class MMReferences {
     public static final Block minecart_unloader = null;
     public static final Block silica_steel_block = null;
     public static final Block chunkrodite_block = null;
+    public static final Block corrugated_silica_steel = null;
+    public static final Block silica_steel_pillar = null;
+    public static final Block organic_glass = null;
+    public static final Block organic_glass_pane = null;
+    public static final Block chiseled_organic_glass = null;
+    public static final Block chiseled_organic_glass_pane = null;
     public static final Block glass_cactus = null;
     public static final Block potted_glass_cactus = null;
     public static final Block potted_beet = null;
