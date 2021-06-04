@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IWI"
+    "ISI"
   ],
   "key": {
     "I": {
       "tag": "forge:ingots/iron"
     },
     "W": {
-      "tag": "minecraft:wool"
+      "tag": "minecraft:slime_ball"
     }
   },
   "result": {

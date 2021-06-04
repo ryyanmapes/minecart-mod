@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S",
+    "M"
+  ],
+  "key": {
+    "S": {
+      "item": "moreminecarts:pearl_stasis_chamber"
+    },
+    "M": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:pearl_stasis_minecart"
+  }
+}

@@ -1,1 +1,1 @@
-{"ingredients":[{"tag": "forge:ingots/iron"},{"tag": "minecraft:coals"},{"item":"minecraft:quartz"},{"item":"minecraft:quartz"},{"item":"minecraft:quartz"}],"result":{"count":1,"item":"moreminecarts:silica_steel_mix"},"type":"minecraft:crafting_shapeless"}
+{"ingredients":[{"tag": "forge:ingots/iron"},{"tag": "minecraft:coals"},{"item":"minecraft:quartz"},{"item":"minecraft:quartz"},{"item":"minecraft:quartz"}],"result":{"count":2,"item":"moreminecarts:silica_steel_mix"},"type":"minecraft:crafting_shapeless"}

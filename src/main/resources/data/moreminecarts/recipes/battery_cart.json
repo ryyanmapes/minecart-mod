@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "M"
+  ],
+  "key": {
+    "C": {
+      "item": "moreminecarts:transport_battery"
+    },
+    "M": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:battery_cart"
+  }
+}

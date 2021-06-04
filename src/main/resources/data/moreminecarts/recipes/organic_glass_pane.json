@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "moreminecarts:organic_glass"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:organic_glass_pane",
+    "count": 16
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "moreminecarts:silica_steel"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:corrugated_silica_steel",
+    "count": 16
+  }
+}

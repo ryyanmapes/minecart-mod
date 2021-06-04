@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R",
+    "L",
+    "M"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:comparator"
+    },
+    "L": {
+      "item": "minecraft:loom"
+    },
+    "M": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:flag_cart"
+  }
+}

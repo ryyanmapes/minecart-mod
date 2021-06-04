@@ -17,7 +17,7 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/programmable_cart.png");
 
     public FlagCartScreen(FlagCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Flag Minecart"));
+        super(container, inv, new StringTextComponent("Signal Minecart"));
     }
 
     @Override
