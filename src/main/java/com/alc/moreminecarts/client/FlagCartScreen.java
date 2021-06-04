@@ -75,7 +75,7 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(true, true));
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(false, true));
         }
     }
 
@@ -87,7 +87,7 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(false, true));
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(true, true));
         }
     }
 

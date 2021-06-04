@@ -50,7 +50,7 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
 
     @Override
     public CompoundNBT save(CompoundNBT compound) {
-        compound.putUUID(LOCKED_CART_PROPERTY, locked_minecart.getUUID());
+        if (locked_minecart != null) compound.putUUID(LOCKED_CART_PROPERTY, locked_minecart.getUUID());
         compound.putInt(SAVED_FUEL_PROPERTY, saved_fuel);
         compound.putDouble(SAVED_PUSH_X_PROPERTY, saved_push_x);
         compound.putDouble(SAVED_PUSH_Z_PROPERTY, saved_push_z);
@@ -60,13 +60,20 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
     @Override
     public void load(BlockState state, CompoundNBT compound) {
         if (!level.isClientSide) {
-            UUID locked_cart_UUID = compound.getUUID(LOCKED_CART_PROPERTY);
-            Entity ent = ((ServerWorld)this.level).getEntity(locked_cart_UUID);
-            if (ent instanceof AbstractMinecartEntity) {
-                locked_minecart = (AbstractMinecartEntity) ent;
-                saved_fuel = compound.getInt(SAVED_FUEL_PROPERTY);
-                saved_push_x = compound.getInt(SAVED_PUSH_X_PROPERTY);
-                saved_push_z = compound.getInt(SAVED_PUSH_Z_PROPERTY);
+            try {
+                UUID locked_cart_UUID = compound.getUUID(LOCKED_CART_PROPERTY);
+                Entity ent = ((ServerWorld)this.level).getEntity(locked_cart_UUID);
+                if (ent instanceof AbstractMinecartEntity) {
+                    locked_minecart = (AbstractMinecartEntity) ent;
+                    saved_fuel = compound.getInt(SAVED_FUEL_PROPERTY);
+                    saved_push_x = compound.getInt(SAVED_PUSH_X_PROPERTY);
+                    saved_push_z = compound.getInt(SAVED_PUSH_Z_PROPERTY);
+                }
+            } catch (NullPointerException e) {
+                locked_minecart = null;
+                saved_fuel = 0;
+                saved_push_x = 0;
+                saved_push_z = 0;
             }
         }
         super.load(state, compound);

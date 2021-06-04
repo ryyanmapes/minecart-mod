@@ -1,10 +1,8 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
-import com.alc.moreminecarts.entities.FlagCartEntity;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
@@ -65,14 +63,6 @@ public class ArithmeticRailBlock extends AbstractRailBlock {
     public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
             this.updateState(state, worldIn, pos, state.getBlock());
-        }
-    }
-
-    @Override
-    public void onMinecartPass(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        super.onMinecartPass(state, world, pos, cart);
-        if (state.getValue(POWERED) && cart instanceof FlagCartEntity) {
-            ((FlagCartEntity)cart).cycleFlag(state.getValue(INVERTED));
         }
     }
 
