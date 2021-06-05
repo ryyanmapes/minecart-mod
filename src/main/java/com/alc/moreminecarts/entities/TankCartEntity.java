@@ -13,9 +13,13 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IIntArray;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,6 +35,44 @@ import javax.annotation.Nullable;
 
 public class TankCartEntity extends AbstractMinecartEntity implements INamedContainerProvider {
 
+    private static final DataParameter<CompoundNBT> FLUID_TAG = EntityDataManager.defineId(FlagCartEntity.class, DataSerializers.COMPOUND_TAG);
+
+    public final IIntArray dataAccess = new IIntArray() {
+        @Override
+        public int get(int index) {
+            switch(index) {
+                case 0:
+                    return getId();
+                default:
+                    return 0;
+            }
+        }
+
+        @Override
+        public void set(int index, int set_to) {
+            return;
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+    };
+
+    public class CartTank extends FluidTank {
+        public CartTank(int capacity) {
+            super(capacity);
+        }
+
+        @Override
+        protected void onContentsChanged() {
+            super.onContentsChanged();
+            CompoundNBT compound = new CompoundNBT();
+            this.writeToNBT(compound);
+            TankCartEntity.this.entityData.set(FLUID_TAG, compound);
+        }
+    }
+
     public TankCartEntity(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -39,7 +81,7 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
         super(type, worldIn, x, y, z);
     }
 
-    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new FluidTank(40000));
+    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new CartTank(40000));
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap) {
@@ -77,19 +119,28 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
     }
 
     @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(FLUID_TAG, new CompoundNBT());
+    }
+
+    @Override
     protected void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
         ((FluidTank)fluid_handler.resolve().get()).writeToNBT(compound);
     }
 
+
     @Override
     protected void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
-        ((FluidTank)fluid_handler.resolve().get()).readFromNBT(compound);
+        FluidTank tank = ((FluidTank)fluid_handler.resolve().get());
+        tank.setFluid(tank.readFromNBT(compound).getFluid());
     }
 
     public FluidStack getFluidStack() {
-        return fluid_handler.resolve().get().getFluidInTank(0);
+        if (!level.isClientSide) return fluid_handler.orElse(null).getFluidInTank(0);
+        return ((FluidTank)fluid_handler.orElse(null)).readFromNBT(entityData.get(FLUID_TAG)).getFluid();
     }
 
     public int getComparatorSignal() {

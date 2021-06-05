@@ -52,7 +52,7 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
             contents_text += "0/2,000 mB fluid, ";
         }
         else {
-            contents_text += "/2,000 mB " + fluid_stack.getDisplayName() + ", ";
+            contents_text += fluid_stack.getAmount() + "/2,000 mB " + fluid_stack.getDisplayName().getString() + ", ";
         }
 
         int energy_amount = menu.getEnergy();

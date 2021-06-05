@@ -2,17 +2,21 @@ package com.alc.moreminecarts.containers;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.BatteryCartEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.IIntArray;
+import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BatteryCartContainer extends Container {
 
-    private final BatteryCartEntity entity;
+    private BatteryCartEntity entity;
+    private final IIntArray data;
     protected final World level;
 
     // For use on the client.
@@ -21,6 +25,7 @@ public class BatteryCartContainer extends Container {
 
         this.entity = null;
         this.level = world;
+        this.data = new IntArray(1);
 
         CommonInitialization(player_inventory);
     }
@@ -31,12 +36,15 @@ public class BatteryCartContainer extends Container {
 
         this.entity = entity;
         this.level = player_inventory.player.level;
+        this.data = entity.dataAccess;
 
         CommonInitialization(player_inventory);
     }
 
     // Only adds player inventory slots here.
     public void CommonInitialization(PlayerInventory player_inventory) {
+
+        checkContainerDataCount(data, 1);
 
         // player inventory slots, taken from the AbstractFurnaceContainer code.
         for(int i = 0; i < 3; ++i) {
@@ -48,6 +56,8 @@ public class BatteryCartContainer extends Container {
         for(int k = 0; k < 9; ++k) {
             this.addSlot(new Slot(player_inventory, k, 8 + k * 18, 142));
         }
+
+        this.addDataSlots(data);
     }
 
     @Override
@@ -57,7 +67,12 @@ public class BatteryCartContainer extends Container {
 
     @OnlyIn(Dist.CLIENT)
     public int getEnergy() {
-        if (entity == null) return 0;
+        if (entity == null) {
+            int id = data.get(0);
+            Entity ent = level.getEntity(id);
+            if (ent instanceof BatteryCartEntity) entity = (BatteryCartEntity) ent;
+            else return 0;
+        }
         return entity.getEnergyAmount();
     }
 

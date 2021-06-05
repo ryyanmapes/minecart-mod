@@ -34,6 +34,11 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
         last_redstone_output = !redstone_output;
     }
 
+    @Override
+    public boolean getIsUnloader() {
+        return false;
+    }
+
     public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
         return new MinecartUnLoaderContainer(i, level, worldPosition, inventory, player);
     }
@@ -48,6 +53,8 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
         if (!level.isClientSide) {
 
             if (!isOnCooldown()) {
+                changed_flag = false;
+
                 List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
                 float criteria_total = 0;
                 for (AbstractMinecartEntity minecart : minecarts) {
@@ -82,6 +89,11 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
                     level.updateNeighbourForOutputSignal(getBlockPos(), this.getBlockState().getBlock());
                     level.updateNeighborsAt(getBlockPos(), this.getBlockState().getBlock());
                 }
+
+                if (changed_flag) {
+                    this.setChanged();
+                }
+
             } else {
                 decCooldown();
             }
@@ -111,12 +123,13 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
                     our_fluid_stack.shrink(transfer_amount);
                     did_load = true;
                 }
-                else if (add_to_stack.containsFluid(our_fluid_stack)) {
+                else if (add_to_stack.isFluidEqual(our_fluid_stack)) {
                     int true_count = our_fluid_stack.getAmount() - (leave_one_in_stack? 1 : 0);
                     int to_fill = handler.getTankCapacity(i) - add_to_stack.getAmount();
                     int transfer = Math.min(1000, Math.min(true_count, to_fill));
 
-                    add_to_stack.grow(transfer);
+                    add_to_stack.setAmount(transfer);
+                    handler.fill(add_to_stack, IFluidHandler.FluidAction.EXECUTE);
                     our_fluid_stack.shrink(transfer);
                     did_load = transfer > 0;
                 }
@@ -130,7 +143,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
 
         if (changed) {
             resetCooldown();
-            setChanged();
+            changed_flag = true;
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
@@ -159,7 +172,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
 
         if (changed) {
             resetCooldown();
-            setChanged();
+            changed_flag = true;
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
@@ -212,7 +225,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
 
         if (changed) {
             resetCooldown();
-            setChanged();
+            changed_flag = true;
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
@@ -270,7 +283,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
 
         if (changed) {
             resetCooldown();
-            setChanged();
+            changed_flag = true;
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;

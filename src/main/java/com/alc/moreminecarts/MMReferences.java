@@ -46,7 +46,7 @@ public class MMReferences {
     public static final EntityType<HSMinecartEntities.HSFurnaceMinecart> high_speed_furnace_minecart = null;
     public static final EntityType<HSMinecartEntities.HSNetMinecart> high_speed_net_minecart = null;
     public static final EntityType<HSMinecartEntities.HSChunkLoaderMinecart> high_speed_chunk_loader_minecart = null;
-    public static final EntityType<HSMinecartEntities.HSChunkLoaderMinecart> high_speed_stasis_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSStasisMinecart> high_speed_stasis_minecart = null;
     public static final EntityType<HSMinecartEntities.HSFlagMinecart> high_speed_flag_minecart = null;
     public static final EntityType<HSMinecartEntities.HSTankMinecart> high_speed_tank_minecart = null;
     public static final EntityType<HSMinecartEntities.HSBatteryMinecart> high_speed_battery_minecart = null;
@@ -109,7 +109,6 @@ public class MMReferences {
     public static final Block holo_scaffold = null;
     public static final Block chaotic_holo_scaffold = null;
     public static final Block piston_display_block = null;
-    public static final Block flag_display_block = null;
 
     public static final Block chunk_loader = null;
     public static final Block pearl_stasis_chamber = null;

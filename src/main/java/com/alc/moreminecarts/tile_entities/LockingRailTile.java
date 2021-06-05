@@ -34,6 +34,7 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
     public int saved_fuel;
     public double saved_push_x;
     public double saved_push_z;
+    public UUID locked_minecart_uuid;
 
     @Nullable
     public AbstractMinecartEntity locked_minecart;
@@ -59,23 +60,18 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void load(BlockState state, CompoundNBT compound) {
-        if (!level.isClientSide) {
-            try {
-                UUID locked_cart_UUID = compound.getUUID(LOCKED_CART_PROPERTY);
-                Entity ent = ((ServerWorld)this.level).getEntity(locked_cart_UUID);
-                if (ent instanceof AbstractMinecartEntity) {
-                    locked_minecart = (AbstractMinecartEntity) ent;
-                    saved_fuel = compound.getInt(SAVED_FUEL_PROPERTY);
-                    saved_push_x = compound.getInt(SAVED_PUSH_X_PROPERTY);
-                    saved_push_z = compound.getInt(SAVED_PUSH_Z_PROPERTY);
-                }
-            } catch (NullPointerException e) {
-                locked_minecart = null;
-                saved_fuel = 0;
-                saved_push_x = 0;
-                saved_push_z = 0;
-            }
+        try {
+            locked_minecart_uuid = compound.getUUID(LOCKED_CART_PROPERTY);
+            saved_fuel = compound.getInt(SAVED_FUEL_PROPERTY);
+            saved_push_x = compound.getInt(SAVED_PUSH_X_PROPERTY);
+            saved_push_z = compound.getInt(SAVED_PUSH_Z_PROPERTY);
+        } catch (NullPointerException e) {
+            locked_minecart = null;
+            saved_fuel = 0;
+            saved_push_x = 0;
+            saved_push_z = 0;
         }
+
         super.load(state, compound);
     }
 
@@ -163,6 +159,18 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void tick() {
+
+        if (locked_minecart_uuid != null && !level.isClientSide) {
+            Entity locked_entity = ((ServerWorld)level).getEntity(locked_minecart_uuid);
+            if (locked_entity instanceof AbstractMinecartEntity) locked_minecart = (AbstractMinecartEntity) locked_entity;
+            else {
+                saved_fuel = 0;
+                saved_push_x = 0;
+                saved_push_z = 0;
+            }
+            locked_minecart_uuid = null;
+        }
+
         if (locked_minecart != null && !level.isClientSide) {
             if (locked_minecart.isAlive()) {
                 locked_minecart.setPos(getBlockPos().getX() + 0.5, getBlockPos().getY(), getBlockPos().getZ() + 0.5);

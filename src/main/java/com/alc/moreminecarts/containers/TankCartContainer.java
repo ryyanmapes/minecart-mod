@@ -2,10 +2,13 @@ package com.alc.moreminecarts.containers;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.TankCartEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.IIntArray;
+import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,7 +18,8 @@ import javax.annotation.Nullable;
 
 public class TankCartContainer extends Container {
 
-    private final TankCartEntity entity;
+    private TankCartEntity entity;
+    private final IIntArray data;
     protected final World level;
 
     // For use on the client.
@@ -24,6 +28,7 @@ public class TankCartContainer extends Container {
 
         this.entity = null;
         this.level = world;
+        this.data = new IntArray(1);
 
         CommonInitialization(player_inventory);
     }
@@ -34,12 +39,15 @@ public class TankCartContainer extends Container {
 
         this.entity = entity;
         this.level = player_inventory.player.level;
+        this.data = entity.dataAccess;
 
         CommonInitialization(player_inventory);
     }
 
     // Only adds player inventory slots here.
     public void CommonInitialization(PlayerInventory player_inventory) {
+
+        checkContainerDataCount(data, 1);
 
         // player inventory slots, taken from the AbstractFurnaceContainer code.
         for(int i = 0; i < 3; ++i) {
@@ -51,6 +59,8 @@ public class TankCartContainer extends Container {
         for(int k = 0; k < 9; ++k) {
             this.addSlot(new Slot(player_inventory, k, 8 + k * 18, 142));
         }
+
+        this.addDataSlots(data);
     }
 
     @Override
@@ -61,7 +71,12 @@ public class TankCartContainer extends Container {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     public FluidStack getFluids() {
-        if (entity == null) return null;
+        if (entity == null) {
+            int id = data.get(0);
+            Entity ent = level.getEntity(id);
+            if (ent instanceof TankCartEntity) entity = (TankCartEntity) ent;
+            else return null;
+        }
         return entity.getFluidStack();
     }
 

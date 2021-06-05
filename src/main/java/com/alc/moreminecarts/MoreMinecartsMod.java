@@ -1,6 +1,5 @@
 package com.alc.moreminecarts;
 
-import com.alc.moreminecarts.blocks.FlagDisplayBlock;
 import com.alc.moreminecarts.blocks.GlassCactusBlock;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
@@ -202,8 +201,6 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> HOLO_SCAFFOLD = BLOCKS.register("holo_scaffold", () -> new HoloScaffold(of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
     private static final RegistryObject<Block> CHAOTIC_HOLO_SCAFFOLD = BLOCKS.register("chaotic_holo_scaffold", () -> new ChaoticHoloScaffold(of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
     private static final RegistryObject<Block> PISTON_DISPLAY_BLOCK = BLOCKS.register("piston_display_block", () -> new PistonDisplayBlock(of(Material.DECORATION)));
-    private static final RegistryObject<Block> FLAG_DISPLAY_BLOCK = BLOCKS.register("flag_display_block", () -> new FlagDisplayBlock(of(Material.DECORATION)));
-
     // Potted Plants
     private static final RegistryObject<Block> POTTED_GLASS_CACTUS = BLOCKS.register("potted_glass_cactus", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> glass_cactus, of(Material.DECORATION).instabreak().noOcclusion()));
     private static final RegistryObject<Block> POTTED_BEET = BLOCKS.register("potted_beet", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> MMReferences.chunkrodite_block, of(Material.DECORATION).instabreak().noOcclusion()));
@@ -496,7 +493,7 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(flag_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.campfire_cart, CampfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.soulfire_cart, SoulfireCartRenderer::new);
-        if (endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(MMReferences.endfire_cart, EndfireCartRenderer::new);
+        if (MMReferences.endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(MMReferences.endfire_cart, EndfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.piston_pushcart, PistonPushcartRenderer::new);
@@ -520,7 +517,7 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(high_speed_battery_minecart, HSMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_campfire_minecart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_soulfire_minecart, HSPushcartRenderer::new);
-        if (high_speed_endfire_minecart != null) RenderingRegistry.registerEntityRenderingHandler(high_speed_endfire_minecart, HSPushcartRenderer::new);
+        if (MMReferences.endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(high_speed_endfire_minecart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_pushcart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_piston_pushcart, HSPistonPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_sticky_piston_pushcart, HSStickyPistonPushcartRenderer::new);

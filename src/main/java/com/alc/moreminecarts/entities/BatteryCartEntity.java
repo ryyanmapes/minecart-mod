@@ -4,6 +4,7 @@ import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.containers.BatteryCartContainer;
+import com.alc.moreminecarts.misc.SettableEnergyStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -13,15 +14,18 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IIntArray;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -31,6 +35,48 @@ import javax.annotation.Nullable;
 public class BatteryCartEntity extends AbstractMinecartEntity implements INamedContainerProvider {
 
     public static String ENERGY_PROPERTY = "energy";
+    private static final DataParameter<Integer> ENERGY_AMOUNT = EntityDataManager.defineId(FlagCartEntity.class, DataSerializers.INT);
+
+    public class CartBattery extends SettableEnergyStorage {
+        public CartBattery(int capacity) {
+            super(capacity);
+        }
+
+        @Override
+        public int receiveEnergy(int maxReceive, boolean simulate) {
+            int ret = super.receiveEnergy(maxReceive, simulate);
+            if (!simulate) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
+            return ret;
+        }
+        @Override
+        public int extractEnergy(int maxReceive, boolean simulate) {
+            int ret = super.extractEnergy(maxReceive, simulate);
+            if (!simulate) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
+            return ret;
+        }
+    }
+
+    public final IIntArray dataAccess = new IIntArray() {
+        @Override
+        public int get(int index) {
+            switch(index) {
+                case 0:
+                    return getId();
+                default:
+                    return 0;
+            }
+        }
+
+        @Override
+        public void set(int index, int set_to) {
+            return;
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+    };
 
     public BatteryCartEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -40,7 +86,7 @@ public class BatteryCartEntity extends AbstractMinecartEntity implements INamedC
         super(type, worldIn, x, y, z);
     }
 
-    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new EnergyStorage(40000));
+    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new CartBattery(40000));
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap) {
@@ -78,6 +124,12 @@ public class BatteryCartEntity extends AbstractMinecartEntity implements INamedC
     }
 
     @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(ENERGY_AMOUNT, 0);
+    }
+
+    @Override
     protected void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
@@ -90,7 +142,7 @@ public class BatteryCartEntity extends AbstractMinecartEntity implements INamedC
     }
 
     public int getEnergyAmount() {
-        return energy_handler.orElse(null).getEnergyStored();
+        return entityData.get(ENERGY_AMOUNT);
     }
 
     public int getComparatorSignal() {

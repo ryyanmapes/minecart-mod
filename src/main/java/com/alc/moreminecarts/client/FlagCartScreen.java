@@ -4,6 +4,7 @@ import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +12,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Iterator;
 
 @OnlyIn(Dist.CLIENT)
 public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
@@ -41,12 +44,20 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
         this.minecraft.getTextureManager().bind(display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
+        // Slot disclusion renders
         for (int i = 0; i < menu.getDiscludedSlots(); i++) {
             this.blit(matrix, leftPos + 151 - (18*i), topPos + 41, 176, 36, 18, 18);
         }
+    }
 
+    // Taken from BeaconScreen, for foreground rendering.
+    protected void renderLabels(MatrixStack matrix, int p_230451_2_, int p_230451_3_) {
+        super.renderLabels(matrix, p_230451_2_, p_230451_3_);
+
+        // Selected slot render
         int s = menu.getSelectedSlot();
         this.blit(matrix, leftPos + 4 + (18*s), topPos + 38, 194, 36, 24, 24);
+
     }
 
     @OnlyIn(Dist.CLIENT)
