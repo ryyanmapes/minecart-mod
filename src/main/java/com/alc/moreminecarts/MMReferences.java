@@ -80,7 +80,6 @@ public class MMReferences {
     public static final Block cross_rail = null;
     public static final Block projector_rail = null;
     public static final Block hologram_rail = null;
-    public static final Block rail_jump = null;
     public static final Block wooden_rail = null;
     public static final Block wooden_rail_turn = null;
     public static final Block wooden_parallel_rail = null;
@@ -94,11 +93,9 @@ public class MMReferences {
     public static final Block maglev_projector_rail = null;
     public static final Block maglev_hologram_rail = null;
     public static final Block maglev_powered_rail = null;
-    public static final Block maglev_rail_jump = null;
     public static final Block lightspeed_rail = null;
     public static final Block lightspeed_cross_rail = null;
     public static final Block lightspeed_powered_rail = null;
-    public static final Block lightspeed_rail_jump = null;
     public static final Block bioluminescent_rail = null;
     public static final Block locking_rail = null;
     public static final Block powered_locking_rail = null;

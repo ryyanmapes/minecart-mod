@@ -122,11 +122,11 @@ public class FlagCartEntity extends ContainerMinecartEntity {
         public void set(int index, int set_to) {
             switch(index) {
                 case 0:
-                    selected_slot = (byte)set_to;
+                    selected_slot = set_to;
                     break;
                 case 1:
-                    discluded_slots = (byte)set_to;
-                    selected_slot = (byte)Math.min(8-discluded_slots, selected_slot);
+                    discluded_slots = set_to;
+                    selected_slot = Math.min(8-discluded_slots, selected_slot);
                     break;
                 default:
                     break;
@@ -165,8 +165,16 @@ public class FlagCartEntity extends ContainerMinecartEntity {
         return getItem(selected_slot).getItem();
     }
 
-    public void cycleFlag(boolean is_minus) {
-        selected_slot = FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, is_minus);
+    public void cycleFlag(ArithmeticRailBlock.SignalEffect effect) {
+        boolean is_decrement = effect.isNegative();
+
+        if (effect.isShift()) selected_slot = FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, is_decrement);
+        else {
+            if (!is_decrement && discluded_slots >= 8) return;
+            else if (is_decrement && discluded_slots <= 0) return;
+            discluded_slots += is_decrement ? -1 : 1;
+            selected_slot = Math.min(8-discluded_slots, selected_slot);
+        }
 
         level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, true);
         updateDisplayType();
@@ -196,7 +204,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
             if (!old_block_pos.equals(new_block_pos)) {
                 BlockState new_blockstate = level.getBlockState(new_block_pos);
                 if (new_blockstate.getBlock() == MMReferences.arithmetic_rail && new_blockstate.getValue(ArithmeticRailBlock.POWERED)) {
-                    cycleFlag(new_blockstate.getValue(ArithmeticRailBlock.INVERTED));
+                    cycleFlag((ArithmeticRailBlock.SignalEffect) new_blockstate.getValue(ArithmeticRailBlock.EFFECT));
                 }
                 old_block_pos = new_block_pos;
             }
