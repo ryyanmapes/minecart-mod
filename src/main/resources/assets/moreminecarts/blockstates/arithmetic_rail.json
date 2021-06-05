@@ -1,32 +1,60 @@
 
 {
   "variants": {
-    "inverted=false,powered=false,shape=north_south": {
+    "effect=plus,powered=false,shape=north_south": {
       "model": "moreminecarts:block/add_rail_off"
     },
-	"inverted=false,powered=true,shape=east_west": {
+	"effect=plus,powered=true,shape=east_west": {
       "model": "moreminecarts:block/add_rail_on",
 	  "y": 90
     },
-	"inverted=false,powered=true,shape=north_south": {
+	"effect=plus,powered=true,shape=north_south": {
       "model": "moreminecarts:block/add_rail_on"
     },
-	"inverted=false,powered=false,shape=east_west": {
+	"effect=plus,powered=false,shape=east_west": {
       "model": "moreminecarts:block/add_rail_off",
 	  "y": 90
     },
-	"inverted=true,powered=false,shape=north_south": {
+	"effect=minus,powered=false,shape=north_south": {
       "model": "moreminecarts:block/subtract_rail_off"
     },
-	"inverted=true,powered=true,shape=east_west": {
+	"effect=minus,powered=true,shape=east_west": {
       "model": "moreminecarts:block/subtract_rail_on",
 	  "y": 90
     },
-	"inverted=true,powered=true,shape=north_south": {
+	"effect=minus,powered=true,shape=north_south": {
       "model": "moreminecarts:block/subtract_rail_on"
     },
-	"inverted=true,powered=false,shape=east_west": {
+	"effect=minus,powered=false,shape=east_west": {
       "model": "moreminecarts:block/subtract_rail_off",
+	  "y": 90
+    },
+	"effect=right,powered=false,shape=north_south": {
+      "model": "moreminecarts:block/right_rail_off"
+    },
+	"effect=right,powered=true,shape=east_west": {
+      "model": "moreminecarts:block/right_rail_on",
+	  "y": 90
+    },
+	"effect=right,powered=true,shape=north_south": {
+      "model": "moreminecarts:block/right_rail_on"
+    },
+	"effect=right,powered=false,shape=east_west": {
+      "model": "moreminecarts:block/right_rail_off",
+	  "y": 90
+    },
+	"effect=left,powered=false,shape=north_south": {
+      "model": "moreminecarts:block/left_rail_off"
+    },
+	"effect=left,powered=true,shape=east_west": {
+      "model": "moreminecarts:block/left_rail_on",
+	  "y": 90
+    },
+	"effect=left,powered=true,shape=north_south": {
+      "model": "moreminecarts:block/left_rail_on"
+    },
+	"effect=left,powered=false,shape=east_west": {
+      "model": "moreminecarts:block/left_rail_off",
 	  "y": 90
     }
   }
