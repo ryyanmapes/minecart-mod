@@ -35,6 +35,7 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
     }
 
     public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
+        this.changed_flag = true;
         return new MinecartUnLoaderContainer(i, level, worldPosition, inventory, player);
     }
 
@@ -46,8 +47,6 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
     public void tick() {
 
         if (!level.isClientSide) {
-
-            changed_flag = false;
 
             if (!isOnCooldown()) {
                 List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
@@ -86,6 +85,7 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
 
                 if (changed_flag) {
                     this.setChanged();
+                    changed_flag = false;
                 }
 
             } else {

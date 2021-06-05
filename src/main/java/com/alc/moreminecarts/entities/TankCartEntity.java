@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 public class TankCartEntity extends AbstractMinecartEntity implements INamedContainerProvider {
 
     private static final DataParameter<CompoundNBT> FLUID_TAG = EntityDataManager.defineId(FlagCartEntity.class, DataSerializers.COMPOUND_TAG);
+    boolean changed_flag;
 
     public final IIntArray dataAccess = new IIntArray() {
         @Override
@@ -67,9 +68,9 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
         @Override
         protected void onContentsChanged() {
             super.onContentsChanged();
-            CompoundNBT compound = new CompoundNBT();
-            this.writeToNBT(compound);
-            TankCartEntity.this.entityData.set(FLUID_TAG, compound);
+            if (level != null && !TankCartEntity.this.level.isClientSide) {
+                updateSynchedData();
+            }
         }
     }
 
@@ -127,7 +128,7 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
     @Override
     protected void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
-        ((FluidTank)fluid_handler.resolve().get()).writeToNBT(compound);
+        ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
     }
 
 
@@ -136,6 +137,7 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
         super.readAdditionalSaveData(compound);
         FluidTank tank = ((FluidTank)fluid_handler.resolve().get());
         tank.setFluid(tank.readFromNBT(compound).getFluid());
+        changed_flag = true;
     }
 
     public FluidStack getFluidStack() {
@@ -161,6 +163,19 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
         return ActionResultType.SUCCESS;
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (changed_flag && !level.isClientSide) {
+            updateSynchedData();
+            changed_flag = false;
+        }
 
+    }
 
+    protected void updateSynchedData() {
+        CompoundNBT compound = new CompoundNBT();
+        ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
+        TankCartEntity.this.entityData.set(FLUID_TAG, compound);
+    }
 }

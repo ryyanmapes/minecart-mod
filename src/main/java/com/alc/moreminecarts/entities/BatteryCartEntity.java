@@ -45,13 +45,13 @@ public class BatteryCartEntity extends AbstractMinecartEntity implements INamedC
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
             int ret = super.receiveEnergy(maxReceive, simulate);
-            if (!simulate) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
+            if (!simulate && level != null) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
             return ret;
         }
         @Override
         public int extractEnergy(int maxReceive, boolean simulate) {
             int ret = super.extractEnergy(maxReceive, simulate);
-            if (!simulate) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
+            if (!simulate && level != null) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
             return ret;
         }
     }

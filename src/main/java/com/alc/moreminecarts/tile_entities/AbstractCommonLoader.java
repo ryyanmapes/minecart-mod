@@ -76,7 +76,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         @Override
         protected void onContentsChanged() {
             super.onContentsChanged();
-            AbstractCommonLoader.this.setChanged();
+            changed_flag = true;
         }
     }
 
@@ -88,13 +88,13 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
             int ret = super.receiveEnergy(maxReceive, simulate);
-            if (!simulate) AbstractCommonLoader.this.setChanged();
+            if (!simulate) changed_flag = true;
             return ret;
         }
         @Override
         public int extractEnergy(int maxReceive, boolean simulate) {
             int ret = super.extractEnergy(maxReceive, simulate);
-            if (!simulate) AbstractCommonLoader.this.setChanged();
+            if (!simulate) changed_flag = true;
             return ret;
         }
     }
@@ -203,6 +203,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         FluidTank tank = ((FluidTank)fluid_handler.orElseGet(null));
         tank.setFluid(tank.readFromNBT(compound).getFluid());
         energy_handler.orElse(null).receiveEnergy(compound.getInt(ENERGY_PROPERTY), false);
+        changed_flag = true;
         super.load(state, compound);
     }
 
@@ -338,6 +339,8 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
             level.markAndNotifyBlock(getBlockPos(), level.getChunkAt(getBlockPos()), getBlockState(), getBlockState(), 2, 0);
         }
     }
+
+
 
     @Override
     public boolean stillValid(PlayerEntity player) {

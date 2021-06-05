@@ -40,6 +40,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
     }
 
     public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
+        this.changed_flag = true;
         return new MinecartUnLoaderContainer(i, level, worldPosition, inventory, player);
     }
 
@@ -53,7 +54,6 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
         if (!level.isClientSide) {
 
             if (!isOnCooldown()) {
-                changed_flag = false;
 
                 List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
                 float criteria_total = 0;
@@ -90,12 +90,13 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
                     level.updateNeighborsAt(getBlockPos(), this.getBlockState().getBlock());
                 }
 
-                if (changed_flag) {
-                    this.setChanged();
-                }
-
             } else {
                 decCooldown();
+            }
+
+            if (changed_flag) {
+                this.setChanged();
+                changed_flag = false;
             }
 
         }
@@ -128,8 +129,9 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
                     int to_fill = handler.getTankCapacity(i) - add_to_stack.getAmount();
                     int transfer = Math.min(1000, Math.min(true_count, to_fill));
 
-                    add_to_stack.setAmount(transfer);
-                    handler.fill(add_to_stack, IFluidHandler.FluidAction.EXECUTE);
+                    FluidStack adding_stack = add_to_stack.copy();
+                    adding_stack.setAmount(transfer);
+                    handler.fill(adding_stack, IFluidHandler.FluidAction.EXECUTE);
                     our_fluid_stack.shrink(transfer);
                     did_load = transfer > 0;
                 }
