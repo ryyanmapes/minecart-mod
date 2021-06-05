@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "SBS",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "item": "moreminecarts:silica_steel"
+    },
+    "B": {
+      "item": "minecraft:magma_cream"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:transport_battery",
+    "count": 1
+  }
+}

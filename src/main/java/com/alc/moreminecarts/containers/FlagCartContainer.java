@@ -2,6 +2,7 @@ package com.alc.moreminecarts.containers;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.FlagCartEntity;
+import com.alc.moreminecarts.misc.FlagUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -125,11 +126,7 @@ public class FlagCartContainer extends Container {
             data.set(1, discluded_slots);
         }
         else {
-            if (!is_decrement && selected_slot == 8 - discluded_slots) selected_slot = 0;
-            else if (is_decrement && selected_slot == 0) selected_slot = (byte) (8 - discluded_slots);
-            else {
-                selected_slot += is_decrement ? -1 : 1;
-            }
+            selected_slot = FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, is_decrement);
             data.set(0, selected_slot);
         }
     }

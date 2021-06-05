@@ -1,5 +1,6 @@
 package com.alc.moreminecarts;
 
+import com.alc.moreminecarts.blocks.FlagDisplayBlock;
 import com.alc.moreminecarts.blocks.GlassCactusBlock;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
@@ -138,10 +139,13 @@ public class MoreMinecartsMod
     private static final RegistryObject<EntityType<HSFurnaceMinecart>> HS_FURNACE_CART_ENTITY = ENTITIES.register("high_speed_furnace_minecart", () -> EntityType.Builder.<HSFurnaceMinecart>of(HSFurnaceMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_furnace_minecart"));
     private static final RegistryObject<EntityType<HSNetMinecart>> HS_NET_CART_ENTITY = ENTITIES.register("high_speed_net_minecart", () -> EntityType.Builder.<HSNetMinecart>of(HSNetMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_net_minecart"));
     private static final RegistryObject<EntityType<HSChunkLoaderMinecart>> HS_CHUNK_LOADER_CART_ENTITY = ENTITIES.register("high_speed_chunk_loader_minecart", () -> EntityType.Builder.<HSChunkLoaderMinecart>of(HSChunkLoaderMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_chunk_loader_minecart"));
+    private static final RegistryObject<EntityType<HSStasisMinecart>> HS_STASIS_CART_ENTITY = ENTITIES.register("high_speed_stasis_minecart", () -> EntityType.Builder.<HSStasisMinecart>of(HSStasisMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_stasis_minecart"));
+    private static final RegistryObject<EntityType<HSFlagMinecart>> HS_FLAG_CART_ENTITY = ENTITIES.register("high_speed_flag_minecart", () -> EntityType.Builder.<HSFlagMinecart>of(HSFlagMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_flag_minecart"));
     private static final RegistryObject<EntityType<HSTankMinecart>> HS_TANK_CART_ENTITY = ENTITIES.register("high_speed_tank_minecart", () -> EntityType.Builder.<HSTankMinecart>of(HSTankMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_tank_minecart"));
     private static final RegistryObject<EntityType<HSBatteryMinecart>> HS_BATTERY_CART_ENTITY = ENTITIES.register("high_speed_battery_minecart", () -> EntityType.Builder.<HSBatteryMinecart>of(HSBatteryMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_battery_minecart"));
     private static final RegistryObject<EntityType<HSCampfireMinecart>> HS_CAMPFIRE_CART_ENTITY = ENTITIES.register("high_speed_campfire_minecart", () -> EntityType.Builder.<HSCampfireMinecart>of(HSCampfireMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_campfire_minecart"));
     private static final RegistryObject<EntityType<HSSoulfireMinecart>> HS_SOULFIRE_CART_ENTITY = ENTITIES.register("high_speed_soulfire_minecart", () -> EntityType.Builder.<HSSoulfireMinecart>of(HSSoulfireMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_soulfire_minecart"));
+    private static RegistryObject<EntityType<HSEndfireMinecart>> HS_ENDFIRE_CART_ENTITY;
     private static final RegistryObject<EntityType<HSPushcart>> HS_PUSHCART_ENTITY = ENTITIES.register("high_speed_pushcart", () -> EntityType.Builder.<HSPushcart>of(HSPushcart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_pushcart"));
     private static final RegistryObject<EntityType<HSPistonPushcart>> HS_PISTON_PUSHCART_ENTITY = ENTITIES.register("high_speed_piston_pushcart", () -> EntityType.Builder.<HSPistonPushcart>of(HSPistonPushcart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_piston_pushcart"));
     private static final RegistryObject<EntityType<HSStickyPistonPushcart>> HS_STICKY_PISTON_PUSHCART_ENTITY = ENTITIES.register("high_speed_sticky_piston_pushcart", () -> EntityType.Builder.<HSStickyPistonPushcart>of(HSStickyPistonPushcart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_sticky_piston_pushcart"));
@@ -185,13 +189,20 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> PEARL_STASIS_CHAMBER = BLOCKS.register("pearl_stasis_chamber", () -> new OrbStasisBlock(of(Material.ICE_SOLID, MaterialColor.COLOR_PURPLE).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion()));
 
     // Other Blocks
-    private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).harvestTool(ToolType.PICKAXE)));
-    private static final RegistryObject<Block> CHUNKRODITE_BLOCK = BLOCKS.register("chunkrodite_block", () -> new Block(of(Material.STONE, MaterialColor.COLOR_BLACK).strength(3f, 3f).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block(of(Material.METAL).strength(3f,3f).sound(SoundType.METAL).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> CHUNKRODITE_BLOCK = BLOCKS.register("chunkrodite_block", () -> new Block(of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(2f, 2f).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> CORRUGATED_SILICA_STEEL = BLOCKS.register("corrugated_silica_steel", () -> new Block(of(Material.METAL).sound(SoundType.METAL).strength(2f, 2f).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> SILICA_STEEL_PILLAR = BLOCKS.register("silica_steel_pillar", () -> new RotatedPillarBlock(of(Material.METAL).sound(SoundType.METAL).strength(2f, 2f).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> ORGANIC_GLASS = BLOCKS.register("organic_glass", () -> new Block(of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion()));
+    private static final RegistryObject<Block> ORGANIC_GLASS_PANE = BLOCKS.register("organic_glass_pane", () -> new PaneBlock(of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion()));
+    private static final RegistryObject<Block> CHISELED_ORGANIC_GLASS = BLOCKS.register("chiseled_organic_glass", () -> new Block(of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion()));
+    private static final RegistryObject<Block> CHISELED_ORGANIC_GLASS_PANE = BLOCKS.register("chiseled_organic_glass_pane", () -> new PaneBlock(of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion()));
     private static final RegistryObject<Block> GLASS_CACTUS = BLOCKS.register("glass_cactus", () -> new GlassCactusBlock(of(Material.GLASS, MaterialColor.WOOL).randomTicks().strength(2F).sound(SoundType.WOOL).noOcclusion()));
     private static final RegistryObject<Block> HOLO_SCAFFOLD_GENERATOR = BLOCKS.register("holo_scaffold_generator", () -> new Block(of(Material.HEAVY_METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).harvestTool(ToolType.PICKAXE).lightLevel((state) -> 13)));
     private static final RegistryObject<Block> HOLO_SCAFFOLD = BLOCKS.register("holo_scaffold", () -> new HoloScaffold(of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
     private static final RegistryObject<Block> CHAOTIC_HOLO_SCAFFOLD = BLOCKS.register("chaotic_holo_scaffold", () -> new ChaoticHoloScaffold(of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
     private static final RegistryObject<Block> PISTON_DISPLAY_BLOCK = BLOCKS.register("piston_display_block", () -> new PistonDisplayBlock(of(Material.DECORATION)));
+    private static final RegistryObject<Block> FLAG_DISPLAY_BLOCK = BLOCKS.register("flag_display_block", () -> new FlagDisplayBlock(of(Material.DECORATION)));
 
     // Potted Plants
     private static final RegistryObject<Block> POTTED_GLASS_CACTUS = BLOCKS.register("potted_glass_cactus", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> glass_cactus, of(Material.DECORATION).instabreak().noOcclusion()));
@@ -260,11 +271,16 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> BATTERY_CART_ITEM = ITEMS.register("battery_cart", () -> new BatteryCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
 
     // Block Items
-    private static final RegistryObject<Item> CHUNK_LOADER_ITEM = ITEMS.register("chunk_loader", () -> new BlockItem(MMReferences.chunk_loader, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
     private static final RegistryObject<Item> SILICA_STEEL_BLOCK_ITEM = ITEMS.register("silica_steel_block", () -> new BlockItem(silica_steel_block, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
     private static final RegistryObject<Item> CHUNKRODITE_BLOCK_ITEM = ITEMS.register("chunkrodite_block", () -> new BlockItem(MMReferences.chunkrodite_block, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
-    private static final RegistryObject<Item> GLASS_CACTUS_ITEM = ITEMS.register("glass_cactus", () -> new GlassCactusItem(glass_cactus, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+    private static final RegistryObject<Item> CORRUGATED_SILICA_STEEL_ITEM = ITEMS.register("corrugated_silica_steel", () -> new BlockItem(corrugated_silica_steel, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
+    private static final RegistryObject<Item> SILICA_STEEL_PILLAR_ITEM = ITEMS.register("silica_steel_pillar", () -> new BlockItem(silica_steel_pillar, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
+    private static final RegistryObject<Item> ORGANIC_GLASS_ITEM = ITEMS.register("organic_glass", () -> new BlockItem(organic_glass, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
+    private static final RegistryObject<Item> ORGANIC_GLASS_PANE_ITEM = ITEMS.register("organic_glass_pane", () -> new BlockItem(organic_glass_pane, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
+    private static final RegistryObject<Item> CHISELED_ORGANIC_GLASS_ITEM = ITEMS.register("chiseled_organic_glass", () -> new BlockItem(chiseled_organic_glass, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
+    private static final RegistryObject<Item> CHISELED_ORGANIC_GLASS_PANE_ITEM = ITEMS.register("chiseled_organic_glass_pane", () -> new BlockItem(chiseled_organic_glass_pane, new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));private static final RegistryObject<Item> GLASS_CACTUS_ITEM = ITEMS.register("glass_cactus", () -> new GlassCactusItem(glass_cactus, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
     private static final RegistryObject<Item> HOLO_SCAFFOLD_GENERATOR_ITEM = ITEMS.register("holo_scaffold_generator", () -> new BlockItem(holo_scaffold_generator, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+    private static final RegistryObject<Item> CHUNK_LOADER_ITEM = ITEMS.register("chunk_loader", () -> new BlockItem(MMReferences.chunk_loader, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
     private static final RegistryObject<Item> MINECART_LOADER_ITEM = ITEMS.register("minecart_loader", () -> new BlockItem(MMReferences.minecart_loader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_UNLOADER_ITEM = ITEMS.register("minecart_unloader", () -> new BlockItem(MMReferences.minecart_unloader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> PEARL_STASIS_CHAMBER_ITEM = ITEMS.register("pearl_stasis_chamber", () -> new BlockItem(MMReferences.pearl_stasis_chamber, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
@@ -320,7 +336,8 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> CHUNKRODITE = ITEMS.register("chunkrodite", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
     private static final RegistryObject<Item> HARD_LIGHT_LENS = ITEMS.register("hard_light_lens", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
     private static final RegistryObject<Item> GLASS_SPINES = ITEMS.register("glass_spines", () -> new Item(new Item.Properties().stacksTo(64).tab(ItemGroup.TAB_MATERIALS)));
-
+    private static final RegistryObject<Item> TRANSPORT_TANK = ITEMS.register("transport_tank", () -> new Item(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_MATERIALS)));
+    private static final RegistryObject<Item> TRANSPORT_BATTERY = ITEMS.register("transport_battery", () -> new Item(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_MATERIALS)));
 
     // Tile Entities
     private static final RegistryObject<TileEntityType<ChunkLoaderTile>> CHUNK_LOADER_TILE_ENTITY = TILE_ENTITIES.register("chunk_loader_te", () -> TileEntityType.Builder.<ChunkLoaderTile>of(ChunkLoaderTile::new, MMReferences.chunk_loader).build(null));
@@ -359,6 +376,7 @@ public class MoreMinecartsMod
         if (EndergeticCompat.endergeticInstalled()) {
             ENDFIRE_CART_ENTITY = ENTITIES.register("endfire_cart", () -> EntityType.Builder.<EndfireCartEntity>of(EndfireCartEntity::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("endfire_cart"));
             ENDFIRE_CART_ITEM = ITEMS.register("endfire_cart", () -> new EndfireCartItem(new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION)));
+            HS_ENDFIRE_CART_ENTITY = ENTITIES.register("high_speed_endfire_minecart", () -> EntityType.Builder.<HSEndfireMinecart>of(HSEndfireMinecart::new, EntityClassification.MISC ).sized(0.98F, 0.7F).build("high_speed_endfire_minecart"));
         }
 
         MoreMinecartsPacketHandler.Init();
@@ -413,7 +431,6 @@ public class MoreMinecartsMod
         ScreenManager.register(flag_cart_c, FlagCartScreen::new);
 
         RenderType cutout = RenderType.cutout();
-
         RenderTypeLookup.setRenderLayer(rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(parallel_rail, cutout);
         RenderTypeLookup.setRenderLayer(cross_rail, cutout);
@@ -443,7 +460,6 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(powered_locking_rail, cutout);
         RenderTypeLookup.setRenderLayer(piston_lifter_rail, cutout);
         RenderTypeLookup.setRenderLayer(arithmetic_rail, cutout);
-
         RenderTypeLookup.setRenderLayer(MMReferences.chunk_loader, cutout);
         RenderTypeLookup.setRenderLayer(MMReferences.pearl_stasis_chamber, cutout);
         RenderTypeLookup.setRenderLayer(holo_scaffold, cutout);
@@ -451,7 +467,6 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(glass_cactus, cutout);
         RenderTypeLookup.setRenderLayer(potted_beet, cutout);
         RenderTypeLookup.setRenderLayer(potted_glass_cactus, cutout);
-
         RenderTypeLookup.setRenderLayer(color_detector_rail_white, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_orange, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_magenta, cutout);
@@ -469,12 +484,19 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(color_detector_rail_red, cutout);
         RenderTypeLookup.setRenderLayer(color_detector_rail_black, cutout);
 
+        RenderType transparent = RenderType.translucent();
+        RenderTypeLookup.setRenderLayer(organic_glass, transparent);
+        RenderTypeLookup.setRenderLayer(organic_glass_pane, transparent);
+        RenderTypeLookup.setRenderLayer(chiseled_organic_glass, transparent);
+        RenderTypeLookup.setRenderLayer(chiseled_organic_glass_pane, transparent);
+
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_chunk_loader, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_stasis, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(flag_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.campfire_cart, CampfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.soulfire_cart, SoulfireCartRenderer::new);
+        if (endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(MMReferences.endfire_cart, EndfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.piston_pushcart, PistonPushcartRenderer::new);
@@ -492,10 +514,13 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(high_speed_furnace_minecart, HSMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_net_minecart, HSMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_chunk_loader_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_stasis_minecart, HSMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(high_speed_flag_minecart, HSMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_tank_minecart, HSMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_battery_minecart, HSMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_campfire_minecart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_soulfire_minecart, HSPushcartRenderer::new);
+        if (high_speed_endfire_minecart != null) RenderingRegistry.registerEntityRenderingHandler(high_speed_endfire_minecart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_pushcart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_piston_pushcart, HSPistonPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_sticky_piston_pushcart, HSStickyPistonPushcartRenderer::new);
