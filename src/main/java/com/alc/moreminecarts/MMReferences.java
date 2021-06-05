@@ -46,7 +46,7 @@ public class MMReferences {
     public static final EntityType<HSMinecartEntities.HSFurnaceMinecart> high_speed_furnace_minecart = null;
     public static final EntityType<HSMinecartEntities.HSNetMinecart> high_speed_net_minecart = null;
     public static final EntityType<HSMinecartEntities.HSChunkLoaderMinecart> high_speed_chunk_loader_minecart = null;
-    public static final EntityType<HSMinecartEntities.HSChunkLoaderMinecart> high_speed_stasis_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSStasisMinecart> high_speed_stasis_minecart = null;
     public static final EntityType<HSMinecartEntities.HSFlagMinecart> high_speed_flag_minecart = null;
     public static final EntityType<HSMinecartEntities.HSTankMinecart> high_speed_tank_minecart = null;
     public static final EntityType<HSMinecartEntities.HSBatteryMinecart> high_speed_battery_minecart = null;
@@ -80,7 +80,6 @@ public class MMReferences {
     public static final Block cross_rail = null;
     public static final Block projector_rail = null;
     public static final Block hologram_rail = null;
-    public static final Block rail_jump = null;
     public static final Block wooden_rail = null;
     public static final Block wooden_rail_turn = null;
     public static final Block wooden_parallel_rail = null;
@@ -94,11 +93,9 @@ public class MMReferences {
     public static final Block maglev_projector_rail = null;
     public static final Block maglev_hologram_rail = null;
     public static final Block maglev_powered_rail = null;
-    public static final Block maglev_rail_jump = null;
     public static final Block lightspeed_rail = null;
     public static final Block lightspeed_cross_rail = null;
     public static final Block lightspeed_powered_rail = null;
-    public static final Block lightspeed_rail_jump = null;
     public static final Block bioluminescent_rail = null;
     public static final Block locking_rail = null;
     public static final Block powered_locking_rail = null;
@@ -109,7 +106,6 @@ public class MMReferences {
     public static final Block holo_scaffold = null;
     public static final Block chaotic_holo_scaffold = null;
     public static final Block piston_display_block = null;
-    public static final Block flag_display_block = null;
 
     public static final Block chunk_loader = null;
     public static final Block pearl_stasis_chamber = null;

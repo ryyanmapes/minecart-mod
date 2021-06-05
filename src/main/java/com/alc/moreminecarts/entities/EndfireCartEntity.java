@@ -23,7 +23,7 @@ public class EndfireCartEntity extends CampfireCartEntity {
     public void destroy(DamageSource source) {
         this.remove();
         if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(MMItemReferences.soulfire_cart);
+            this.spawnAtLocation(MMItemReferences.endfire_cart);
         }
 
     }

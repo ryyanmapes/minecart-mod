@@ -36,7 +36,7 @@ public class TankCartScreen extends ContainerScreen<TankCartContainer>{
             this.font.draw(matrix, "0/40,000 mB fluid", leftPos + 8, topPos + 20, 4210752);
         }
         else {
-            this.font.draw(matrix, fluid_stack.getAmount() + "/40,000 mB " + fluid_stack.getDisplayName(), leftPos + 8, topPos + 20, 4210752);
+            this.font.draw(matrix, fluid_stack.getAmount() + "/40,000 mB " + fluid_stack.getDisplayName().getString(), leftPos + 8, topPos + 20, 4210752);
         }
 
     }

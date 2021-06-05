@@ -29,7 +29,13 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
         last_redstone_output = !redstone_output;
     }
 
+    @Override
+    public boolean getIsUnloader() {
+        return true;
+    }
+
     public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
+        this.changed_flag = true;
         return new MinecartUnLoaderContainer(i, level, worldPosition, inventory, player);
     }
 
@@ -76,6 +82,12 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
                     level.updateNeighbourForOutputSignal(getBlockPos(), this.getBlockState().getBlock());
                     level.updateNeighborsAt(getBlockPos(), this.getBlockState().getBlock());
                 }
+
+                if (changed_flag) {
+                    this.setChanged();
+                    changed_flag = false;
+                }
+
             } else {
                 decCooldown();
             }
@@ -108,13 +120,13 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
                     take_stack.shrink(transfer_amount);
                     did_load = true;
                 }
-                else if (our_fluid_stack.containsFluid(take_stack)) {
+                else if (our_fluid_stack.isFluidEqual(take_stack)) {
                     int true_count = take_stack.getAmount() - (leave_one_in_stack? 1 : 0);
                     int to_fill = our_fluid_handler.getTankCapacity(i) - our_fluid_stack.getAmount();
                     int transfer = Math.min(1000, Math.min(true_count, to_fill));
 
                     our_fluid_stack.grow(transfer);
-                    take_stack.shrink(transfer);
+                    handler.drain(transfer, IFluidHandler.FluidAction.EXECUTE);
                     did_load = transfer > 0;
                 }
             }
@@ -127,7 +139,7 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
 
         if (changed) {
             resetCooldown();
-            setChanged();
+            changed_flag = true;
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
@@ -157,7 +169,7 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
 
         if (changed) {
             resetCooldown();
-            setChanged();
+            changed_flag = true;
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
@@ -213,7 +225,7 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
 
         if (changed) {
             resetCooldown();
-            setChanged();
+            changed_flag = true;
         }
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
@@ -230,6 +242,6 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
 
     @Override
     protected ITextComponent getDefaultName() {
-        return new StringTextComponent("Minecart Loader");
+        return new StringTextComponent("Minecart Unloader");
     }
 }

@@ -23,6 +23,7 @@ public class MMItemReferences {
     public static final Item iron_pushcart = null;
     public static final Item campfire_cart = null;
     public static final Item soulfire_cart = null;
+    public static final Item endfire_cart = null;
     public static final Item holo_remote = null;
     public static final Item backwards_holo_remote = null;
     public static final Item simple_holo_remote = null;

@@ -1,6 +1,5 @@
 package com.alc.moreminecarts;
 
-import com.alc.moreminecarts.blocks.FlagDisplayBlock;
 import com.alc.moreminecarts.blocks.GlassCactusBlock;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
@@ -19,9 +18,6 @@ import com.alc.moreminecarts.blocks.rail_crossings.LightspeedRailCrossing;
 import com.alc.moreminecarts.blocks.rail_crossings.MaglevRailCrossing;
 import com.alc.moreminecarts.blocks.rail_crossings.RailCrossing;
 import com.alc.moreminecarts.blocks.rail_crossings.WoodenRailCrossing;
-import com.alc.moreminecarts.blocks.rail_jumps.LightspeedRailJump;
-import com.alc.moreminecarts.blocks.rail_jumps.MaglevRailJump;
-import com.alc.moreminecarts.blocks.rail_jumps.RailJump;
 import com.alc.moreminecarts.blocks.rail_turns.MaglevRailTurn;
 import com.alc.moreminecarts.blocks.rail_turns.RailTurn;
 import com.alc.moreminecarts.blocks.rail_turns.WoodenRailTurn;
@@ -157,7 +153,6 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> CROSS_RAIL_BLOCK = BLOCKS.register("cross_rail", () -> new RailCrossing(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> PROJECTOR_RAIL = BLOCKS.register("projector_rail", () -> new ProjectorRail(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> HOLOGRAM_RAIL = BLOCKS.register("hologram_rail", () -> new HolographicRail(of(Material.GLASS).noCollission().harvestTool(ToolType.PICKAXE).strength(0.2F).sound(SoundType.GLASS)));
-    private static final RegistryObject<Block> RAIL_JUMP = BLOCKS.register("rail_jump", () -> new RailJump(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> WOODEN_RAIL_BLOCK = BLOCKS.register("wooden_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_RAIL_TURN = BLOCKS.register("wooden_rail_turn", () -> new WoodenRailTurn(of(Material.WOOD, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.7F).sound(SoundType.BAMBOO)));
     private static final RegistryObject<Block> WOODEN_PARALLEL_RAIL_BLOCK = BLOCKS.register("wooden_parallel_rail", () -> new WoodenParallelRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().harvestTool(ToolType.AXE).strength(0.7F).sound(SoundType.BAMBOO)));
@@ -171,11 +166,9 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> MAGLEV_PROJECTOR_RAIL = BLOCKS.register("maglev_projector_rail", () -> new MaglevProjectorRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).harvestTool(ToolType.PICKAXE).noCollission().strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> MAGLEV_HOLOGRAM_RAIL = BLOCKS.register("maglev_hologram_rail", () -> new MaglevHolographicRail(of(Material.GLASS, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(0.2F).sound(SoundType.GLASS)));
     private static final RegistryObject<Block> MAGLEV_POWERED_RAIL_BLOCK = BLOCKS.register("maglev_powered_rail", () -> new PoweredMaglevRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> MAGLEV_RAIL_JUMP = BLOCKS.register("maglev_rail_jump", () -> new MaglevRailJump(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> LIGHTSPEED_RAIL_BLOCK = BLOCKS.register("lightspeed_rail", () -> new LightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(1F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> LIGHTSPEED_CROSS_RAIL_BLOCK = BLOCKS.register("lightspeed_cross_rail", () -> new LightspeedRailCrossing(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(1F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> LIGHTSPEED_POWERED_RAIL_BLOCK = BLOCKS.register("lightspeed_powered_rail", () -> new PoweredLightspeedRail(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(1F).sound(SoundType.METAL)));
-    private static final RegistryObject<Block> LIGHTSPEED_RAIL_JUMP = BLOCKS.register("lightspeed_rail_jump", () -> new LightspeedRailJump(of(Material.DECORATION, MaterialColor.COLOR_BLUE).noCollission().harvestTool(ToolType.PICKAXE).strength(1F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> BIOLUMINESCENT_RAIL_BLOCK = BLOCKS.register("bioluminescent_rail", () -> new WoodenRail(of(Material.WOOD, MaterialColor.WOOD).noCollission().strength(0.7F).sound(SoundType.BAMBOO).lightLevel((state)->10)));
     private static final RegistryObject<Block> LOCKING_RAIL_BLOCK = BLOCKS.register("locking_rail", () -> new LockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
     private static final RegistryObject<Block> POWERED_LOCKING_RAIL_BLOCK = BLOCKS.register("powered_locking_rail", () -> new PoweredLockingRailBlock(of(Material.DECORATION).noCollission().harvestTool(ToolType.PICKAXE).strength(0.7F).sound(SoundType.METAL)));
@@ -202,8 +195,6 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> HOLO_SCAFFOLD = BLOCKS.register("holo_scaffold", () -> new HoloScaffold(of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
     private static final RegistryObject<Block> CHAOTIC_HOLO_SCAFFOLD = BLOCKS.register("chaotic_holo_scaffold", () -> new ChaoticHoloScaffold(of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
     private static final RegistryObject<Block> PISTON_DISPLAY_BLOCK = BLOCKS.register("piston_display_block", () -> new PistonDisplayBlock(of(Material.DECORATION)));
-    private static final RegistryObject<Block> FLAG_DISPLAY_BLOCK = BLOCKS.register("flag_display_block", () -> new FlagDisplayBlock(of(Material.DECORATION)));
-
     // Potted Plants
     private static final RegistryObject<Block> POTTED_GLASS_CACTUS = BLOCKS.register("potted_glass_cactus", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> glass_cactus, of(Material.DECORATION).instabreak().noOcclusion()));
     private static final RegistryObject<Block> POTTED_BEET = BLOCKS.register("potted_beet", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, () -> MMReferences.chunkrodite_block, of(Material.DECORATION).instabreak().noOcclusion()));
@@ -232,7 +223,6 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> PARALLEL_RAIL_ITEM = ITEMS.register("parallel_rail", () -> new BlockItem(parallel_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> CROSS_RAIL_ITEM = ITEMS.register("cross_rail", () -> new BlockItem(cross_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> PROJECTOR_RAIL_ITEM = ITEMS.register("projector_rail", () -> new BlockItem(projector_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
-    private static final RegistryObject<Item> RAIL_JUMP_ITEM = ITEMS.register("rail_jump", () -> new BlockItem(rail_jump, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_RAIL_ITEM = ITEMS.register("wooden_rail", () -> new BlockItem(wooden_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_RAIL_TURN_ITEM = ITEMS.register("wooden_rail_turn", () -> new BlockItem(wooden_rail_turn, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> WOODEN_PARALLEL_RAIL_ITEM = ITEMS.register("wooden_parallel_rail", () -> new BlockItem(wooden_parallel_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -244,11 +234,9 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> MAGLEV_CROSS_RAIL = ITEMS.register("maglev_cross_rail", () -> new BlockItem(maglev_cross_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_PROJECTOR_RAIL_ITEM = ITEMS.register("maglev_projector_rail", () -> new BlockItem(maglev_projector_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MAGLEV_POWERED_RAIL_ITEM = ITEMS.register("maglev_powered_rail", () -> new BlockItem(maglev_powered_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
-    private static final RegistryObject<Item> MAGLEV_RAIL_JUMP_ITEM = ITEMS.register("maglev_rail_jump", () -> new BlockItem(maglev_rail_jump, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> LIGHTSPEED_RAIL_ITEM = ITEMS.register("lightspeed_rail", () -> new BlockItem(lightspeed_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> LIGHTSPEED_CROSS_RAIL_ITEM = ITEMS.register("lightspeed_cross_rail", () -> new BlockItem(lightspeed_cross_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> LIGHTSPEED_POWERED_RAIL_ITEM = ITEMS.register("lightspeed_powered_rail", () -> new BlockItem(lightspeed_powered_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
-    private static final RegistryObject<Item> LIGHTSPEED_RAIL_JUMP_ITEM = ITEMS.register("lightspeed_rail_jump", () -> new BlockItem(lightspeed_rail_jump, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> BIOLUMINESCENT_RAIL_ITEM = ITEMS.register("bioluminescent_rail", () -> new BlockItem(bioluminescent_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> LOCKING_RAIL_ITEM = ITEMS.register("locking_rail", () -> new BlockItem(locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> POWERED_LOCKING_RAIL_ITEM = ITEMS.register("powered_locking_rail", () -> new BlockItem(powered_locking_rail, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
@@ -436,7 +424,6 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(cross_rail, cutout);
         RenderTypeLookup.setRenderLayer(projector_rail, cutout);
         RenderTypeLookup.setRenderLayer(hologram_rail, cutout);
-        RenderTypeLookup.setRenderLayer(rail_jump, cutout);
         RenderTypeLookup.setRenderLayer(wooden_rail, cutout);
         RenderTypeLookup.setRenderLayer(wooden_rail_turn, cutout);
         RenderTypeLookup.setRenderLayer(wooden_parallel_rail, cutout);
@@ -450,11 +437,9 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(maglev_projector_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_hologram_rail, cutout);
         RenderTypeLookup.setRenderLayer(maglev_powered_rail, cutout);
-        RenderTypeLookup.setRenderLayer(maglev_rail_jump, cutout);
         RenderTypeLookup.setRenderLayer(lightspeed_rail, cutout);
         RenderTypeLookup.setRenderLayer(lightspeed_cross_rail, cutout);
         RenderTypeLookup.setRenderLayer(lightspeed_powered_rail, cutout);
-        RenderTypeLookup.setRenderLayer(lightspeed_rail_jump, cutout);
         RenderTypeLookup.setRenderLayer(bioluminescent_rail, cutout);
         RenderTypeLookup.setRenderLayer(locking_rail, cutout);
         RenderTypeLookup.setRenderLayer(powered_locking_rail, cutout);
@@ -496,7 +481,7 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(flag_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.campfire_cart, CampfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.soulfire_cart, SoulfireCartRenderer::new);
-        if (endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(MMReferences.endfire_cart, EndfireCartRenderer::new);
+        if (MMReferences.endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(MMReferences.endfire_cart, EndfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.wooden_pushcart, WoodenPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.piston_pushcart, PistonPushcartRenderer::new);
@@ -520,7 +505,7 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(high_speed_battery_minecart, HSMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_campfire_minecart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_soulfire_minecart, HSPushcartRenderer::new);
-        if (high_speed_endfire_minecart != null) RenderingRegistry.registerEntityRenderingHandler(high_speed_endfire_minecart, HSPushcartRenderer::new);
+        if (MMReferences.endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(high_speed_endfire_minecart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_pushcart, HSPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_piston_pushcart, HSPistonPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(high_speed_sticky_piston_pushcart, HSStickyPistonPushcartRenderer::new);

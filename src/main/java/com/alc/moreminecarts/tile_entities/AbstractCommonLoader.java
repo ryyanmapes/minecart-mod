@@ -1,11 +1,14 @@
 package com.alc.moreminecarts.tile_entities;
 
+import com.alc.moreminecarts.misc.SettableEnergyStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -17,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -66,11 +68,42 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         }
     }
 
+    public class LoaderTank extends FluidTank {
+        public LoaderTank(int capacity) {
+            super(capacity);
+        }
+
+        @Override
+        protected void onContentsChanged() {
+            super.onContentsChanged();
+            changed_flag = true;
+        }
+    }
+
+    public class LoaderBattery extends SettableEnergyStorage {
+        public LoaderBattery(int capacity) {
+            super(capacity);
+        }
+
+        @Override
+        public int receiveEnergy(int maxReceive, boolean simulate) {
+            int ret = super.receiveEnergy(maxReceive, simulate);
+            if (!simulate) changed_flag = true;
+            return ret;
+        }
+        @Override
+        public int extractEnergy(int maxReceive, boolean simulate) {
+            int ret = super.extractEnergy(maxReceive, simulate);
+            if (!simulate) changed_flag = true;
+            return ret;
+        }
+    }
+
     public static int MAX_COOLDOWN_TIME = 2;
     public static int FLUID_CAPACITY = 2000;
     public static int ENERGY_CAPACITY = 2000;
-    public static String ENERGY_PROPERTY = "energy";
 
+    public static String ENERGY_PROPERTY = "energy";
     public static String REDSTONE_OUTPUT_PROPERTY = "redstone_output";
     public static String LOCKED_MINECARTS_ONLY_PROPERTY = "locked_minecarts_only";
     public static String LEAVE_ONE_IN_STACK_PROPERTY = "leave_one_in_stack";
@@ -85,8 +118,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
                 case 0:
                     return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4);
                 case 1:
-                    // 0 for loader
-                    return 0;
+                    return getIsUnloader()? 1 : 0;
                 default:
                     return 0;
             }
@@ -121,8 +153,12 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public int comparator_output_value;
     public int cooldown_time;
 
-    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new FluidTank(FLUID_CAPACITY));
-    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new EnergyStorage(ENERGY_CAPACITY));
+    public boolean changed_flag;
+
+    LazyOptional<IFluidHandler> fluid_handler = LazyOptional.of(() -> new LoaderTank(FLUID_CAPACITY));
+    LazyOptional<IEnergyStorage> energy_handler = LazyOptional.of(() -> new LoaderBattery(ENERGY_CAPACITY));
+
+    public abstract boolean getIsUnloader();
 
     public AbstractCommonLoader(TileEntityType<?> p_i48285_1_) {
         super(p_i48285_1_);
@@ -164,8 +200,10 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         cooldown_time = compound.getInt(COOLDOWN_PROPERTY);
         comparator_output_value = -1;
         last_redstone_output = !redstone_output;
-        ((FluidTank)fluid_handler.orElse(null)).readFromNBT(compound);
+        FluidTank tank = ((FluidTank)fluid_handler.orElseGet(null));
+        tank.setFluid(tank.readFromNBT(compound).getFluid());
         energy_handler.orElse(null).receiveEnergy(compound.getInt(ENERGY_PROPERTY), false);
+        changed_flag = true;
         super.load(state, compound);
     }
 
@@ -224,7 +262,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     }
 
     public FluidStack getFluidStack() {
-        return fluid_handler.resolve().get().getFluidInTank(0);
+        return fluid_handler.orElse(null).getFluidInTank(0);
     }
 
     public int getEnergyAmount() {
@@ -277,6 +315,32 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
             p_70299_2_.setCount(this.getMaxStackSize());
         }
     }
+
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket(){
+        CompoundNBT compound = new CompoundNBT();
+        ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
+        compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
+        return new SUpdateTileEntityPacket(getBlockPos(), -1, compound);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt){
+        CompoundNBT compound = pkt.getTag();
+        FluidTank tank = ((FluidTank)fluid_handler.resolve().get());
+        tank.setFluid(tank.readFromNBT(compound).getFluid());
+        ((SettableEnergyStorage)energy_handler.orElse(null)).setEnergy(compound.getInt(ENERGY_PROPERTY));
+    }
+
+    @Override
+    public void setChanged() {
+        if (level != null && !level.isClientSide) {
+            super.setChanged();
+            level.markAndNotifyBlock(getBlockPos(), level.getChunkAt(getBlockPos()), getBlockState(), getBlockState(), 2, 0);
+        }
+    }
+
+
 
     @Override
     public boolean stillValid(PlayerEntity player) {

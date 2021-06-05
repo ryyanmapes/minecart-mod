@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.FlagDisplayBlock;
+import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.blocks.utility_rails.ArithmeticRailBlock;
 import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.misc.FlagUtil;
@@ -64,14 +64,8 @@ public class FlagCartEntity extends ContainerMinecartEntity {
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        int raw_display = getDisplayType();
-        int main_variant = raw_display & 31;
-        int next_variant = (raw_display & 992) >> 5;
-        int last_variant = (raw_display & 31744) >> 10;
-        return MMReferences.flag_display_block.defaultBlockState()
-                .setValue(FlagDisplayBlock.MAIN, main_variant)
-                .setValue(FlagDisplayBlock.NEXT, next_variant)
-                .setValue(FlagDisplayBlock.LAST, last_variant);
+        int raw_display = 6 + getDisplayType();
+        return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, raw_display);
     }
 
     @Override
@@ -111,7 +105,6 @@ public class FlagCartEntity extends ContainerMinecartEntity {
 
     public BlockPos old_block_pos;
 
-    // See ChunkLoaderBlock for an explanation of this monstrosity.
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
@@ -129,11 +122,11 @@ public class FlagCartEntity extends ContainerMinecartEntity {
         public void set(int index, int set_to) {
             switch(index) {
                 case 0:
-                    selected_slot = (byte)set_to;
+                    selected_slot = set_to;
                     break;
                 case 1:
-                    discluded_slots = (byte)set_to;
-                    selected_slot = (byte)Math.min(8-discluded_slots, selected_slot);
+                    discluded_slots = set_to;
+                    selected_slot = Math.min(8-discluded_slots, selected_slot);
                     break;
                 default:
                     break;
@@ -172,10 +165,18 @@ public class FlagCartEntity extends ContainerMinecartEntity {
         return getItem(selected_slot).getItem();
     }
 
-    public void cycleFlag(boolean is_minus) {
-        selected_slot = FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, is_minus);
+    public void cycleFlag(ArithmeticRailBlock.SignalEffect effect) {
+        boolean is_decrement = effect.isNegative();
 
-        level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, false);
+        if (effect.isShift()) selected_slot = FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, is_decrement);
+        else {
+            if (!is_decrement && discluded_slots >= 8) return;
+            else if (is_decrement && discluded_slots <= 0) return;
+            discluded_slots += is_decrement ? -1 : 1;
+            selected_slot = Math.min(8-discluded_slots, selected_slot);
+        }
+
+        level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, true);
         updateDisplayType();
     }
 
@@ -186,12 +187,8 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     public void updateDisplayType() {
         if (!level.isClientSide) {
             Item this_item = getItem(selected_slot).getItem();
-            Item next_item = getItem( FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, false) ).getItem();
-            Item last_item = getItem( FlagUtil.getNextSelectedSlot(selected_slot, discluded_slots, true) ).getItem();
             int full_display = 0;
             full_display += FlagUtil.getFlagColorValue( this_item );
-            full_display += FlagUtil.getFlagColorValue( next_item ) << 5;
-            full_display += FlagUtil.getFlagColorValue( last_item ) << 10;
             entityData.set(DISPLAY_TYPE, full_display);
         }
     }
@@ -207,7 +204,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
             if (!old_block_pos.equals(new_block_pos)) {
                 BlockState new_blockstate = level.getBlockState(new_block_pos);
                 if (new_blockstate.getBlock() == MMReferences.arithmetic_rail && new_blockstate.getValue(ArithmeticRailBlock.POWERED)) {
-                    cycleFlag(new_blockstate.getValue(ArithmeticRailBlock.INVERTED));
+                    cycleFlag((ArithmeticRailBlock.SignalEffect) new_blockstate.getValue(ArithmeticRailBlock.EFFECT));
                 }
                 old_block_pos = new_block_pos;
             }

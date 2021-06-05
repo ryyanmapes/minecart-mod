@@ -174,7 +174,8 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
             }
 
-            if (changed_flag) this.setChanged();
+            if (changed_flag)
+                this.setChanged();
         }
 
         lit_last_tick = isLit();

@@ -35,7 +35,7 @@ public class MinecartUnLoaderContainer extends Container {
 
         this.tile = null;
         this.inventory = new Inventory(1);
-        this.data = new IntArray(2);
+        this.data = new IntArray(3);
         this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);

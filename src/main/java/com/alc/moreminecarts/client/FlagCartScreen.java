@@ -41,10 +41,12 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
         this.minecraft.getTextureManager().bind(display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
+        // Slot disclusion renders
         for (int i = 0; i < menu.getDiscludedSlots(); i++) {
             this.blit(matrix, leftPos + 151 - (18*i), topPos + 41, 176, 36, 18, 18);
         }
 
+        // Selected slot render
         int s = menu.getSelectedSlot();
         this.blit(matrix, leftPos + 4 + (18*s), topPos + 38, 194, 36, 24, 24);
     }
