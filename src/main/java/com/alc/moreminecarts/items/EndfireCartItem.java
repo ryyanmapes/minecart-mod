@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.items;
 
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.entities.SoulfireCartEntity;
+import com.alc.moreminecarts.entities.EndfireCartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -14,7 +14,7 @@ public class EndfireCartItem extends AbstractMinecartItem {
     @Override
     void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
 
-        SoulfireCartEntity minecart = new SoulfireCartEntity(MMReferences.endfire_cart, world, posX, posY, posZ);
+        EndfireCartEntity minecart = new EndfireCartEntity(MMReferences.endfire_cart, world, posX, posY, posZ);
         if (stack.hasCustomHoverName()) {
             minecart.setCustomName(stack.getDisplayName());
         }
