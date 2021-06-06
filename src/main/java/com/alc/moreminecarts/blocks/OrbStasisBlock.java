@@ -4,9 +4,7 @@ import com.alc.moreminecarts.tile_entities.OrbStasisTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
@@ -62,16 +60,16 @@ public class OrbStasisBlock extends Block implements ITileEntityProvider {
 
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult blocktrace) {
-        if (state.getValue(CONTAINS_PEARL)) return ActionResultType.sidedSuccess(false);
+        if (state.getValue(CONTAINS_PEARL)) return ActionResultType.PASS;
 
-        ItemStack item_used = playerEntity.getItemBySlot(hand == Hand.MAIN_HAND? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND);
+        ItemStack item_used = playerEntity.getItemInHand(hand);
         if (item_used.getItem() == Items.ENDER_PEARL) {
-            if (world instanceof ClientWorld) return ActionResultType.sidedSuccess(true);
+            if (world.isClientSide) return ActionResultType.CONSUME;
             if (updateTileEntity(state, world, pos, playerEntity) && !playerEntity.isCreative()) {
                 item_used.shrink(1);
             }
         }
-        return ActionResultType.sidedSuccess(false);
+        return ActionResultType.PASS;
     }
 
     private boolean updateTileEntity(BlockState state, World worldIn, BlockPos pos, PlayerEntity user) {

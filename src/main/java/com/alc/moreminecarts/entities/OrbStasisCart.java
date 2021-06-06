@@ -7,14 +7,12 @@ import com.alc.moreminecarts.tile_entities.OrbStasisTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PoweredRailBlock;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.monster.EndermiteEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -77,17 +75,17 @@ public class OrbStasisCart extends AbstractMinecartEntity {
     public ActionResultType interact(PlayerEntity playerEntity, Hand hand) {
         ActionResultType ret = super.interact(playerEntity, hand);
         if (ret.consumesAction()) return ret;
-        if (getHasOrb()) return ActionResultType.sidedSuccess(false);
+        if (getHasOrb()) return ActionResultType.PASS;
 
-        ItemStack item_used = playerEntity.getItemBySlot(hand == Hand.MAIN_HAND? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND);
+        ItemStack item_used = playerEntity.getItemInHand(hand);
         if (item_used.getItem() == Items.ENDER_PEARL) {
-            if (level instanceof ClientWorld) return ActionResultType.sidedSuccess(true);
+            if (level.isClientSide) return ActionResultType.CONSUME;
             if (owner_uuid == null) {
                 addPearl(playerEntity);
                 if (!playerEntity.isCreative()) item_used.shrink(1);
             }
         }
-        return ActionResultType.sidedSuccess(false);
+        return ActionResultType.PASS;
 
     }
 
