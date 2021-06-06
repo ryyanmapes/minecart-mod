@@ -10,8 +10,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -68,7 +66,6 @@ public class TankCartContainer extends Container {
         return this.entity.stillValid(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Nullable
     public FluidStack getFluids() {
         if (entity == null) {

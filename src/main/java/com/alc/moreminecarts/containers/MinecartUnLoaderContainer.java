@@ -137,37 +137,31 @@ public class MinecartUnLoaderContainer extends Container {
         return tile.getFluidStack();
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getEnergy() {
         if (tile == null) return 0;
         return tile.getEnergyAmount();
     }
 
-    @OnlyIn(Dist.CLIENT)
     public boolean getRedstoneOutput()
     {
         return (this.data.get(0) & 16) == 16;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public boolean getLockedMinecartsOnly()
     {
         return this.data.get(0) % 2 == 1;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public boolean getLeaveOneInStack()
     {
         return (this.data.get(0) & 2) == 2;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public MinecartLoaderTile.ComparatorOutputType getComparatorOutputType()
     {
         return MinecartLoaderTile.ComparatorOutputType.fromInt((this.data.get(0) & 12) >> 2);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public MoreMinecartsPacketHandler.MinecartLoaderPacket getCurrentPacket() {
         return new MoreMinecartsPacketHandler.MinecartLoaderPacket(
                 false,
@@ -178,7 +172,6 @@ public class MinecartUnLoaderContainer extends Container {
         );
     }
 
-    @OnlyIn(Dist.CLIENT)
     public boolean getIsUnloader() {
         return this.data.get(1) > 0;
     }

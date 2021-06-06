@@ -13,8 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class FlagCartContainer extends Container {
 
@@ -100,17 +98,14 @@ public class FlagCartContainer extends Container {
         return lvt_3_1_;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getSize() {
         return 9-getDiscludedSlots();
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getSelectedSlot() {
         return data.get(0);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getDiscludedSlots() {
         return data.get(1);
     }

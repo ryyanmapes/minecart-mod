@@ -7,8 +7,8 @@
     "I": {
       "tag": "forge:ingots/iron"
     },
-    "W": {
-      "item": "minecraft:slimeball"
+    "S": {
+      "item": "minecraft:slime_ball"
     }
   },
   "result": {
