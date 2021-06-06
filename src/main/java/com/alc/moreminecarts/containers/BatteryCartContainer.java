@@ -10,8 +10,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BatteryCartContainer extends Container {
 
@@ -65,7 +63,6 @@ public class BatteryCartContainer extends Container {
         return this.entity.stillValid(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getEnergy() {
         if (entity == null) {
             int id = data.get(0);
