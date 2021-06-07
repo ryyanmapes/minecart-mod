@@ -5,6 +5,7 @@ import com.alc.moreminecarts.MMItemReferences;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -34,12 +35,15 @@ public class EndfireCartEntity extends CampfireCartEntity {
     }
 
     @Override
-    public double getSpeedCoeff() {
-        return 10;
+    public double getSpeedDiv() {
+        return 6;
     }
 
     public boolean isGoingUphill() {
         return false;
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.endfire_cart); }
 
 }

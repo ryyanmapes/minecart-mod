@@ -12,6 +12,7 @@ import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -256,5 +257,8 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         double log_proportion = Math.log10( ((true_time_left/ChunkLoaderTile.MAX_TIME)*9 + 1 ));
         return (int)Math.ceil(log_proportion * 15);
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.chunk_loader_cart); }
 
 }

@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -162,5 +163,8 @@ public class BatteryCartEntity extends AbstractMinecartEntity implements INamedC
         p_184230_1_.openMenu(this);
         return ActionResultType.SUCCESS;
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.battery_cart); }
 
 }

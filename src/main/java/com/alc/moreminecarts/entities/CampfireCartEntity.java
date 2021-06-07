@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -122,7 +123,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
             this.pushZ /= d0;
             // Four times slower than a furnace cart.
             Vector3d min_motion = this.getDeltaMovement().multiply(0.8D, 0.0D, 0.8D);
-            double speed_coeff = this.getSpeedCoeff();
+            double speed_coeff = this.getSpeedDiv();
             double new_x = (Math.abs(this.pushX/speed_coeff) > Math.abs(min_motion.x))? this.pushX/speed_coeff : min_motion.x;
             double new_z = (Math.abs(this.pushZ/speed_coeff) > Math.abs(min_motion.z))? this.pushZ/speed_coeff : min_motion.z;
             this.setDeltaMovement(new_x, min_motion.y, new_z);
@@ -133,7 +134,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         super.applyNaturalSlowdown();
     }
 
-    public double getSpeedCoeff() {
+    public double getSpeedDiv() {
         return 11;
     }
 
@@ -220,5 +221,6 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.campfire_cart); }
 }

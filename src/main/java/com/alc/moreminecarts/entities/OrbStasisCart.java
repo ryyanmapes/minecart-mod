@@ -169,4 +169,7 @@ public class OrbStasisCart extends AbstractMinecartEntity {
     public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.minecart_with_stasis); }
 }

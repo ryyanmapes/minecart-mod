@@ -24,6 +24,14 @@ public class MMItemReferences {
     public static final Item campfire_cart = null;
     public static final Item soulfire_cart = null;
     public static final Item endfire_cart = null;
+    public static final Item tank_cart = null;
+    public static final Item battery_cart = null;
+    public static final Item flag_cart = null;
+    public static final Item chunk_loader_cart = null;
+    public static final Item piston_pushcart = null;
+    public static final Item sticky_piston_pushcart = null;
+    public static final Item minecart_with_stasis = null;
+    public static final Item minecart_with_net = null;
     public static final Item holo_remote = null;
     public static final Item backwards_holo_remote = null;
     public static final Item simple_holo_remote = null;

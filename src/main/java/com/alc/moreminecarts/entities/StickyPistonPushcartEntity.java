@@ -57,4 +57,7 @@ public class StickyPistonPushcartEntity extends PistonPushcartEntity{
         }
     }
 
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.sticky_piston_pushcart); }
+
 }

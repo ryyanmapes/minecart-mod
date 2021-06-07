@@ -246,4 +246,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
         }
         return result;
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.piston_pushcart); }
 }

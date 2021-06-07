@@ -32,4 +32,7 @@ public class IronPushcartEntity extends AbstractPushcart {
             this.spawnAtLocation(stack);
         }
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.iron_pushcart); }
 }

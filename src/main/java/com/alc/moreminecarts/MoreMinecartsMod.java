@@ -475,10 +475,10 @@ public class MoreMinecartsMod
         RenderTypeLookup.setRenderLayer(chiseled_organic_glass, transparent);
         RenderTypeLookup.setRenderLayer(chiseled_organic_glass_pane, transparent);
 
-        RenderingRegistry.registerEntityRenderingHandler(minecart_with_net, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(MMReferences.minecart_with_net, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(minecart_with_chunk_loader, VanillaMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(minecart_with_stasis, VanillaMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(flag_cart, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(MMReferences.minecart_with_stasis, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(MMReferences.flag_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.campfire_cart, CampfireCartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.soulfire_cart, SoulfireCartRenderer::new);
         if (MMReferences.endfire_cart != null) RenderingRegistry.registerEntityRenderingHandler(MMReferences.endfire_cart, EndfireCartRenderer::new);
@@ -486,8 +486,8 @@ public class MoreMinecartsMod
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.iron_pushcart, IronPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.piston_pushcart, PistonPushcartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.sticky_piston_pushcart, StickyPistonPushcartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(tank_cart, VanillaMinecartRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(battery_cart, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(MMReferences.tank_cart, VanillaMinecartRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(MMReferences.battery_cart, VanillaMinecartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(MMReferences.coupler, CouplerRenderer::new);
 
         RenderingRegistry.registerEntityRenderingHandler(high_speed_minecart, HSMinecartRenderer::new);

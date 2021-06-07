@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.blocks.utility_rails.ArithmeticRailBlock;
@@ -210,6 +211,9 @@ public class FlagCartEntity extends ContainerMinecartEntity {
             }
         }
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.flag_cart); }
 
     /*
     public int getComparatorSignal() {
