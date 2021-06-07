@@ -27,6 +27,7 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
     public GlassCactusBlock(Properties p_i48435_1_) {
         super(p_i48435_1_);
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)));
     }
 
     @Override
