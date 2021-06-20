@@ -56,6 +56,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.blockplacer.ColumnBlockPlacer;
 import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.feature.BlockClusterFeatureConfig;
@@ -100,6 +102,7 @@ public class MoreMinecartsMod
     public static String MODID = "moreminecarts";
     public static IProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
+    public static BlockClusterFeatureConfig GLASS_CACTUS_CONFIG;
     public static ConfiguredFeature<?, ?> GLASS_CACTUS_FEATURE;
 
 
@@ -397,11 +400,15 @@ public class MoreMinecartsMod
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        GLASS_CACTUS_FEATURE = Feature.RANDOM_PATCH.configured((new BlockClusterFeatureConfig.Builder(
-                new SimpleBlockStateProvider(glass_cactus.getStateDefinition().any()),
-                new ColumnBlockPlacer(1, 2))).tries(2).noProjection().build())
-                .decorated(Features.Placements.HEIGHTMAP_DOUBLE_SQUARE).count(2);
+        GLASS_CACTUS_CONFIG =
+                new BlockClusterFeatureConfig.Builder(
+                        new SimpleBlockStateProvider(glass_cactus.defaultBlockState()),
+                        new ColumnBlockPlacer(1, 2))
+                        .tries(2).noProjection().build();
+        GLASS_CACTUS_FEATURE = Feature.RANDOM_PATCH
+                .configured(GLASS_CACTUS_CONFIG).decorated(Features.Placements.HEIGHTMAP_DOUBLE_SQUARE).count(2);
 
+        Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, "glass_cactus", GLASS_CACTUS_FEATURE);
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), ()->potted_beet);
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), ()->potted_glass_cactus);
     }
