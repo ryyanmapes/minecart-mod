@@ -106,7 +106,7 @@ public class BatteryCartEntity extends AbstractMinecartEntity implements INamedC
     public void destroy(DamageSource source) {
         super.destroy(source);
         if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(MMItemReferences.chunk_loader); // todo change to proper item
+            this.spawnAtLocation(MMItemReferences.transport_battery); // todo change to proper item
         }
     }
 

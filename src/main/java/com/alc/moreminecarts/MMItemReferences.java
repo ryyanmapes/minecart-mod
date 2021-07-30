@@ -26,6 +26,8 @@ public class MMItemReferences {
     public static final Item endfire_cart = null;
     public static final Item tank_cart = null;
     public static final Item battery_cart = null;
+    public static final Item transport_tank = null;
+    public static final Item transport_battery = null;
     public static final Item flag_cart = null;
     public static final Item chunk_loader_cart = null;
     public static final Item piston_pushcart = null;

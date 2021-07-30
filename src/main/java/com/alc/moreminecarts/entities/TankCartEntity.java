@@ -102,7 +102,7 @@ public class TankCartEntity extends AbstractMinecartEntity implements INamedCont
     public void destroy(DamageSource source) {
         super.destroy(source);
         if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(MMItemReferences.chunk_loader); // todo change to proper item
+            this.spawnAtLocation(MMItemReferences.transport_tank); // todo change to proper item
         }
     }
 

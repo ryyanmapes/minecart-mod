@@ -35,7 +35,7 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
         builder.add(AGE);
     }
 
-    // Grows 3x as slow.
+    // Grows 2x as slow.
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         if (rand.nextInt(2) == 0) super.randomTick(state, world, pos, rand);
