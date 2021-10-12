@@ -23,4 +23,7 @@ public class ServerProxy implements IProxy{
     public boolean isHoldingRun() {
         return false;
     }
+
+    @Override
+    public void setupKeybindings() {}
 }

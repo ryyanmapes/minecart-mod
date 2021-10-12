@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "powered=false,shape=east_west": {
+      "model": "moreminecarts:block/lightspeed_powered_rail_off",
+      "y": 90
+    },
+    "powered=false,shape=north_south": {
+      "model": "moreminecarts:block/lightspeed_powered_rail_off"
+    },
+    "powered=true,shape=east_west": {
+      "model": "moreminecarts:block/lightspeed_powered_rail_on",
+      "y": 90
+    },
+    "powered=true,shape=north_south": {
+      "model": "moreminecarts:block/lightspeed_powered_rail_on"
+    }
+  }
+}

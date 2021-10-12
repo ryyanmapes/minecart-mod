@@ -55,6 +55,14 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
             super(x, y, 18, 18, StringTextComponent.EMPTY);
         }
 
+        public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
+            ChunkLoaderScreen.this.renderTooltip(p_230443_1_,
+                    new StringTextComponent(menu.isEnabled()
+                            ? "On"
+                            : "Off"
+                    ) , p_230443_2_, p_230443_3_);
+        }
+
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
             minecraft.getTextureManager().bind(display);
 

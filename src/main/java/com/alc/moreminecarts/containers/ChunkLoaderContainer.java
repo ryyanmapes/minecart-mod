@@ -14,8 +14,6 @@ import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ChunkLoaderContainer extends Container {
 
@@ -131,22 +129,18 @@ public class ChunkLoaderContainer extends Container {
         return itemstack;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getSize() {
         return 1;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getTimeLeft() {
         return Math.abs(this.data.get(0));
     }
 
-    @OnlyIn(Dist.CLIENT)
     public double getLogProgress() {
         return (Math.log10( ((float)getTimeLeft()/ChunkLoaderTile.MAX_MINUTES)*9 + 1 ));
     }
 
-    @OnlyIn(Dist.CLIENT)
     public boolean isEnabled() {
         return this.data.get(1) > 0;
     }

@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -29,6 +30,10 @@ import java.util.Random;
 
 public class CampfireCartEntity extends AbstractMinecartEntity {
     private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(FurnaceMinecartEntity.class, DataSerializers.BOOLEAN);
+    private static final String PUSH_X_NAME = "PushX";
+    private static final String PUSH_Z_NAME = "PushZ";
+    private static final String POWERED_NAME = "powered";
+
 
     public double pushX = 0;
     public double pushZ = 0;
@@ -118,7 +123,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
             this.pushZ /= d0;
             // Four times slower than a furnace cart.
             Vector3d min_motion = this.getDeltaMovement().multiply(0.8D, 0.0D, 0.8D);
-            double speed_coeff = this.getSpeedCoeff();
+            double speed_coeff = this.getSpeedDiv();
             double new_x = (Math.abs(this.pushX/speed_coeff) > Math.abs(min_motion.x))? this.pushX/speed_coeff : min_motion.x;
             double new_z = (Math.abs(this.pushZ/speed_coeff) > Math.abs(min_motion.z))? this.pushZ/speed_coeff : min_motion.z;
             this.setDeltaMovement(new_x, min_motion.y, new_z);
@@ -129,7 +134,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         super.applyNaturalSlowdown();
     }
 
-    public double getSpeedCoeff() {
+    public double getSpeedDiv() {
         return 11;
     }
 
@@ -166,10 +171,10 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         Vector3d pos = this.position();
         if (level.isClientSide()) {
             if (isMinecartPowered()) {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.3F, 1.0F, false);
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.3F, 1.0F, false);
                 spawnSmokeParticles(level, this.position(), false, true);
             } else {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundCategory.NEUTRAL, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
             }
         }
 
@@ -183,25 +188,27 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         this.entityData.define(POWERED, false);
     }
 
-    protected boolean isMinecartPowered() {
+    public boolean isMinecartPowered() {
         return this.entityData.get(POWERED);
     }
 
-    protected void setMinecartPowered(boolean powered) {
+    public void setMinecartPowered(boolean powered) {
         this.entityData.set(POWERED, powered);
     }
 
 
     protected void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
-        compound.putDouble("PushX", this.pushX);
-        compound.putDouble("PushZ", this.pushZ);
+        compound.putDouble(PUSH_X_NAME, this.pushX);
+        compound.putDouble(PUSH_Z_NAME, this.pushZ);
+        compound.putBoolean(POWERED_NAME, this.isMinecartPowered());
     }
 
     protected void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
         this.pushX = compound.getDouble("PushX");
         this.pushZ = compound.getDouble("PushZ");
+        setMinecartPowered(compound.getBoolean(POWERED_NAME));
     }
 
     public BlockState getDefaultDisplayBlockState() {
@@ -214,5 +221,6 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.campfire_cart); }
 }

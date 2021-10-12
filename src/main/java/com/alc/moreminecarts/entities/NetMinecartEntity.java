@@ -1,11 +1,13 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.MMItemReferences;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
@@ -102,4 +104,7 @@ public class NetMinecartEntity extends AbstractMinecartEntity {
     public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.minecart_with_net); }
 }

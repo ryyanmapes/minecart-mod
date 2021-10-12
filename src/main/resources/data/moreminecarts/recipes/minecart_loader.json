@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SCS",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "moreminecarts:silica_steel"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:minecart_loader",
+    "count": 1
+  }
+}

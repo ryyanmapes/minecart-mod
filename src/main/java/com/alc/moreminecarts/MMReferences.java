@@ -1,7 +1,8 @@
 package com.alc.moreminecarts;
 
-import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.containers.*;
 import com.alc.moreminecarts.entities.*;
+import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
 import net.minecraft.block.Block;
@@ -21,21 +22,18 @@ public class MMReferences {
 
     public static final EntityType<NetMinecartEntity> minecart_with_net = null;
     public static final EntityType<ChunkLoaderCartEntity> minecart_with_chunk_loader = null;
+    public static final EntityType<OrbStasisCart> minecart_with_stasis = null;
+    public static final EntityType<FlagCartEntity> flag_cart = null;
     public static final EntityType<CampfireCartEntity> campfire_cart = null;
     public static final EntityType<SoulfireCartEntity> soulfire_cart = null;
+    public static final EntityType<EndfireCartEntity> endfire_cart = null;
     public static final EntityType<WoodenPushcartEntity> wooden_pushcart = null;
     public static final EntityType<IronPushcartEntity> iron_pushcart = null;
     public static final EntityType<PistonPushcartEntity> piston_pushcart = null;
+    public static final EntityType<StickyPistonPushcartEntity> sticky_piston_pushcart = null;
+    public static final EntityType<TankCartEntity> tank_cart = null;
+    public static final EntityType<BatteryCartEntity> battery_cart = null;
     public static final EntityType<CouplerEntity> coupler = null;
-
-    // Tile Entities
-
-    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
-    public static final TileEntityType<LockingRailTile> locking_rail_te = null;
-
-    // Containers
-
-    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
 
     // High Speed Entities
 
@@ -48,34 +46,79 @@ public class MMReferences {
     public static final EntityType<HSMinecartEntities.HSFurnaceMinecart> high_speed_furnace_minecart = null;
     public static final EntityType<HSMinecartEntities.HSNetMinecart> high_speed_net_minecart = null;
     public static final EntityType<HSMinecartEntities.HSChunkLoaderMinecart> high_speed_chunk_loader_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSStasisMinecart> high_speed_stasis_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSFlagMinecart> high_speed_flag_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSTankMinecart> high_speed_tank_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSBatteryMinecart> high_speed_battery_minecart = null;
     public static final EntityType<HSMinecartEntities.HSCampfireMinecart> high_speed_campfire_minecart = null;
     public static final EntityType<HSMinecartEntities.HSSoulfireMinecart> high_speed_soulfire_minecart = null;
+    public static final EntityType<HSMinecartEntities.HSEndfireMinecart> high_speed_endfire_minecart = null;
     public static final EntityType<HSMinecartEntities.HSPushcart> high_speed_pushcart = null;
+    public static final EntityType<HSMinecartEntities.HSPistonPushcart> high_speed_piston_pushcart = null;
+    public static final EntityType<HSMinecartEntities.HSStickyPistonPushcart> high_speed_sticky_piston_pushcart = null;
+
+    // Tile Entities
+
+    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
+    public static final TileEntityType<LockingRailTile> locking_rail_te = null;
+    public static final TileEntityType<LockingRailTile> powered_locking_rail_te = null;
+    public static final TileEntityType<LockingRailTile> minecart_loader_te = null;
+    public static final TileEntityType<LockingRailTile> minecart_unloader_te = null;
+    public static final TileEntityType<ChunkLoaderTile> pearl_stasis_chamber_te = null;
+
+    // Containers
+
+    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
+    public static final ContainerType<MinecartUnLoaderContainer> minecart_loader_c = null;
+    public static final ContainerType<TankCartContainer> tank_cart_c = null;
+    public static final ContainerType<BatteryCartContainer> battery_cart_c = null;
+    public static final ContainerType<FlagCartContainer> flag_cart_c = null;
 
     // Blocks
     public static final Block rail_turn = null;
     public static final Block parallel_rail = null;
+    public static final Block cross_rail = null;
     public static final Block projector_rail = null;
     public static final Block hologram_rail = null;
     public static final Block wooden_rail = null;
     public static final Block wooden_rail_turn = null;
     public static final Block wooden_parallel_rail = null;
+    public static final Block wooden_cross_rail = null;
     public static final Block wooden_projector_rail = null;
     public static final Block wooden_hologram_rail = null;
     public static final Block maglev_rail = null;
     public static final Block maglev_rail_turn = null;
     public static final Block maglev_parallel_rail = null;
+    public static final Block maglev_cross_rail = null;
     public static final Block maglev_projector_rail = null;
     public static final Block maglev_hologram_rail = null;
     public static final Block maglev_powered_rail = null;
+    public static final Block lightspeed_rail = null;
+    public static final Block lightspeed_cross_rail = null;
+    public static final Block lightspeed_powered_rail = null;
     public static final Block bioluminescent_rail = null;
     public static final Block locking_rail = null;
+    public static final Block powered_locking_rail = null;
+    public static final Block piston_lifter_rail = null;
+    public static final Block arithmetic_rail = null;
+
     public static final Block holo_scaffold_generator = null;
     public static final Block holo_scaffold = null;
+    public static final Block chaotic_holo_scaffold = null;
+    public static final Block piston_display_block = null;
 
     public static final Block chunk_loader = null;
+    public static final Block pearl_stasis_chamber = null;
+    public static final Block minecart_loader = null;
+    public static final Block minecart_unloader = null;
     public static final Block silica_steel_block = null;
     public static final Block chunkrodite_block = null;
+    public static final Block corrugated_silica_steel = null;
+    public static final Block silica_steel_pillar = null;
+    public static final Block organic_glass = null;
+    public static final Block organic_glass_pane = null;
+    public static final Block chiseled_organic_glass = null;
+    public static final Block chiseled_organic_glass_pane = null;
     public static final Block glass_cactus = null;
     public static final Block potted_glass_cactus = null;
     public static final Block potted_beet = null;

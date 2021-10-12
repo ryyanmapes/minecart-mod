@@ -37,4 +37,7 @@ public class WoodenPushcartEntity extends AbstractPushcart {
     protected double getMaxSpeed() {
         return 0.3D;
     }
+
+    @Override
+    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.wooden_pushcart); }
 }

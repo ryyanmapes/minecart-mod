@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "moreminecarts:block/locking_powered_rail_on"
+  }
+}

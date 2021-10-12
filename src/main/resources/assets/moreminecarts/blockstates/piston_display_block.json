@@ -1,0 +1,76 @@
+{
+  "variants": {
+    "variant=0": {
+      "model": "minecraft:block/piston_base",
+	  "x": -90
+    },
+	"variant=1": {
+      "model": "moreminecarts:block/piston_rod"
+    },
+	"variant=2": {
+      "model": "moreminecarts:block/minecart_piston_head",
+	  "x": -90
+    },
+	"variant=3": {
+      "model": "moreminecarts:block/minecart_piston_head_sticky",
+	  "x": -90
+    },
+	"variant=4": {
+      "model": "moreminecarts:block/transport_tank"
+    },
+	"variant=5": {
+      "model": "moreminecarts:block/transport_battery"
+    },
+	"variant=6": {
+      "model": "moreminecarts:block/programmable_cart_empty"
+    },
+	"variant=7": {
+      "model": "moreminecarts:block/programmable_cart_white"
+    },
+	"variant=8": {
+      "model": "moreminecarts:block/programmable_cart_orange"
+    },
+	"variant=9": {
+      "model": "moreminecarts:block/programmable_cart_magenta"
+    },
+	"variant=10": {
+      "model": "moreminecarts:block/programmable_cart_light_blue"
+    },
+	"variant=11": {
+      "model": "moreminecarts:block/programmable_cart_yellow"
+    },
+	"variant=12": {
+      "model": "moreminecarts:block/programmable_cart_lime"
+    },
+	"variant=13": {
+      "model": "moreminecarts:block/programmable_cart_pink"
+    },
+	"variant=14": {
+      "model": "moreminecarts:block/programmable_cart_gray"
+    },
+	"variant=15": {
+      "model": "moreminecarts:block/programmable_cart_light_gray"
+    },
+	"variant=16": {
+      "model": "moreminecarts:block/programmable_cart_cyan"
+    },
+	"variant=17": {
+      "model": "moreminecarts:block/programmable_cart_purple"
+    },
+	"variant=18": {
+      "model": "moreminecarts:block/programmable_cart_blue"
+    },
+	"variant=19": {
+      "model": "moreminecarts:block/programmable_cart_brown"
+    },
+	"variant=20": {
+      "model": "moreminecarts:block/programmable_cart_green"
+    },
+	"variant=21": {
+      "model": "moreminecarts:block/programmable_cart_red"
+    },
+	"variant=22": {
+      "model": "moreminecarts:block/programmable_cart_black"
+    }
+  }
+}

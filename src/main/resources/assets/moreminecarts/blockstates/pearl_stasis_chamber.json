@@ -1,0 +1,14 @@
+
+{
+  "variants": {
+    "has_orb=true": {
+      "model": "moreminecarts:block/pearl_stasis_chamber_on"
+    },
+    "has_orb=false,powered=false": {
+      "model": "moreminecarts:block/pearl_stasis_chamber_off_off"
+    },
+	"has_orb=false,powered=true": {
+      "model": "moreminecarts:block/pearl_stasis_chamber_off_on"
+    }
+  }
+}

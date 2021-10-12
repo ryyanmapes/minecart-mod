@@ -1,0 +1,33 @@
+
+{
+  "variants": {
+    "powered=true,inverted=false,shape=north_south": {
+      "model": "moreminecarts:block/locking_rail_on"
+    },
+    "powered=false,inverted=false,shape=north_south": {
+      "model": "moreminecarts:block/locking_rail_off"
+    },
+	"powered=true,inverted=true,shape=north_south": {
+      "model": "moreminecarts:block/locking_rail_inverted_on"
+    },
+    "powered=false,inverted=true,shape=north_south": {
+      "model": "moreminecarts:block/locking_rail_inverted_off"
+    },
+	"powered=true,inverted=false,shape=east_west": {
+      "model": "moreminecarts:block/locking_rail_on",
+	  "y": 90
+    },
+    "powered=false,inverted=false,shape=east_west": {
+      "model": "moreminecarts:block/locking_rail_off",
+	  "y": 90
+    },
+	"powered=true,inverted=true,shape=east_west": {
+      "model": "moreminecarts:block/locking_rail_inverted_on",
+	  "y": 90
+    },
+    "powered=false,inverted=true,shape=east_west": {
+      "model": "moreminecarts:block/locking_rail_inverted_off",
+	  "y": 90
+    }
+  }
+}

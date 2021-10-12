@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
+import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.WoodenRail;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -19,7 +19,7 @@ public class WoodenHolographicRail extends HolographicRail {
 
     @Override
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        return WoodenRail.WOODEN_MAX_SPEED;
+        return MMConstants.WOODEN_MAX_SPEED;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.blocks.parallel_rails;
 
-import com.alc.moreminecarts.blocks.WoodenRail;
+import com.alc.moreminecarts.MMConstants;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.Direction;
@@ -16,7 +16,7 @@ public class WoodenParallelRail extends ParallelRail {
 
     @Override
     public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
-        return WoodenRail.WOODEN_MAX_SPEED;
+        return MMConstants.WOODEN_MAX_SPEED;
     }
 
     @Override

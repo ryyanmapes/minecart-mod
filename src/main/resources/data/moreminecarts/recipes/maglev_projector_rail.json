@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "R"
+  ],
+  "key": {
+    "L": {
+      "item": "moreminecarts:hard_light_lens"
+    },
+    "R": {
+      "item": "moreminecarts:maglev_rail"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:maglev_projector_rail"
+  }
+}

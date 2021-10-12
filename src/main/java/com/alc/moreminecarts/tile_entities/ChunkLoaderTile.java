@@ -3,7 +3,7 @@ package com.alc.moreminecarts.tile_entities;
 import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.blocks.ChunkLoaderBlock;
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,9 +39,6 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     public static int MAX_MINUTES = 8640;
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
-    // Because of Minecraft stupid, we have to save the time left in two halves
-    // (because when it is sent over the server, it truncates to a short)
-    // So we send the upper and lower bits seperately
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
@@ -94,6 +91,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         compound.putInt(LAST_CHUNK_X_PROPERTY, last_chunk_x);
         compound.putInt(LAST_CHUNK_Z_PROPERTY, last_chunk_z);
         compound.putInt(TIME_LEFT_PROPERTY, time_left);
+        ItemStackHelper.saveAllItems(compound, this.items);
         return super.save(compound);
     }
 
@@ -103,6 +101,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         last_chunk_z = compound.getInt(LAST_CHUNK_Z_PROPERTY);
         time_left = compound.getInt(TIME_LEFT_PROPERTY);
         lit_last_tick = isLit();
+        ItemStackHelper.loadAllItems(compound, this.items);
         super.load(state, compound);
     }
 
@@ -116,16 +115,21 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     }
 
     public static int getBurnDuration(Item item) {
-        if (item == Items.AIR) return -1;
-        if (item == Items.QUARTZ) return 600;
-        if (item == Items.EMERALD) return 6000;
-        if (item == Items.EMERALD_BLOCK) return 54000;
-        if (item == Items.DIAMOND) return 72000;
-        if (item == Items.DIAMOND_BLOCK) return 648000;
-        if (item == Items.NETHER_STAR) return 3456000;
-        if (item == MMItemReferences.chunkrodite) return 18000;
-        if (item == MMItemReferences.chunkrodite_block) return 162000;
-        return -1;
+        double multiplier = MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER.get();
+        double fuel = -1;
+
+        if (item == Items.QUARTZ) fuel = 600;
+        else if (item == Items.EMERALD) fuel = 6000;
+        else if (item == Items.EMERALD_BLOCK) fuel = 54000;
+        else if (item == Items.DIAMOND) fuel = 72000;
+        else if (item == Items.DIAMOND_BLOCK) fuel = 648000;
+        else if (item == Items.NETHER_STAR) fuel = 3456000;
+        else if (item == MMItemReferences.chunkrodite) fuel = 18000;
+        else if (item == MMItemReferences.chunkrodite_block) fuel = 162000;
+
+        fuel *= multiplier;
+        if (fuel <= 0) return -1;
+        else return (int)Math.ceil(fuel);
     }
 
     public void tick() {
@@ -172,7 +176,8 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
             }
 
-            if (changed_flag) this.setChanged();
+            if (changed_flag)
+                this.setChanged();
         }
 
         lit_last_tick = isLit();

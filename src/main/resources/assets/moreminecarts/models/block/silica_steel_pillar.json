@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "moreminecarts:block/silica_steel_pillar_top",
+    "side": "moreminecarts:block/silica_steel_pillar"
+  }
+}
