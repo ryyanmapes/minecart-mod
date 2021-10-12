@@ -188,6 +188,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         compound.putInt(COOLDOWN_PROPERTY, cooldown_time);
         ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
         compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
+        ItemStackHelper.saveAllItems(compound, this.items);
         return super.save(compound);
     }
 
@@ -204,6 +205,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         tank.setFluid(tank.readFromNBT(compound).getFluid());
         energy_handler.orElse(null).receiveEnergy(compound.getInt(ENERGY_PROPERTY), false);
         changed_flag = true;
+        ItemStackHelper.loadAllItems(compound, this.items);
         super.load(state, compound);
     }
 

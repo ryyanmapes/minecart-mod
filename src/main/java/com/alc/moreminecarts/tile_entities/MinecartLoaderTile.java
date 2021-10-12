@@ -23,7 +23,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.List;
 
@@ -102,36 +101,42 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
         }
     }
 
-    public float doFluidLoads(IFluidHandler handler) {
+    public float doFluidLoads(IFluidHandler minecart_handler) {
         boolean changed = false;
 
         IFluidHandler our_fluid_handler = fluid_handler.orElse(null);
         FluidStack our_fluid_stack = our_fluid_handler.getFluidInTank(0);
 
-        for (int i = 0; i < handler.getTanks() && our_fluid_stack.getAmount() > (leave_one_in_stack? 1 : 0); i++) {
+        float fluid_content_proportion = 0;
+        for (int i = 0; i < minecart_handler.getTanks(); i++) {
+
+            if (minecart_handler.getTankCapacity(i) > 0)
+                fluid_content_proportion += (float)minecart_handler.getFluidInTank(i).getAmount() / minecart_handler.getTankCapacity(i);
+
+            if (our_fluid_stack.getAmount() <= (leave_one_in_stack? 1 : 0)) continue;
 
             boolean did_load = false;
 
-            if (handler.isFluidValid(i, our_fluid_stack)) {
+            if (minecart_handler.isFluidValid(i, our_fluid_stack)) {
 
-                FluidStack add_to_stack = handler.getFluidInTank(i);
+                FluidStack add_to_stack = minecart_handler.getFluidInTank(i);
 
                 if (add_to_stack.isEmpty()) {
                     FluidStack new_stack = our_fluid_stack.copy();
                     int transfer_amount = Math.min(1000, new_stack.getAmount());
                     new_stack.setAmount(transfer_amount);
-                    handler.fill(new_stack, IFluidHandler.FluidAction.EXECUTE);
+                    minecart_handler.fill(new_stack, IFluidHandler.FluidAction.EXECUTE);
                     our_fluid_stack.shrink(transfer_amount);
                     did_load = true;
                 }
                 else if (add_to_stack.isFluidEqual(our_fluid_stack)) {
                     int true_count = our_fluid_stack.getAmount() - (leave_one_in_stack? 1 : 0);
-                    int to_fill = handler.getTankCapacity(i) - add_to_stack.getAmount();
+                    int to_fill = minecart_handler.getTankCapacity(i) - add_to_stack.getAmount();
                     int transfer = Math.min(1000, Math.min(true_count, to_fill));
 
                     FluidStack adding_stack = add_to_stack.copy();
                     adding_stack.setAmount(transfer);
-                    handler.fill(adding_stack, IFluidHandler.FluidAction.EXECUTE);
+                    minecart_handler.fill(adding_stack, IFluidHandler.FluidAction.EXECUTE);
                     our_fluid_stack.shrink(transfer);
                     did_load = transfer > 0;
                 }
@@ -142,6 +147,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
                 break;
             }
         }
+        if (minecart_handler.getTanks() > 0) fluid_content_proportion /= minecart_handler.getTanks();
 
         if (changed) {
             resetCooldown();
@@ -150,9 +156,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
         else {
-            float fullness = (int)Math.floor((float)((FluidTank)fluid_handler.resolve().get()).getFluidAmount() / ((FluidTank)fluid_handler.resolve().get()).getCapacity() * 15.0);
-            if (comparator_output == ComparatorOutputType.cart_full) fullness = (float)Math.floor(fullness);
-            return fullness;
+            return fluid_content_proportion;
         }
     }
 
@@ -179,9 +183,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
 
         if (comparator_output == ComparatorOutputType.done_loading) return changed? 0.0f : 1.0f;
         else {
-            float fullness = (int)Math.floor((float)minecart_handler.getEnergyStored() / minecart_handler.getMaxEnergyStored() * 15.0);
-            if (comparator_output == ComparatorOutputType.cart_full) fullness = (float)Math.floor(fullness);
-            return fullness;
+            return (float)minecart_handler.getEnergyStored() / minecart_handler.getMaxEnergyStored();
         }
     }
 
@@ -235,9 +237,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
             return ((ChunkLoaderCartEntity)minecart).getComparatorSignal() / 15.0f;
         }
         else {
-            float fullness = Container.getRedstoneSignalFromContainer(minecart) / 15.0f;
-            if (comparator_output == ComparatorOutputType.cart_full) fullness = (float)Math.floor(fullness);
-            return fullness;
+            return Container.getRedstoneSignalFromContainer(minecart) / 15.0f;
         }
     }
 

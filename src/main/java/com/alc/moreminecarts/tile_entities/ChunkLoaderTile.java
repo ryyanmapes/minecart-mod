@@ -91,6 +91,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         compound.putInt(LAST_CHUNK_X_PROPERTY, last_chunk_x);
         compound.putInt(LAST_CHUNK_Z_PROPERTY, last_chunk_z);
         compound.putInt(TIME_LEFT_PROPERTY, time_left);
+        ItemStackHelper.saveAllItems(compound, this.items);
         return super.save(compound);
     }
 
@@ -100,6 +101,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         last_chunk_z = compound.getInt(LAST_CHUNK_Z_PROPERTY);
         time_left = compound.getInt(TIME_LEFT_PROPERTY);
         lit_last_tick = isLit();
+        ItemStackHelper.loadAllItems(compound, this.items);
         super.load(state, compound);
     }
 
