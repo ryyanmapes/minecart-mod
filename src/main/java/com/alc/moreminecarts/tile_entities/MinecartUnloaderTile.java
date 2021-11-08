@@ -200,8 +200,9 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
                 boolean did_load = false;
 
                 if (add_to_stack.isEmpty()) {
+                    int true_count = stack.getCount() - (leave_one_in_stack? 1 : 0);
                     ItemStack new_stack = stack.copy();
-                    int transfer_amount = Math.min(8, new_stack.getCount());
+                    int transfer_amount = Math.min(8, true_count);
                     new_stack.setCount(transfer_amount);
                     this.setItem(j, new_stack);
                     stack.shrink(transfer_amount);
