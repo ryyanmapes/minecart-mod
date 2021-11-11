@@ -9,6 +9,7 @@ import net.minecraft.entity.item.minecart.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -253,10 +254,24 @@ public class HSMinecartEntities {
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
         }
         // Turned off because it actually makes them slower on maglev rails.
-        //@Override
-        //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
+        @Override
+        protected void applyNaturalSlowdown() {
+            double d0 = this.xPush * this.xPush + this.zPush * this.zPush;
+            if (d0 > 1.0E-7D) {
+                d0 = (double) MathHelper.sqrt(d0);
+                this.xPush /= d0;
+                this.zPush /= d0;
+                this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN).add(this.xPush, 0.0D, this.zPush));
+            } else {
+                this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN));
+            }
+        }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
+        @Override
+        protected double getMaxSpeed() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
+        }
         @Override
         public IPacket<?> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
