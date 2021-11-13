@@ -253,7 +253,7 @@ public class HSMinecartEntities {
             super.destroy(source);
             if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
         }
-        // Turned off because it actually makes them slower on maglev rails.
+
         @Override
         protected void applyNaturalSlowdown() {
             double d0 = this.xPush * this.xPush + this.zPush * this.zPush;
