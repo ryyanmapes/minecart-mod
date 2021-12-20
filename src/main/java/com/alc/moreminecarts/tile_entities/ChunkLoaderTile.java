@@ -279,7 +279,11 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
 
     // For dropping MMItemReferences.
     public static void dropExtras(World world, int time_left, BlockPos pos) {
-        int count = (int)Math.floor( Math.abs(time_left) / 24000.0f);
+        double multiplier = MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER.get();
+        if (multiplier == 0) return;
+
+        int count = (int)Math.floor( Math.abs(time_left / multiplier) / 24000.0f);
+
         Item to_drop = MMItemReferences.chunkrodite;
         if (count > 64) {
             count = (int)Math.floor(count / 9.0f);
