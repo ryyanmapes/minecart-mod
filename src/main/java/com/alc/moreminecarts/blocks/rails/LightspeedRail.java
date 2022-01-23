@@ -28,4 +28,5 @@ public class LightspeedRail extends RailBlock {
     public boolean isFlexibleRail(BlockState state, IBlockReader world, BlockPos pos) {
         return false;
     }
+
 }

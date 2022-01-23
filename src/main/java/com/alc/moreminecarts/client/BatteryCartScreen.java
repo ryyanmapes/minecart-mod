@@ -31,7 +31,7 @@ public class BatteryCartScreen extends ContainerScreen<BatteryCartContainer>{
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
         int energy = menu.getEnergy();
-        this.font.draw(matrix, energy+"/40,000 RF", leftPos + 8, topPos + 20, 4210752);
+        this.font.draw(matrix, energy+"/40,000 FE", leftPos + 8, topPos + 20, 4210752);
     }
 
 }
