@@ -84,10 +84,15 @@ public class HSMinecartEntities {
         public HSMinecart(Level worldIn, double x, double y, double z) { super(worldIn, x, y, z);}
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -111,10 +116,15 @@ public class HSMinecartEntities {
         }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -138,10 +148,15 @@ public class HSMinecartEntities {
         }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -163,10 +178,15 @@ public class HSMinecartEntities {
         public HSCommandBlockMinecart(Level worldIn, double x, double y, double z) { super(worldIn, x, y, z); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -190,10 +210,15 @@ public class HSMinecartEntities {
         }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -217,10 +242,15 @@ public class HSMinecartEntities {
         }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -244,10 +274,15 @@ public class HSMinecartEntities {
         }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -285,10 +320,15 @@ public class HSMinecartEntities {
         public HSNetMinecart(EntityType<? extends NetMinecartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -309,10 +349,15 @@ public class HSMinecartEntities {
         public HSChunkLoaderMinecart(EntityType<? extends ChunkLoaderCartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -333,10 +378,15 @@ public class HSMinecartEntities {
         public HSStasisMinecart(EntityType<? extends OrbStasisCart> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -357,10 +407,15 @@ public class HSMinecartEntities {
         public HSFlagMinecart(EntityType<? extends FlagCartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -381,10 +436,15 @@ public class HSMinecartEntities {
         public HSTankMinecart(EntityType<? extends TankCartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -405,10 +465,15 @@ public class HSMinecartEntities {
         public HSBatteryMinecart(EntityType<? extends BatteryCartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -429,10 +494,15 @@ public class HSMinecartEntities {
         public HSCampfireMinecart(EntityType<? extends CampfireCartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -453,10 +523,15 @@ public class HSMinecartEntities {
         public HSSoulfireMinecart(EntityType<? extends SoulfireCartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -477,10 +552,15 @@ public class HSMinecartEntities {
         public HSEndfireMinecart(EntityType<? extends EndfireCartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -501,10 +581,15 @@ public class HSMinecartEntities {
         public HSPushcart(EntityType<? extends IronPushcartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -527,10 +612,15 @@ public class HSMinecartEntities {
         public HSPistonPushcart(EntityType<? extends PistonPushcartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {
@@ -557,10 +647,15 @@ public class HSMinecartEntities {
         public HSStickyPistonPushcart(EntityType<? extends StickyPistonPushcartEntity> type, Level world) { super(type, world); }
         @Override
         public double getMaxSpeedWithRail() {
+            this.setCurrentCartSpeedCapOnRail(MMConstants.LIGHTSPEED_MAX_SPEED);
             double max_speed = super.getMaxSpeedWithRail();
             this.setMaxSpeedAirLateral((float) max_speed);
             this.setMaxSpeedAirVertical((float) max_speed);
             return max_speed;
+        }
+        @Override
+        public float getMaxCartSpeedOnRail() {
+            return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
         public void destroy(DamageSource source) {

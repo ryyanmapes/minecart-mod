@@ -9,6 +9,9 @@ public class MMConstants {
     public static final float MAGLEV_MAX_SPEED = 1f;
     public static final float LIGHTSPEED_MAX_SPEED = 2.5f;
 
+    public static final double POWERED_LIGHTSPEED_BOOST = 0.2; // default powered rail: 0.06f
+
+
     public static final double POWERED_LOCKING_RAIL_SPEED = 0.05;
 
     public static final float HS_SLOWDOWN = 0.995f;

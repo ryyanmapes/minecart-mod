@@ -109,13 +109,13 @@ public class MinecartUnloaderTile extends AbstractCommonLoader {
             if (minecart_handler.getTankCapacity(i) > 0)
                 fluid_content_proportion += (float)minecart_handler.getFluidInTank(i).getAmount() / minecart_handler.getTankCapacity(i);
 
-            if (our_fluid_stack.getAmount() == FLUID_CAPACITY) continue;
-
             boolean did_load = false;
             FluidStack take_stack = minecart_handler.getFluidInTank(i);
 
             if (take_stack.isEmpty() || (leave_one_in_stack && take_stack.getAmount() == 1)) continue;
             all_empty = false;
+
+            if (our_fluid_stack.getAmount() == FLUID_CAPACITY) continue;
 
             if (our_fluid_handler.isFluidValid(i, take_stack)) {
 
