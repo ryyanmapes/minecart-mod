@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " S ",
-    "SBS",
-    " S "
+    "CSC",
+    "CBC",
+    "CSC"
   ],
   "key": {
     "S": {
@@ -11,6 +11,9 @@
     },
     "B": {
       "item": "minecraft:magma_cream"
+    },
+    "C": {
+      "item": "minecraft:copper_block"
     }
   },
   "result": {
