@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.misc;
 
 import com.alc.moreminecarts.MMItemReferences;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class FlagUtil {
 

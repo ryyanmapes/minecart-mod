@@ -2,22 +2,36 @@ package com.alc.moreminecarts.client;
 
 import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.List;
+
 @OnlyIn(Dist.CLIENT)
-public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
+public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/programmable_cart.png");
 
-    public FlagCartScreen(FlagCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Signal Minecart"));
+    private final List<SimpleButton> buttons = Lists.newArrayList();
+
+    public FlagCartScreen(FlagCartContainer container, Inventory inv, Component titleIn) {
+        super(container, inv, new TranslatableComponent("Signal Minecart"));
+    }
+
+    private void addButton(SimpleButton p_169617_) {
+        this.addWidget(p_169617_);
+        this.buttons.add(p_169617_);
     }
 
     @Override
@@ -30,15 +44,20 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
     }
 
     @Override
-    public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+    public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
         this.renderBackground(p_230430_1_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+
+        for (AbstractButton button : buttons) {
+            button.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+        }
+
         this.renderTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
     }
 
     @Override
-    protected void renderBg(MatrixStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
-        this.minecraft.getTextureManager().bind(display);
+    protected void renderBg(PoseStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+        RenderSystem.setShaderTexture(0, display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
         // Slot disclusion renders
@@ -54,10 +73,12 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
     @OnlyIn(Dist.CLIENT)
     abstract class SimpleButton extends AbstractButton {
 
-        protected SimpleButton(int x, int y) { super(x, y, 18, 18, StringTextComponent.EMPTY); }
+        protected SimpleButton(int x, int y) { super(x, y, 18, 18, TextComponent.EMPTY); }
 
-        public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
-            minecraft.getTextureManager().bind(display);
+        public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+            RenderSystem.setShaderTexture(0, display);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             boolean mouse_on = isDragging() && this.isHovered;
 
@@ -66,25 +87,31 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
             }
         }
 
-        public abstract void renderSelected(MatrixStack matrix);
+        public abstract void renderSelected(PoseStack matrix);
+
+        @Override
+        public void updateNarration(NarrationElementOutput p_169152_) {
+
+        }
     }
 
     class LeftButton extends SimpleButton {
         protected LeftButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(MatrixStack matrix) {
+        public void renderSelected(PoseStack matrix) {
             this.blit(matrix, x,y, 194, 18, 18, 18);
         }
         @Override
         public void onPress() {
             MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(false, true));
         }
+
     }
 
     class RightButton extends SimpleButton {
         protected RightButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(MatrixStack matrix) {
+        public void renderSelected(PoseStack matrix) {
             this.blit(matrix, x,y, 230, 18, 18, 18);
         }
         @Override
@@ -96,7 +123,7 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
     class MinusButton extends SimpleButton {
         protected MinusButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(MatrixStack matrix) {
+        public void renderSelected(PoseStack matrix) {
             this.blit(matrix, x,y, 230, 0, 18, 18);
         }
         @Override
@@ -108,7 +135,7 @@ public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
     class PlusButton extends SimpleButton {
         protected PlusButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(MatrixStack matrix) {
+        public void renderSelected(PoseStack matrix) {
             this.blit(matrix, x,y, 194, 0, 18, 18);
         }
         @Override

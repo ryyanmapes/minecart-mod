@@ -1,33 +1,37 @@
 package com.alc.moreminecarts.renderers;
 
+import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.entities.CouplerEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.model.LeashKnotModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.model.LeashKnotModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.phys.Vec3;
 
 public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
 
     private static final ResourceLocation LEASH_KNOT_TEXTURES = new ResourceLocation("minecraft:textures/entity/lead_knot.png");
-    private final LeashKnotModel<CouplerEntity> leashKnotModel = new LeashKnotModel<>();
+    protected LeashKnotModel<CouplerEntity> leashKnotModel;
 
-    public CouplerRenderer(EntityRendererManager renderManagerIn) {
-        super(renderManagerIn);
+    public CouplerRenderer(EntityRendererProvider.Context p_174300_) {
+        super(p_174300_);
+        this.leashKnotModel = new LeashKnotModel(p_174300_.bakeLayer(ModelLayers.LEASH_KNOT));
     }
 
-    public void render(CouplerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(CouplerEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         //matrixStackIn.push();
         //matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
         //this.leashKnotModel.setRotationAngles(entityIn, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
@@ -38,8 +42,11 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
         Entity vehicle1 = entityIn.getFirstVehicle();
         Entity vehicle2 = entityIn.getSecondVehicle();
 
-        if (vehicle1 != null && vehicle2 != null)
+        if (vehicle1 != null && vehicle2 != null) {
+            MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "COUPLER RENDER");
+
             this.renderCoupler(entityIn.level, partialTicks, matrixStackIn, bufferIn, vehicle1, vehicle2);
+        }
 
 
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
@@ -51,32 +58,32 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
     }
 
 
-    public Vector3d getLerpedPosition(Entity entity, float partialTicks) {
-        double d0 = MathHelper.lerp((double)partialTicks, entity.xOld, entity.getX());
-        double d1 = MathHelper.lerp((double)partialTicks, entity.yOld, entity.getY());
-        double d2 = MathHelper.lerp((double)partialTicks, entity.zOld, entity.getZ());
-        return new Vector3d(d0, d1, d2);
+    public Vec3 getLerpedPosition(Entity entity, float partialTicks) {
+        double d0 = Mth.lerp((double)partialTicks, entity.xOld, entity.getX());
+        double d1 = Mth.lerp((double)partialTicks, entity.yOld, entity.getY());
+        double d2 = Mth.lerp((double)partialTicks, entity.zOld, entity.getZ());
+        return new Vec3(d0, d1, d2);
     }
 
     // Modified from MobRenderer
     // EntityLivingIn: from
     // leashHolder: to
-    private <E extends Entity> void renderCoupler(World world, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, Entity vehicle1, Entity vehicle2) {
+    private <E extends Entity> void renderCoupler(Level world, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, Entity vehicle1, Entity vehicle2) {
         matrixStackIn.pushPose();
 
-        Vector3d vehicle1_pos = getLerpedPosition(vehicle1, partialTicks);
-        Vector3d vehicle2_pos = getLerpedPosition(vehicle2, partialTicks);
+        Vec3 vehicle1_pos = getLerpedPosition(vehicle1, partialTicks);
+        Vec3 vehicle2_pos = getLerpedPosition(vehicle2, partialTicks);
 
-        Vector3d from_pos = vehicle1_pos.subtract(0, vehicle1.getBoundingBox().getYsize()/2, 0);
-        Vector3d to_pos = vehicle2_pos.subtract(0, vehicle2.getBoundingBox().getYsize()/2, 0);
+        Vec3 from_pos = vehicle1_pos.subtract(0, vehicle1.getBoundingBox().getYsize()/2, 0);
+        Vec3 to_pos = vehicle2_pos.subtract(0, vehicle2.getBoundingBox().getYsize()/2, 0);
 
-        double d0 = (double)(vehicle1.yRot * ((float)Math.PI / 180F) + (Math.PI / 2D));
-        Vector3d v1_lead_pos = vehicle1.getLeashOffset();
+        double d0 = (double)(vehicle1.getYRot() * ((float)Math.PI / 180F) + (Math.PI / 2D));
+        Vec3 v1_lead_pos = vehicle1.getLeashOffset();
         double d1 = Math.cos(d0) * v1_lead_pos.z + Math.sin(d0) * v1_lead_pos.x;
         double d2 = Math.sin(d0) * v1_lead_pos.z - Math.cos(d0) * v1_lead_pos.x;
-        double d3 = MathHelper.lerp((double)partialTicks, vehicle1.xOld, vehicle1.position().x) + d1;
-        double d4 = MathHelper.lerp((double)partialTicks, vehicle1.yOld, vehicle1.position().y) + v1_lead_pos.y;
-        double d5 = MathHelper.lerp((double)partialTicks, vehicle1.zOld, vehicle1.position().z) + d2;
+        double d3 = Mth.lerp((double)partialTicks, vehicle1.xOld, vehicle1.position().x) + d1;
+        double d4 = Mth.lerp((double)partialTicks, vehicle1.yOld, vehicle1.position().y) + v1_lead_pos.y;
+        double d5 = Mth.lerp((double)partialTicks, vehicle1.zOld, vehicle1.position().z) + d2;
         //matrixStackIn.translate(d1, v1_lead_pos.y, d2);
         float dx = (float)(to_pos.x - from_pos.x);
         float dy = (float)(to_pos.y - from_pos.y);
@@ -84,33 +91,33 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
 
         matrixStackIn.translate(-dx/2, -dy/2, -dz/2);
 
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.leash());
+        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.leash());
         Matrix4f matrix4f = matrixStackIn.last().pose();
-        float dist = MathHelper.fastInvSqrt(dx * dx + dz * dz) * 0.025F / 2.0F;
+        float dist = Mth.fastInvSqrt(dx * dx + dz * dz) * 0.025F / 2.0F;
         float norm_z = dz * dist;
         float norm_x = dx * dist;
         BlockPos blockpos1 = new BlockPos(from_pos);
         BlockPos blockpos2 = new BlockPos(to_pos);
         int i = getBlockLightFake(vehicle1, blockpos1);
         int j = getBlockLightFake(vehicle2, blockpos2);
-        int k = world.getBrightness(LightType.SKY, blockpos1);
-        int l = world.getBrightness(LightType.SKY, blockpos2);
+        int k = world.getBrightness(LightLayer.SKY, blockpos1);
+        int l = world.getBrightness(LightLayer.SKY, blockpos2);
         renderSide(ivertexbuilder, matrix4f, dx, dy, dz, i, j, k, l, 0.1F, 0.1F, norm_z, norm_x);
         //renderSide(ivertexbuilder, matrix4f, dx, dy, dz, i, j, k, l, 0.1F, 0.0F, norm_z, norm_x);
         matrixStackIn.popPose();
     }
 
     protected int getBlockLightFake(Entity entityIn, BlockPos partialTicks) {
-        return entityIn.isOnFire() ? 15 : entityIn.level.getBrightness(LightType.BLOCK, partialTicks);
+        return entityIn.isOnFire() ? 15 : entityIn.level.getBrightness(LightLayer.BLOCK, partialTicks);
     }
 
-    public static void renderSide(IVertexBuilder builderIn, Matrix4f matrixIn, float p_229119_2_, float p_229119_3_, float p_229119_4_, int blockLight, int holderBlockLight, int skyLight, int holderSkyLight, float p_229119_9_, float p_229119_10_, float norm_z, float norm_x) {
+    public static void renderSide(VertexConsumer builderIn, Matrix4f matrixIn, float p_229119_2_, float p_229119_3_, float p_229119_4_, int blockLight, int holderBlockLight, int skyLight, int holderSkyLight, float p_229119_9_, float p_229119_10_, float norm_z, float norm_x) {
         int i = 4;
 
         for(int j = 0; j < 4; ++j) {
             float f = (float)j / 3.0F;
-            int k = (int)MathHelper.lerp(f, (float)blockLight, (float)holderBlockLight);
-            int l = (int)MathHelper.lerp(f, (float)skyLight, (float)holderSkyLight);
+            int k = (int)Mth.lerp(f, (float)blockLight, (float)holderBlockLight);
+            int l = (int)Mth.lerp(f, (float)skyLight, (float)holderSkyLight);
             int i1 = LightTexture.pack(k, l);
             addVertexPair(builderIn, matrixIn, i1, p_229119_2_, p_229119_3_, p_229119_4_, p_229119_9_, p_229119_10_, 4, j, false, norm_z, norm_x);
             addVertexPair(builderIn, matrixIn, i1, p_229119_2_, p_229119_3_, p_229119_4_, p_229119_9_, p_229119_10_, 4, j + 1, true, norm_z, norm_x);
@@ -122,7 +129,7 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
     }
 
 
-    public static void addVertexPair(IVertexBuilder builderIn, Matrix4f matrixIn, int packedLight, float dx, float dy, float dz, float thickness, float y_width, int total, int index, boolean is_first, float norm_z, float norm_x) {
+    public static void addVertexPair(VertexConsumer builderIn, Matrix4f matrixIn, int packedLight, float dx, float dy, float dz, float thickness, float y_width, int total, int index, boolean is_first, float norm_z, float norm_x) {
         float stress = Math.abs(dx*dx + dy*dy + dz * dz);
         stress = Math.max(0, stress - 3f);
         float R = 0.1F + (stress/40);
@@ -144,7 +151,7 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
 
     }
 
-    public static void addVertexPairOpposite(IVertexBuilder builderIn, Matrix4f matrixIn, int packedLight, float dx, float dy, float dz, float thickness, float y_width, int total, int index, boolean is_first, float norm_z, float norm_x) {
+    public static void addVertexPairOpposite(VertexConsumer builderIn, Matrix4f matrixIn, int packedLight, float dx, float dy, float dz, float thickness, float y_width, int total, int index, boolean is_first, float norm_z, float norm_x) {
         float stress = Math.abs(dx*dx + dy*dy + dz * dz);
         stress = Math.max(0, stress - 3f);
         float R = 0.1F + (stress/40);
@@ -155,7 +162,7 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
         float center_x = dx * fraction_done;
         float center_y = dy * fraction_done; //dy > 0.0F ? dy * fraction_done * fraction_done : dy - dy * (1.0F - fraction_done) * (1.0F - fraction_done);
         float center_z = dz * fraction_done;
-        float magn = MathHelper.fastInvSqrt(dx * dx + dy*dy);
+        float magn = Mth.fastInvSqrt(dx * dx + dy*dy);
         float thickness_z = norm_z * thickness*100;
         float thickness_x = norm_x * thickness*100;
         if (!is_first) {

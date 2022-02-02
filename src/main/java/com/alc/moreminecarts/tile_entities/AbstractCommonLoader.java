@@ -1,22 +1,21 @@
 package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.misc.SettableEnergyStorage;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.LockableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -30,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractCommonLoader extends LockableTileEntity {
+public abstract class AbstractCommonLoader extends ContainerBlockEntity implements WorldlyContainer {
 
     public enum ComparatorOutputType {
         done_loading,
@@ -110,8 +109,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public static String COMPARATOR_OUTPUT_PROPERTY = "comparator_output";
     public static String COOLDOWN_PROPERTY = "cooldown";
 
-    protected NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
-    public final IIntArray dataAccess = new IIntArray() {
+    public final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             switch(index) {
@@ -160,8 +158,8 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
 
     public abstract boolean getIsUnloader();
 
-    public AbstractCommonLoader(TileEntityType<?> p_i48285_1_) {
-        super(p_i48285_1_);
+    public AbstractCommonLoader(BlockEntityType<?> p_i48285_1_, BlockPos p_155545_, BlockState p_155546_) {
+        super(p_i48285_1_, p_155545_, p_155546_);
         locked_minecarts_only = false;
         leave_one_in_stack = false;
         comparator_output = MinecartLoaderTile.ComparatorOutputType.done_loading;
@@ -180,7 +178,8 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
         compound.putBoolean(LOCKED_MINECARTS_ONLY_PROPERTY, locked_minecarts_only);
         compound.putBoolean(LEAVE_ONE_IN_STACK_PROPERTY, leave_one_in_stack);
         compound.putBoolean(REDSTONE_OUTPUT_PROPERTY, redstone_output);
@@ -188,12 +187,10 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         compound.putInt(COOLDOWN_PROPERTY, cooldown_time);
         ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
         compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
-        ItemStackHelper.saveAllItems(compound, this.items);
-        return super.save(compound);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(CompoundTag compound) {
         locked_minecarts_only = compound.getBoolean(LOCKED_MINECARTS_ONLY_PROPERTY);
         leave_one_in_stack = compound.getBoolean(LEAVE_ONE_IN_STACK_PROPERTY);
         redstone_output = compound.getBoolean(REDSTONE_OUTPUT_PROPERTY);
@@ -204,31 +201,29 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         FluidTank tank = ((FluidTank)fluid_handler.orElseGet(null));
         tank.setFluid(tank.readFromNBT(compound).getFluid());
         energy_handler.orElse(null).receiveEnergy(compound.getInt(ENERGY_PROPERTY), false);
-        changed_flag = true;
-        ItemStackHelper.loadAllItems(compound, this.items);
-        super.load(state, compound);
+        super.load(compound);
     }
 
-    protected List<AbstractMinecartEntity> getLoadableMinecartsInRange() {
+    protected List<AbstractMinecart> getLoadableMinecartsInRange() {
         if (locked_minecarts_only) {
-            List<AbstractMinecartEntity> acc = new ArrayList<AbstractMinecartEntity>();
+            List<AbstractMinecart> acc = new ArrayList<AbstractMinecart>();
 
-            TileEntity te_above = level.getBlockEntity(getBlockPos().above());
+            BlockEntity te_above = level.getBlockEntity(getBlockPos().above());
             if (te_above instanceof LockingRailTile && ((LockingRailTile)te_above).locked_minecart != null ) acc.add(((LockingRailTile)te_above).locked_minecart);
-            TileEntity te_below = level.getBlockEntity(getBlockPos().below());
+            BlockEntity te_below = level.getBlockEntity(getBlockPos().below());
             if (te_below instanceof LockingRailTile && ((LockingRailTile)te_below).locked_minecart != null ) acc.add(((LockingRailTile)te_below).locked_minecart);
 
             return acc;
         }
         else {
-            return level.getEntitiesOfClass(AbstractMinecartEntity.class, this.getDectectionBox(), (entity) -> true);
+            return level.getEntitiesOfClass(AbstractMinecart.class, this.getDectectionBox(), (entity) -> true);
         }
     }
 
-    protected AxisAlignedBB getDectectionBox() {
+    protected AABB getDectectionBox() {
         BlockPos pos = getBlockPos();
         double d0 = 0.2D;
-        return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY() - 1, (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 2) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
+        return new AABB((double)pos.getX() + 0.2D, (double)pos.getY() - 1, (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 2) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
     }
 
     // Copied from HopperTileEntity
@@ -273,65 +268,42 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
 
     // Inventory stuff below, taken from AbstractFurnaceTileEntity.
 
+    @Override
     public int[] getSlotsForFace(Direction p_180463_1_) {
         return new int[0];
     }
 
+    @Override
     public boolean canPlaceItemThroughFace(int p_180462_1_, ItemStack p_180462_2_, @Nullable Direction p_180462_3_) {
         return true;
     }
 
+    @Override
     public boolean canTakeItemThroughFace(int p_180461_1_, ItemStack p_180461_2_, Direction p_180461_3_) {
         return false;
     }
 
-    public int getContainerSize() {
-        return 9;
-    }
-
-    public boolean isEmpty() {
-        for(ItemStack itemstack : this.items) {
-            if (!itemstack.isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public ItemStack getItem(int p_70301_1_) {
-        return this.items.get(p_70301_1_);
-    }
-
-    public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
-        return ItemStackHelper.removeItem(this.items, p_70298_1_, p_70298_2_);
-    }
-
-    public ItemStack removeItemNoUpdate(int p_70304_1_) {
-        return ItemStackHelper.takeItem(this.items, p_70304_1_);
-    }
-
-    public void setItem(int p_70299_1_, ItemStack p_70299_2_) {
-        this.items.set(p_70299_1_, p_70299_2_);
-        if (p_70299_2_.getCount() > this.getMaxStackSize()) {
-            p_70299_2_.setCount(this.getMaxStackSize());
-        }
-    }
-
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket(){
-        CompoundNBT compound = new CompoundNBT();
+    public Packet<ClientGamePacketListener> getUpdatePacket(){
+        CompoundTag compound = new CompoundTag();
         ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
         compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
-        return new SUpdateTileEntityPacket(getBlockPos(), -1, compound);
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt){
-        CompoundNBT compound = pkt.getTag();
+    public CompoundTag getUpdateTag() {
+        CompoundTag compound = new CompoundTag();
+        ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
+        compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
+        return compound;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag){
         FluidTank tank = ((FluidTank)fluid_handler.resolve().get());
-        tank.setFluid(tank.readFromNBT(compound).getFluid());
-        ((SettableEnergyStorage)energy_handler.orElse(null)).setEnergy(compound.getInt(ENERGY_PROPERTY));
+        tank.setFluid(tank.readFromNBT(tag).getFluid());
+        ((SettableEnergyStorage)energy_handler.orElse(null)).setEnergy(tag.getInt(ENERGY_PROPERTY));
     }
 
     @Override
@@ -342,22 +314,6 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
         }
     }
 
-
-
-    @Override
-    public boolean stillValid(PlayerEntity player) {
-        if (this.level.getBlockEntity(this.worldPosition) != this) {
-            return false;
-        } else {
-            return player.distanceToSqr((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D) <= 64.0D;
-        }
-    }
-
-    @Override
-    public void clearContent() {
-        this.items.clear();
-    }
-
     public boolean getOutputsRedstone() {
         return redstone_output;
     }
@@ -365,6 +321,11 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public int getSignal() {
         if (comparator_output_value < 0) return 0;
         return comparator_output_value;
+    }
+
+    @Override
+    public int getSlotCount() {
+        return 9;
     }
 
 }

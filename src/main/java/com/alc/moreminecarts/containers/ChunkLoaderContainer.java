@@ -3,59 +3,66 @@ package com.alc.moreminecarts.containers;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.misc.ChunkLoaderSlot;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntArray;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
-public class ChunkLoaderContainer extends Container {
+public class ChunkLoaderContainer extends AbstractContainerMenu {
+    public static final int SLOT_COUNT = 1;
+    private static final int INV_SLOT_START = 1;
+    private static final int INV_SLOT_END = 28;
+    private final Container inventory;
+    private final ContainerData data;
 
-    private final IInventory inventory;
-    private final IIntArray data;
-    protected final World level;
-
-    public ChunkLoaderContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public ChunkLoaderContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
         super(MMReferences.chunk_loader_c, n);
 
-        this.inventory = new Inventory(1);
-        this.data = new IntArray(2);
-        this.level = player_inventory.player.level;
+        this.inventory = new SimpleContainer(1);
+        this.data = new SimpleContainerData(4);
 
         CommonInitialization(player_inventory);
     }
 
     // For use with the entity chunk loaders.
-    public ChunkLoaderContainer(int n, World world, IInventory inventory, IIntArray data, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public ChunkLoaderContainer(int n, Level world, Container inventory, ContainerData data, Inventory player_inventory, Player player_entity) {
         super(MMReferences.chunk_loader_c, n);
 
         this.inventory = inventory;
         this.data = data;
-        this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
     }
 
-    // For use with tile entity chunk loaders.
-    public ChunkLoaderContainer(int n, World world, BlockPos pos, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    // For use with tile entity chunk loaders (server).
+    public ChunkLoaderContainer(int n, Level world, BlockPos pos, Inventory player_inventory, Player player_entity) {
         super(MMReferences.chunk_loader_c, n);
 
         ChunkLoaderTile tile = (ChunkLoaderTile) world.getBlockEntity(pos);
 
         this.inventory = tile;
         this.data = tile.dataAccess;
-        this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
     }
 
-    public void CommonInitialization(PlayerInventory player_inventory) {
+    // For use with tile entity chunk loaders (client).
+    public ChunkLoaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_) {
+        super(MMReferences.chunk_loader_c, p_38969_);
+
+        this.inventory = p_38971_;
+        this.data = p_38972_;
+
+        CommonInitialization(p_38970_);
+    }
+
+    public void CommonInitialization(Inventory player_inventory) {
 
         checkContainerSize(inventory, 1);
         checkContainerDataCount(data, 2);
@@ -81,13 +88,13 @@ public class ChunkLoaderContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return this.inventory.stillValid(player);
     }
 
     // Taken from the beacon container. No clue what this does really.
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {

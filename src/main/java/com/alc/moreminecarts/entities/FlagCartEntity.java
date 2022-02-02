@@ -6,41 +6,41 @@ import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.blocks.utility_rails.ArithmeticRailBlock;
 import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.misc.FlagUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.NetworkHooks;
 
 
-public class FlagCartEntity extends ContainerMinecartEntity {
+public class FlagCartEntity extends AbstractMinecartContainer {
     public static String SELECTED_SLOT_PROPERTY = "selected_slot";
     public static String DISCLUDED_SLOTS_PROPERTY = "discluded_slots";
 
-    private static final DataParameter<Integer> DISPLAY_TYPE = EntityDataManager.defineId(FlagCartEntity.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DISPLAY_TYPE = SynchedEntityData.defineId(FlagCartEntity.class, EntityDataSerializers.INT);
 
-    public FlagCartEntity(EntityType<?> type, World world) {
+    public FlagCartEntity(EntityType<?> type, Level world) {
         super(type, world);
     }
 
-    public FlagCartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public FlagCartEntity(EntityType<?> type, Level worldIn, double x, double y, double z) {
         super(type, x, y, z, worldIn);
     }
 
@@ -59,7 +59,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     }
 
     @Override
-    protected Container createMenu(int i, PlayerInventory inv) {
+    protected AbstractContainerMenu createMenu(int i, Inventory inv) {
         return new FlagCartContainer(i, level, this, inv, inv.player);
     }
 
@@ -70,7 +70,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -97,7 +97,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return player.distanceToSqr((double)this.position().x + 0.5D, (double)this.position().y + 0.5D, (double)this.position().z + 0.5D) <= 64.0D;
     }
 
@@ -106,7 +106,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
 
     public BlockPos old_block_pos;
 
-    public final IIntArray dataAccess = new IIntArray() {
+    public final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             switch(index) {
@@ -142,14 +142,14 @@ public class FlagCartEntity extends ContainerMinecartEntity {
     };
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt(SELECTED_SLOT_PROPERTY, this.selected_slot);
         compound.putInt(DISCLUDED_SLOTS_PROPERTY, this.discluded_slots);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.selected_slot = compound.getInt(SELECTED_SLOT_PROPERTY);
         this.discluded_slots = compound.getInt(DISCLUDED_SLOTS_PROPERTY);
@@ -177,7 +177,7 @@ public class FlagCartEntity extends ContainerMinecartEntity {
             selected_slot = Math.min(8-discluded_slots, selected_slot);
         }
 
-        level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, true);
+        level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundSource.BLOCKS, 0.5f, 1f, true);
         updateDisplayType();
     }
 

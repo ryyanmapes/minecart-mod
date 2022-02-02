@@ -2,28 +2,27 @@ package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.CampfireCartEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.MinecartFurnace;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class LockingRailTile extends TileEntity implements ITickableTileEntity {
+public class LockingRailTile extends BlockEntity {
     public static String LOCKED_CART_PROPERTY = "locked_cart";
     public static String SAVED_FUEL_PROPERTY = "saved_fuel";
     public static String SAVED_PUSH_X_PROPERTY = "saved_push_x";
@@ -37,29 +36,28 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
     public UUID locked_minecart_uuid;
 
     @Nullable
-    public AbstractMinecartEntity locked_minecart;
+    public AbstractMinecart locked_minecart;
 
-    public LockingRailTile() {
-        super(MMReferences.locking_rail_te);
+    public LockingRailTile(BlockPos pos, BlockState state) {
+        super(MMReferences.locking_rail_te, pos, state);
         locked_minecart = null;
     }
 
-    public LockingRailTile(boolean is_powered) {
-        super( is_powered? MMReferences.powered_locking_rail_te : MMReferences.locking_rail_te );
+    public LockingRailTile(BlockPos pos, BlockState state, boolean is_powered) {
+        super( is_powered? MMReferences.powered_locking_rail_te : MMReferences.locking_rail_te, pos, state );
         locked_minecart = null;
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public void saveAdditional(CompoundTag compound) {
         if (locked_minecart != null) compound.putUUID(LOCKED_CART_PROPERTY, locked_minecart.getUUID());
         compound.putInt(SAVED_FUEL_PROPERTY, saved_fuel);
         compound.putDouble(SAVED_PUSH_X_PROPERTY, saved_push_x);
         compound.putDouble(SAVED_PUSH_Z_PROPERTY, saved_push_z);
-        return super.save(compound);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(CompoundTag compound) {
         try {
             locked_minecart_uuid = compound.getUUID(LOCKED_CART_PROPERTY);
             saved_fuel = compound.getInt(SAVED_FUEL_PROPERTY);
@@ -72,7 +70,7 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
             saved_push_z = 0;
         }
 
-        super.load(state, compound);
+        super.load(compound);
     }
 
     @Override
@@ -83,19 +81,19 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
         super.setRemoved();
     }
 
-    protected void lockIn(AbstractMinecartEntity cart) {
+    protected void lockIn(AbstractMinecart cart) {
         if (locked_minecart == cart) return;
 
-        level.playLocalSound(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ()+0.5, SoundEvents.CHAIN_PLACE, SoundCategory.BLOCKS, 0.5f, 1f, false);
+        level.playLocalSound(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ()+0.5, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 0.5f, 1f, false);
 
         locked_minecart = cart;
         locked_minecart.setPos(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ() + 0.5);
         locked_minecart.setDeltaMovement(0,0,0);
-        if (locked_minecart instanceof FurnaceMinecartEntity) {
-            saved_fuel = ((FurnaceMinecartEntity)locked_minecart).fuel;
-            ((FurnaceMinecartEntity)locked_minecart).fuel = 0;
-            saved_push_x = ((FurnaceMinecartEntity)locked_minecart).xPush;
-            saved_push_z = ((FurnaceMinecartEntity)locked_minecart).zPush;
+        if (locked_minecart instanceof MinecartFurnace) {
+            saved_fuel = ((MinecartFurnace)locked_minecart).fuel;
+            ((MinecartFurnace)locked_minecart).fuel = 0;
+            saved_push_x = ((MinecartFurnace)locked_minecart).xPush;
+            saved_push_z = ((MinecartFurnace)locked_minecart).zPush;
         }
         if (locked_minecart instanceof CampfireCartEntity) {
             saved_fuel = ((CampfireCartEntity) locked_minecart).isMinecartPowered() ? 1 : 0;
@@ -108,10 +106,10 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
     protected void lockOut() {
         if (locked_minecart == null) return;
 
-        level.playLocalSound(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ()+0.5, SoundEvents.CHAIN_BREAK, SoundCategory.BLOCKS, 0, 0.5f, false);
+        level.playLocalSound(getBlockPos().getX()+0.5, getBlockPos().getY(), getBlockPos().getZ()+0.5, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS, 0, 0.5f, false);
 
-        if (locked_minecart instanceof FurnaceMinecartEntity) {
-            FurnaceMinecartEntity furnace_minecart = ((FurnaceMinecartEntity)locked_minecart);
+        if (locked_minecart instanceof MinecartFurnace) {
+            MinecartFurnace furnace_minecart = ((MinecartFurnace)locked_minecart);
             int fuel = furnace_minecart.fuel;
             fuel += saved_fuel;
             if (fuel > FURNACE_CART_MAX_FUEL) fuel = FURNACE_CART_MAX_FUEL;
@@ -134,7 +132,7 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
             return true;
         }
         else if (locked && locked_minecart == null) {
-            List<AbstractMinecartEntity> list = findMinecarts(this.level, this.getBlockPos(), AbstractMinecartEntity.class, (cart) -> true);
+            List<AbstractMinecart> list = findMinecarts(this.level, this.getBlockPos(), AbstractMinecart.class, (cart) -> true);
             if (list.size() > 0) {
                 lockIn(list.get(0));
                 return true;
@@ -143,13 +141,13 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
         return false;
     }
 
-    protected <T extends AbstractMinecartEntity> List<T> findMinecarts(World worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
+    protected <T extends AbstractMinecart> List<T> findMinecarts(Level worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
         return worldIn.getEntitiesOfClass(cartType, this.getDectectionBox(pos), filter);
     }
 
-    private AxisAlignedBB getDectectionBox(BlockPos pos) {
+    private AABB getDectectionBox(BlockPos pos) {
         double d0 = 0.2D;
-        return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
+        return new AABB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
     }
 
 
@@ -157,27 +155,28 @@ public class LockingRailTile extends TileEntity implements ITickableTileEntity {
         return locked_minecart == null ? 0 : 15;
     }
 
-    @Override
-    public void tick() {
+    public static void doTick(Level level, BlockPos pos, BlockState state, LockingRailTile ent) {
 
-        if (locked_minecart_uuid != null && !level.isClientSide) {
-            Entity locked_entity = ((ServerWorld)level).getEntity(locked_minecart_uuid);
-            if (locked_entity instanceof AbstractMinecartEntity) locked_minecart = (AbstractMinecartEntity) locked_entity;
+        if (level.isClientSide) return;
+
+        if (ent.locked_minecart_uuid != null) {
+            Entity locked_entity = ((ServerLevel)level).getEntity(ent.locked_minecart_uuid);
+            if (locked_entity instanceof AbstractMinecart) ent.locked_minecart = (AbstractMinecart) locked_entity;
             else {
-                saved_fuel = 0;
-                saved_push_x = 0;
-                saved_push_z = 0;
+                ent.saved_fuel = 0;
+                ent.saved_push_x = 0;
+                ent.saved_push_z = 0;
             }
-            locked_minecart_uuid = null;
+            ent.locked_minecart_uuid = null;
         }
 
-        if (locked_minecart != null && !level.isClientSide) {
-            if (locked_minecart.isAlive()) {
-                locked_minecart.setPos(getBlockPos().getX() + 0.5, getBlockPos().getY(), getBlockPos().getZ() + 0.5);
-                locked_minecart.setDeltaMovement(0, 0, 0);
+        if (ent.locked_minecart != null) {
+            if (ent.locked_minecart.isAlive()) {
+                ent.locked_minecart.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+                ent.locked_minecart.setDeltaMovement(0, 0, 0);
             } else {
-                locked_minecart = null;
-                level.updateNeighbourForOutputSignal(getBlockPos(), this.getBlockState().getBlock());
+                ent.locked_minecart = null;
+                level.updateNeighbourForOutputSignal(pos, state.getBlock());
             }
         }
     }

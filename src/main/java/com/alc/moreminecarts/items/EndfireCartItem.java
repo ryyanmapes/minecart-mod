@@ -2,8 +2,8 @@ package com.alc.moreminecarts.items;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.EndfireCartEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class EndfireCartItem extends AbstractMinecartItem {
 
@@ -12,7 +12,7 @@ public class EndfireCartItem extends AbstractMinecartItem {
     }
 
     @Override
-    void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
+    void createMinecart(ItemStack stack, Level world, double posX, double posY, double posZ) {
 
         EndfireCartEntity minecart = new EndfireCartEntity(MMReferences.endfire_cart, world, posX, posY, posZ);
         if (stack.hasCustomHoverName()) {

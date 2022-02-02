@@ -3,15 +3,17 @@ package com.alc.moreminecarts.tile_entities;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -21,10 +23,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 
-public class MinecartUnloaderTile extends AbstractCommonLoader implements ITickableTileEntity {
+public class MinecartUnloaderTile extends AbstractCommonLoader {
 
-    public MinecartUnloaderTile() {
-        super(MMReferences.minecart_unloader_te);
+    public MinecartUnloaderTile(BlockPos pos, BlockState state) {
+        super(MMReferences.minecart_unloader_te, pos, state);
         last_redstone_output = !redstone_output;
     }
 
@@ -33,13 +35,13 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
         return true;
     }
 
-    public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
-        this.changed_flag = true;
-        return new MinecartUnLoaderContainer(i, level, worldPosition, inventory, player);
+    @Override
+    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        return new MinecartUnLoaderContainer(i, inventory, this, this.dataAccess, this);
     }
 
     @Override
-    protected Container createMenu(int p_213906_1_, PlayerInventory p_213906_2_) {
+    protected AbstractContainerMenu createMenu(int p_213906_1_, Inventory p_213906_2_) {
         return null;
     }
 
@@ -48,9 +50,9 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
         if (!level.isClientSide) {
 
             if (!isOnCooldown()) {
-                List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
+                List<AbstractMinecart> minecarts = getLoadableMinecartsInRange();
                 float criteria_total = 0;
-                for (AbstractMinecartEntity minecart : minecarts) {
+                for (AbstractMinecart minecart : minecarts) {
 
                     LazyOptional<IFluidHandler> tankCapability = minecart.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
                     LazyOptional<IEnergyStorage> energyCapability = minecart.getCapability(CapabilityEnergy.ENERGY);
@@ -62,8 +64,8 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
                         IEnergyStorage energy_storage = energyCapability.orElse(null);
                         criteria_total += doElectricUnloads(energy_storage);
                     }
-                    else if (minecart instanceof ContainerMinecartEntity && !(minecart instanceof ChunkLoaderCartEntity)) {
-                        criteria_total += doMinecartUnloads((ContainerMinecartEntity) minecart);
+                    else if (minecart instanceof AbstractMinecartContainer && !(minecart instanceof ChunkLoaderCartEntity)) {
+                        criteria_total += doMinecartUnloads((AbstractMinecartContainer) minecart);
                     }
 
                 }
@@ -107,13 +109,13 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
             if (minecart_handler.getTankCapacity(i) > 0)
                 fluid_content_proportion += (float)minecart_handler.getFluidInTank(i).getAmount() / minecart_handler.getTankCapacity(i);
 
+            if (our_fluid_stack.getAmount() == FLUID_CAPACITY) continue;
+
             boolean did_load = false;
             FluidStack take_stack = minecart_handler.getFluidInTank(i);
 
             if (take_stack.isEmpty() || (leave_one_in_stack && take_stack.getAmount() == 1)) continue;
             all_empty = false;
-
-            if (our_fluid_stack.getAmount() == FLUID_CAPACITY) continue;
 
             if (our_fluid_handler.isFluidValid(i, take_stack)) {
 
@@ -183,7 +185,7 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
         }
     }
 
-    public float doMinecartUnloads(ContainerMinecartEntity minecart) {
+    public float doMinecartUnloads(AbstractMinecartContainer minecart) {
         boolean changed = false;
         boolean all_empty = true;
 
@@ -236,12 +238,16 @@ public class MinecartUnloaderTile extends AbstractCommonLoader implements ITicka
             return ((ChunkLoaderCartEntity)minecart).getComparatorSignal() / 15.0f;
         }
         else {
-            return Container.getRedstoneSignalFromContainer(minecart) / 15.0f;
+            return AbstractContainerMenu.getRedstoneSignalFromContainer(minecart) / 15.0f;
         }
     }
 
     @Override
-    protected ITextComponent getDefaultName() {
-        return new StringTextComponent("Minecart Unloader");
+    protected Component getDefaultName() {
+        return new TranslatableComponent("Minecart Unloader");
+    }
+
+    public static void doTick(Level level, BlockPos pos, BlockState state, MinecartUnloaderTile ent) {
+        ent.tick();
     }
 }

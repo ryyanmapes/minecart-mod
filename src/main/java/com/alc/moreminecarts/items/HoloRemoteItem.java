@@ -1,30 +1,36 @@
 package com.alc.moreminecarts.items;
 
 import com.alc.moreminecarts.MMReferences;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SChatPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.TickPriority;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.ticks.TickPriority;
 
 import javax.annotation.Nullable;
 
@@ -49,9 +55,9 @@ public class HoloRemoteItem extends Item {
     // Taken from ScaffoldingItem
 
     @Nullable
-    public BlockItemUseContext updatePlacementContext(BlockItemUseContext context) {
+    public BlockPlaceContext updatePlacementContext(BlockPlaceContext context) {
         BlockPos blockpos = context.getClickedPos();
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockState blockstate = world.getBlockState(blockpos);
 
         //if (!HoloScaffold.isValidDistance(world, blockpos)) return null;
@@ -71,15 +77,15 @@ public class HoloRemoteItem extends Item {
             }
 
             int i = 0;
-            BlockPos.Mutable blockpos$mutable = blockpos.mutable().move(direction);
+            BlockPos.MutableBlockPos blockpos$mutable = blockpos.mutable().move(direction);
 
             while(i < 30) {
-                if (!world.isClientSide && !World.isInWorldBounds(blockpos$mutable)) {
-                    PlayerEntity playerentity = context.getPlayer();
+                if (!world.isClientSide && !context.getLevel().isInWorldBounds(blockpos$mutable)) {
+                    Player playerentity = context.getPlayer();
                     int j = world.getMaxBuildHeight();
-                    if (playerentity instanceof ServerPlayerEntity && blockpos$mutable.getY() >= j) {
-                        SChatPacket schatpacket = new SChatPacket((new TranslationTextComponent("build.tooHigh", j)).withStyle(TextFormatting.RED), ChatType.GAME_INFO, Util.NIL_UUID);
-                        ((ServerPlayerEntity)playerentity).connection.send(schatpacket);
+                    if (playerentity instanceof ServerPlayer && blockpos$mutable.getY() >= j) {
+                        ClientboundChatPacket schatpacket = new ClientboundChatPacket((new TranslatableComponent("build.tooHigh", j)).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.RED))), ChatType.GAME_INFO, Util.NIL_UUID);
+                        ((ServerPlayer)playerentity).connection.send(schatpacket);
                     }
                     break;
                 }
@@ -87,7 +93,7 @@ public class HoloRemoteItem extends Item {
                 blockstate = world.getBlockState(blockpos$mutable);
                 if (!blockstate.is(this.getBlock())) {
                     if (blockstate.canBeReplaced(context)) {
-                        return BlockItemUseContext.at(context, blockpos$mutable, direction);
+                        return BlockPlaceContext.at(context, blockpos$mutable, direction);
                     }
                     break;
                 }
@@ -112,20 +118,20 @@ public class HoloRemoteItem extends Item {
         return remote_type == HoloRemoteType.broken? chaotic_block : regular_block;
     }
 
-    public ActionResultType useOn(ItemUseContext p_195939_1_) {
-        ActionResultType actionresulttype = this.place(new BlockItemUseContext(p_195939_1_));
+    public InteractionResult useOn(UseOnContext p_195939_1_) {
+        InteractionResult actionresulttype = this.place(new BlockPlaceContext(p_195939_1_));
         return !actionresulttype.consumesAction() && this.isEdible() ? this.use(p_195939_1_.getLevel(), p_195939_1_.getPlayer(), p_195939_1_.getHand()).getResult() : actionresulttype;
     }
 
     @Nullable
-    protected BlockState getPlacementState(BlockItemUseContext p_195945_1_) {
+    protected BlockState getPlacementState(BlockPlaceContext p_195945_1_) {
         BlockState blockstate = this.getBlock().getStateForPlacement(p_195945_1_);
         return blockstate != null && this.canPlace(p_195945_1_, blockstate) ? blockstate : null;
     }
 
-    protected boolean canPlace(BlockItemUseContext p_195944_1_, BlockState p_195944_2_) {
-        PlayerEntity playerentity = p_195944_1_.getPlayer();
-        ISelectionContext iselectioncontext = playerentity == null ? ISelectionContext.empty() : ISelectionContext.of(playerentity);
+    protected boolean canPlace(BlockPlaceContext p_195944_1_, BlockState p_195944_2_) {
+        Player playerentity = p_195944_1_.getPlayer();
+        CollisionContext iselectioncontext = playerentity == null ? CollisionContext.empty() : CollisionContext.of(playerentity);
         return (!this.mustSurvive() || p_195944_2_.canSurvive(p_195944_1_.getLevel(), p_195944_1_.getClickedPos())) && p_195944_1_.getLevel().isUnobstructed(p_195944_2_, p_195944_1_.getClickedPos(), iselectioncontext);
     }
 
@@ -133,30 +139,30 @@ public class HoloRemoteItem extends Item {
         return true;
     }
 
-    protected boolean placeBlock(BlockItemUseContext p_195941_1_, BlockState p_195941_2_) {
+    protected boolean placeBlock(BlockPlaceContext p_195941_1_, BlockState p_195941_2_) {
         boolean ret = p_195941_1_.getLevel().setBlock(p_195941_1_.getClickedPos(), p_195941_2_, 11);
         if (remote_type == HoloRemoteType.broken)
-            p_195941_1_.getLevel().getBlockTicks().scheduleTick(p_195941_1_.getClickedPos(), p_195941_2_.getBlock(), 2, TickPriority.VERY_LOW);
+            p_195941_1_.getLevel().scheduleTick(p_195941_1_.getClickedPos(), p_195941_2_.getBlock(), 2, TickPriority.VERY_LOW);
         return ret;
     }
 
-    public ActionResultType place(BlockItemUseContext context) {
+    public InteractionResult place(BlockPlaceContext context) {
         if (!context.canPlace()) {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         } else {
-            BlockItemUseContext blockitemusecontext = this.updatePlacementContext(context);
+            BlockPlaceContext blockitemusecontext = this.updatePlacementContext(context);
             if (blockitemusecontext == null) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             } else {
                 BlockState blockstate = this.getPlacementState(blockitemusecontext);
                 if (blockstate == null) {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 } else if (!this.placeBlock(blockitemusecontext, blockstate)) {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 } else {
                     BlockPos blockpos = blockitemusecontext.getClickedPos();
-                    World world = blockitemusecontext.getLevel();
-                    PlayerEntity playerentity = blockitemusecontext.getPlayer();
+                    Level world = blockitemusecontext.getLevel();
+                    Player playerentity = blockitemusecontext.getPlayer();
                     ItemStack itemstack = blockitemusecontext.getItemInHand();
                     BlockState blockstate1 = world.getBlockState(blockpos);
                     Block block = blockstate1.getBlock();
@@ -164,49 +170,49 @@ public class HoloRemoteItem extends Item {
                         blockstate1 = this.updateBlockStateFromTag(blockpos, world, itemstack, blockstate1);
                         this.updateCustomBlockEntityTag(blockpos, world, playerentity, itemstack, blockstate1);
                         block.setPlacedBy(world, blockpos, blockstate1, playerentity, itemstack);
-                        if (playerentity instanceof ServerPlayerEntity) {
-                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity)playerentity, blockpos, itemstack);
+                        if (playerentity instanceof ServerPlayer) {
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)playerentity, blockpos, itemstack);
                         }
                     }
 
                     SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
-                    world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                    if (playerentity == null || !playerentity.abilities.instabuild) {
+                    world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    if (playerentity == null || !playerentity.isCreative()) {
                         // Remote blocks are free.
                         //itemstack.shrink(1);
                     }
 
-                    return ActionResultType.sidedSuccess(world.isClientSide);
+                    return InteractionResult.sidedSuccess(world.isClientSide);
                 }
             }
         }
     }
 
-    protected boolean updateCustomBlockEntityTag(BlockPos p_195943_1_, World p_195943_2_, @Nullable PlayerEntity p_195943_3_, ItemStack p_195943_4_, BlockState p_195943_5_) {
+    protected boolean updateCustomBlockEntityTag(BlockPos p_195943_1_, Level p_195943_2_, @Nullable Player p_195943_3_, ItemStack p_195943_4_, BlockState p_195943_5_) {
         return updateCustomBlockEntityTag(p_195943_2_, p_195943_3_, p_195943_1_, p_195943_4_);
     }
 
-    public static boolean updateCustomBlockEntityTag(World p_179224_0_, @Nullable PlayerEntity p_179224_1_, BlockPos p_179224_2_, ItemStack p_179224_3_) {
+    public static boolean updateCustomBlockEntityTag(Level p_179224_0_, @Nullable Player p_179224_1_, BlockPos p_179224_2_, ItemStack p_179224_3_) {
         MinecraftServer minecraftserver = p_179224_0_.getServer();
         if (minecraftserver == null) {
             return false;
         } else {
-            CompoundNBT compoundnbt = p_179224_3_.getTagElement("BlockEntityTag");
+            CompoundTag compoundnbt = p_179224_3_.getTagElement("BlockEntityTag");
             if (compoundnbt != null) {
-                TileEntity tileentity = p_179224_0_.getBlockEntity(p_179224_2_);
+                BlockEntity tileentity = p_179224_0_.getBlockEntity(p_179224_2_);
                 if (tileentity != null) {
                     if (!p_179224_0_.isClientSide && tileentity.onlyOpCanSetNbt() && (p_179224_1_ == null || !p_179224_1_.canUseGameMasterBlocks())) {
                         return false;
                     }
 
-                    CompoundNBT compoundnbt1 = tileentity.save(new CompoundNBT());
-                    CompoundNBT compoundnbt2 = compoundnbt1.copy();
+                    CompoundTag compoundnbt1 = tileentity.save(new CompoundTag());
+                    CompoundTag compoundnbt2 = compoundnbt1.copy();
                     compoundnbt1.merge(compoundnbt);
                     compoundnbt1.putInt("x", p_179224_2_.getX());
                     compoundnbt1.putInt("y", p_179224_2_.getY());
                     compoundnbt1.putInt("z", p_179224_2_.getZ());
                     if (!compoundnbt1.equals(compoundnbt2)) {
-                        tileentity.load(p_179224_0_.getBlockState(p_179224_2_), compoundnbt1);
+                        tileentity.load(compoundnbt1);
                         tileentity.setChanged();
                         return true;
                     }
@@ -217,12 +223,12 @@ public class HoloRemoteItem extends Item {
         }
     }
 
-    private BlockState updateBlockStateFromTag(BlockPos p_219985_1_, World p_219985_2_, ItemStack p_219985_3_, BlockState p_219985_4_) {
+    private BlockState updateBlockStateFromTag(BlockPos p_219985_1_, Level p_219985_2_, ItemStack p_219985_3_, BlockState p_219985_4_) {
         BlockState blockstate = p_219985_4_;
-        CompoundNBT compoundnbt = p_219985_3_.getTag();
+        CompoundTag compoundnbt = p_219985_3_.getTag();
         if (compoundnbt != null) {
-            CompoundNBT compoundnbt1 = compoundnbt.getCompound("BlockStateTag");
-            StateContainer<Block, BlockState> statecontainer = p_219985_4_.getBlock().getStateDefinition();
+            CompoundTag compoundnbt1 = compoundnbt.getCompound("BlockStateTag");
+            StateDefinition<Block, BlockState> statecontainer = p_219985_4_.getBlock().getStateDefinition();
 
             for(String s : compoundnbt1.getAllKeys()) {
                 Property<?> property = statecontainer.getProperty(s);
@@ -247,7 +253,7 @@ public class HoloRemoteItem extends Item {
     }
 
     //Forge: Sensitive version of BlockItem#getPlaceSound
-    protected SoundEvent getPlaceSound(BlockState state, World world, BlockPos pos, PlayerEntity entity) {
+    protected SoundEvent getPlaceSound(BlockState state, Level world, BlockPos pos, Player entity) {
         return state.getSoundType(world, pos, entity).getPlaceSound();
     }
 }

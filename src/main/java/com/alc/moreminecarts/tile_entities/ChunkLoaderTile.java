@@ -3,43 +3,41 @@ package com.alc.moreminecarts.tile_entities;
 import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.LockableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.world.ForgeChunkManager;
 
 import javax.annotation.Nullable;
 
-public class ChunkLoaderTile extends LockableTileEntity implements ISidedInventory, ITickableTileEntity, INamedContainerProvider {
+public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyContainer, Container {
     public static String LAST_CHUNK_X_PROPERTY = "last_block_pos_x";
     public static String LAST_CHUNK_Z_PROPERTY = "last_block_pos_z";
     public static String TIME_LEFT_PROPERTY = "time_left";
     public static int MAX_TIME = 10368000;
     public static int MAX_MINUTES = 8640;
 
-    protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
-    public final IIntArray dataAccess = new IIntArray() {
+    public final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             switch(index) {
@@ -78,8 +76,11 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     public int last_chunk_x;
     public int last_chunk_z;
 
-    public ChunkLoaderTile() {
-        super(MMReferences.chunk_loader_te);
+    public ChunkLoaderTile(BlockPos pos, BlockState state) {
+        super(MMReferences.chunk_loader_te, pos, state);
+
+        this.items = NonNullList.withSize(1, ItemStack.EMPTY);
+
         lit_last_tick = false;
         time_left = -1;
         last_chunk_x = getBlockPos().getX() >> 4;
@@ -87,30 +88,29 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
         compound.putInt(LAST_CHUNK_X_PROPERTY, last_chunk_x);
         compound.putInt(LAST_CHUNK_Z_PROPERTY, last_chunk_z);
         compound.putInt(TIME_LEFT_PROPERTY, time_left);
-        ItemStackHelper.saveAllItems(compound, this.items);
-        return super.save(compound);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(CompoundTag compound) {
         last_chunk_x = compound.getInt(LAST_CHUNK_X_PROPERTY);
         last_chunk_z = compound.getInt(LAST_CHUNK_Z_PROPERTY);
         time_left = compound.getInt(TIME_LEFT_PROPERTY);
         lit_last_tick = isLit();
-        ItemStackHelper.loadAllItems(compound, this.items);
-        super.load(state, compound);
+
+        super.load(compound);
     }
 
-    public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
-        return new ChunkLoaderContainer(i, level, worldPosition, inventory, player);
+    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        return new ChunkLoaderContainer(i, inventory, this, this.dataAccess);
     }
 
     @Override
-    protected Container createMenu(int p_213906_1_, PlayerInventory p_213906_2_) {
+    protected AbstractContainerMenu createMenu(int p_213906_1_, Inventory p_213906_2_) {
         return null;
     }
 
@@ -132,12 +132,18 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         else return (int)Math.ceil(fuel);
     }
 
+    public static void doTick(Level level, BlockPos pos, BlockState state, ChunkLoaderTile ent) {
+        ent.tick();
+    }
+
     public void tick() {
 
         boolean changed_flag = false;
         if (isLit()) time_left--;
 
         if (!level.isClientSide()) {
+
+            // MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "chunk loader tick!");
 
             int burn_duration = getBurnDuration(items.get(0).getItem());
             if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= MAX_TIME) {
@@ -186,7 +192,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerWorld) level, MMConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, true);
+                ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, true);
             }
         }
     }
@@ -225,41 +231,8 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         return false;
     }
 
-    public int getContainerSize() {
-        return 1;
-    }
-
-    public boolean isEmpty() {
-        for(ItemStack itemstack : this.items) {
-            if (!itemstack.isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public ItemStack getItem(int p_70301_1_) {
-        return this.items.get(p_70301_1_);
-    }
-
-    public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
-        return ItemStackHelper.removeItem(this.items, p_70298_1_, p_70298_2_);
-    }
-
-    public ItemStack removeItemNoUpdate(int p_70304_1_) {
-        return ItemStackHelper.takeItem(this.items, p_70304_1_);
-    }
-
-    public void setItem(int p_70299_1_, ItemStack p_70299_2_) {
-        this.items.set(p_70299_1_, p_70299_2_);
-        if (p_70299_2_.getCount() > this.getMaxStackSize()) {
-            p_70299_2_.setCount(this.getMaxStackSize());
-        }
-    }
-
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         if (this.level.getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
@@ -268,17 +241,17 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
     }
 
     @Override
-    public void clearContent() {
-        this.items.clear();
+    public int getSlotCount() {
+        return 1;
     }
 
     @Override
-    protected ITextComponent getDefaultName() {
-        return new StringTextComponent("Chunk Loader");
+    protected Component getDefaultName() {
+        return new TranslatableComponent("Chunk Loader");
     }
 
     // For dropping MMItemReferences.
-    public static void dropExtras(World world, int time_left, BlockPos pos) {
+    public static void dropExtras(Level world, int time_left, BlockPos pos) {
         double multiplier = MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER.get();
         if (multiplier == 0) return;
 
@@ -294,7 +267,7 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         if (count != 0) {
             ItemStack drop_stack = new ItemStack(to_drop, count);
             NonNullList<ItemStack> drops = NonNullList.withSize(1, drop_stack);
-            InventoryHelper.dropContents(world, pos, drops);
+            Containers.dropContents(world, pos, drops);
         }
     }
 
@@ -303,4 +276,6 @@ public class ChunkLoaderTile extends LockableTileEntity implements ISidedInvento
         double log_proportion = Math.log10( ((true_time_left/ChunkLoaderTile.MAX_TIME)*9 + 1 ));
         return (int)Math.ceil(log_proportion * 15);
     }
+
+
 }

@@ -1,16 +1,16 @@
 package com.alc.moreminecarts.proxy;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class ServerProxy implements IProxy{
     @Override
-    public World getWorld() {
+    public Level getWorld() {
         return null;
     }
 
     @Override
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return null;
     }
 

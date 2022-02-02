@@ -1,24 +1,25 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RailBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.phys.BlockHitResult;
 
-public class ArithmeticRailBlock extends AbstractRailBlock {
+public class ArithmeticRailBlock extends BaseRailBlock {
 
-    public enum SignalEffect implements IStringSerializable {
+    public enum SignalEffect implements StringRepresentable {
         plus,
         minus,
         left,
@@ -71,11 +72,12 @@ public class ArithmeticRailBlock extends AbstractRailBlock {
 
     public ArithmeticRailBlock(Properties builder) {
         super(true, builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(EFFECT, SignalEffect.plus));
+        this.registerDefaultState(defaultBlockState().setValue(POWERED, false).setValue(SHAPE, RailShape.NORTH_SOUTH)
+                .setValue(EFFECT, SignalEffect.plus).setValue(WATERLOGGED, Boolean.valueOf(false)));
     }
 
     @Override
-    protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
+    protected void updateState(BlockState state, Level worldIn, BlockPos pos, Block blockIn) {
         boolean old_powered = state.getValue(POWERED);
         boolean new_powered = worldIn.hasNeighborSignal(pos);
         if (old_powered != new_powered) {
@@ -85,25 +87,25 @@ public class ArithmeticRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (!worldIn.isClientSide()) {
             worldIn.setBlockAndUpdate(pos, state.setValue(EFFECT, ((SignalEffect)state.getValue(EFFECT)).next()  ));
-            worldIn.playSound((PlayerEntity)null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            worldIn.playSound((Player)null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
-        return ActionResultType.sidedSuccess(worldIn.isClientSide());
+        return InteractionResult.sidedSuccess(worldIn.isClientSide());
     }
 
     @Override
-    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+    public boolean canMakeSlopes(BlockState state, BlockGetter world, BlockPos pos) {
         return false;
     }
 
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(SHAPE, POWERED, EFFECT);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(SHAPE, POWERED, EFFECT, WATERLOGGED);
     }
 
     @Override
-    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
             this.updateState(state, worldIn, pos, state.getBlock());
         }

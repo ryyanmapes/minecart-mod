@@ -2,13 +2,11 @@ package com.alc.moreminecarts;
 
 import com.alc.moreminecarts.containers.*;
 import com.alc.moreminecarts.entities.*;
-import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
-import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
-import com.alc.moreminecarts.tile_entities.LockingRailTile;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tileentity.TileEntityType;
+import com.alc.moreminecarts.tile_entities.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder("moreminecarts")
@@ -59,20 +57,20 @@ public class MMReferences {
 
     // Tile Entities
 
-    public static final TileEntityType<ChunkLoaderTile> chunk_loader_te = null;
-    public static final TileEntityType<LockingRailTile> locking_rail_te = null;
-    public static final TileEntityType<LockingRailTile> powered_locking_rail_te = null;
-    public static final TileEntityType<LockingRailTile> minecart_loader_te = null;
-    public static final TileEntityType<LockingRailTile> minecart_unloader_te = null;
-    public static final TileEntityType<ChunkLoaderTile> pearl_stasis_chamber_te = null;
+    public static final BlockEntityType<ChunkLoaderTile> chunk_loader_te = null;
+    public static final BlockEntityType<LockingRailTile> locking_rail_te = null;
+    public static final BlockEntityType<PoweredLockingRailTile> powered_locking_rail_te = null;
+    public static final BlockEntityType<MinecartLoaderTile> minecart_loader_te = null;
+    public static final BlockEntityType<MinecartUnloaderTile> minecart_unloader_te = null;
+    public static final BlockEntityType<OrbStasisTile> pearl_stasis_chamber_te = null;
 
     // Containers
 
-    public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
-    public static final ContainerType<MinecartUnLoaderContainer> minecart_loader_c = null;
-    public static final ContainerType<TankCartContainer> tank_cart_c = null;
-    public static final ContainerType<BatteryCartContainer> battery_cart_c = null;
-    public static final ContainerType<FlagCartContainer> flag_cart_c = null;
+    public static final MenuType<ChunkLoaderContainer> chunk_loader_c = null;
+    public static final MenuType<MinecartUnLoaderContainer> minecart_loader_c = null;
+    public static final MenuType<TankCartContainer> tank_cart_c = null;
+    public static final MenuType<BatteryCartContainer> battery_cart_c = null;
+    public static final MenuType<FlagCartContainer> flag_cart_c = null;
 
     // Blocks
     public static final Block rail_turn = null;

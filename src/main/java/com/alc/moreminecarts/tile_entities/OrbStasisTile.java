@@ -1,41 +1,42 @@
 package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.MMReferences;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.monster.EndermiteEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.world.GameRules;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Endermite;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class OrbStasisTile extends TileEntity {
+public class OrbStasisTile extends BlockEntity {
     public static String PLAYER_UUID_PROPERTY = "player_uuid";
 
     @Nullable
     public UUID owner_uuid;
 
-    public OrbStasisTile() {
-        super(MMReferences.pearl_stasis_chamber_te);
+    public OrbStasisTile(BlockPos pos, BlockState state) {
+        super(MMReferences.pearl_stasis_chamber_te, pos, state);
         owner_uuid = null;
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public void saveAdditional(CompoundTag compound) {
         compound.putUUID(PLAYER_UUID_PROPERTY, owner_uuid);
-        return super.save(compound);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(CompoundTag compound) {
         owner_uuid = compound.getUUID(PLAYER_UUID_PROPERTY);
-        super.load(state, compound);
+        super.load(compound);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class OrbStasisTile extends TileEntity {
         super.setRemoved();
     }
 
-    protected void addPearl(PlayerEntity player) {
+    protected void addPearl(Player player) {
         owner_uuid = player.getGameProfile().getId();
     }
 
@@ -55,17 +56,16 @@ public class OrbStasisTile extends TileEntity {
 
         Entity entity = this.level.getPlayerByUUID(owner_uuid);
 
-        if (entity instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) entity;
+        if (entity instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) entity;
             // copied from EnderPearlEntity
             if (player.connection.getConnection().isConnected() && player.level == this.level && !player.isSleeping()) {
-                net.minecraftforge.event.entity.living.EnderTeleportEvent event = new net.minecraftforge.event.entity.living.EnderTeleportEvent(player,
-                        this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 1, this.getBlockPos().getZ() + 0.5, 5.0F);
+                EntityTeleportEvent.ChorusFruit event = new EntityTeleportEvent.ChorusFruit(player,
+                        this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 1, this.getBlockPos().getZ() + 0.5);
                 if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) { // Don't indent to lower patch size
                     if (this.level.random.nextFloat() < 0.05F && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-                        EndermiteEntity endermiteentity = EntityType.ENDERMITE.create(this.level);
-                        endermiteentity.setPlayerSpawned(true);
-                        endermiteentity.moveTo(entity.getX(), entity.getY(), entity.getZ(), entity.yRot, entity.xRot);
+                        Endermite endermiteentity = EntityType.ENDERMITE.create(this.level);
+                        endermiteentity.moveTo(entity.getX(), entity.getY(), entity.getZ());
                         this.level.addFreshEntity(endermiteentity);
                     }
 
@@ -75,7 +75,7 @@ public class OrbStasisTile extends TileEntity {
 
                     entity.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
                     entity.fallDistance = 0.0F;
-                    entity.hurt(DamageSource.FALL, event.getAttackDamage());
+                    entity.hurt(DamageSource.FALL, 5.0f);
                 }
             }
         }
@@ -84,7 +84,7 @@ public class OrbStasisTile extends TileEntity {
     }
 
     // Returns true if there is a pearl inside.
-    public boolean updateLock(boolean powered, PlayerEntity player) {
+    public boolean updateLock(boolean powered, Player player) {
 
         if (owner_uuid == null && player != null) {
             addPearl(player);

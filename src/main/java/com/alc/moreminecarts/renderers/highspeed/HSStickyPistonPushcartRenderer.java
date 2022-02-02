@@ -2,11 +2,11 @@ package com.alc.moreminecarts.renderers.highspeed;
 
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.renderers.StickyPistonPushcartRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 public class HSStickyPistonPushcartRenderer extends StickyPistonPushcartRenderer {
-    public HSStickyPistonPushcartRenderer(EntityRendererManager renderManagerIn) {
+    public HSStickyPistonPushcartRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn);
     }
 

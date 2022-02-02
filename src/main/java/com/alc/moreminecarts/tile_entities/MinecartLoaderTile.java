@@ -3,20 +3,22 @@ package com.alc.moreminecarts.tile_entities;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
-import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.world.entity.vehicle.MinecartFurnace;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -26,10 +28,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 
-public class MinecartLoaderTile extends AbstractCommonLoader implements ITickableTileEntity {
+public class MinecartLoaderTile extends AbstractCommonLoader {
 
-    public MinecartLoaderTile() {
-        super(MMReferences.minecart_loader_te);
+    public MinecartLoaderTile(BlockPos pos, BlockState state) {
+        super(MMReferences.minecart_loader_te, pos, state);
         last_redstone_output = !redstone_output;
     }
 
@@ -38,14 +40,18 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
         return false;
     }
 
-    public Container createMenu(int i, PlayerInventory inventory, PlayerEntity player) {
-        this.changed_flag = true;
-        return new MinecartUnLoaderContainer(i, level, worldPosition, inventory, player);
+    @Override
+    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        return new MinecartUnLoaderContainer(i, inventory, this, this.dataAccess, this);
     }
 
     @Override
-    protected Container createMenu(int p_213906_1_, PlayerInventory p_213906_2_) {
+    protected AbstractContainerMenu createMenu(int p_213906_1_, Inventory p_213906_2_) {
         return null;
+    }
+
+    public static void doTick(Level level, BlockPos pos, BlockState state, MinecartLoaderTile ent) {
+        ent.tick();
     }
 
     public void tick() {
@@ -54,9 +60,9 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
 
             if (!isOnCooldown()) {
 
-                List<AbstractMinecartEntity> minecarts = getLoadableMinecartsInRange();
+                List<AbstractMinecart> minecarts = getLoadableMinecartsInRange();
                 float criteria_total = 0;
-                for (AbstractMinecartEntity minecart : minecarts) {
+                for (AbstractMinecart minecart : minecarts) {
 
                     LazyOptional<IFluidHandler> tankCapability = minecart.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
                     LazyOptional<IEnergyStorage> energyCapability = minecart.getCapability(CapabilityEnergy.ENERGY);
@@ -68,10 +74,10 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
                         IEnergyStorage energy_storage = energyCapability.orElse(null);
                         criteria_total += doElectricLoads(energy_storage);
                     }
-                    else if (minecart instanceof ContainerMinecartEntity) {
-                        criteria_total += doMinecartLoads((ContainerMinecartEntity) minecart);
-                    } else if (minecart instanceof FurnaceMinecartEntity) {
-                        criteria_total += doFuranceCartLoads((FurnaceMinecartEntity) minecart);
+                    else if (minecart instanceof AbstractMinecartContainer) {
+                        criteria_total += doMinecartLoads((AbstractMinecartContainer) minecart);
+                    } else if (minecart instanceof MinecartFurnace) {
+                        criteria_total += doFuranceCartLoads((MinecartFurnace) minecart);
                     }
                 }
 
@@ -187,7 +193,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
         }
     }
 
-    public float doMinecartLoads(ContainerMinecartEntity minecart) {
+    public float doMinecartLoads(AbstractMinecartContainer minecart) {
         boolean changed = false;
         for (ItemStack stack : items) {
 
@@ -237,14 +243,14 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
             return ((ChunkLoaderCartEntity)minecart).getComparatorSignal() / 15.0f;
         }
         else {
-            return Container.getRedstoneSignalFromContainer(minecart) / 15.0f;
+            return AbstractContainerMenu.getRedstoneSignalFromContainer(minecart) / 15.0f;
         }
     }
 
-    public float doFuranceCartLoads(FurnaceMinecartEntity minecart) {
+    public float doFuranceCartLoads(MinecartFurnace minecart) {
         boolean changed = false;
 
-        TileEntity te_at_minecart = level.getBlockEntity(minecart.getCurrentRailPosition());
+        BlockEntity te_at_minecart = level.getBlockEntity(minecart.getCurrentRailPosition());
 
         if (te_at_minecart instanceof LockingRailTile && ((LockingRailTile)te_at_minecart).locked_minecart == minecart) {
             LockingRailTile locking_rail_tile = (LockingRailTile)te_at_minecart;
@@ -252,7 +258,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
             if (locking_rail_tile.saved_fuel + 3600 <= 32000) {
 
                 for (ItemStack stack : items) {
-                    if (Ingredient.of(new IItemProvider[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
+                    if (Ingredient.of(new ItemLike[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
                         stack.shrink(1);
                         locking_rail_tile.saved_fuel += 3600;
                         changed = true;
@@ -266,7 +272,7 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
             if (minecart.fuel + 3600 <= 32000) {
 
                 for (ItemStack stack : items) {
-                    if (Ingredient.of(new IItemProvider[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
+                    if (Ingredient.of(new ItemLike[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
                         stack.shrink(1);
                         minecart.fuel += 3600;
                         changed = true;
@@ -297,8 +303,8 @@ public class MinecartLoaderTile extends AbstractCommonLoader implements ITickabl
     }
 
     @Override
-    protected ITextComponent getDefaultName() {
-        return new StringTextComponent("Minecart Loader");
+    protected Component getDefaultName() {
+        return new TranslatableComponent("Minecart Loader");
     }
 
 }

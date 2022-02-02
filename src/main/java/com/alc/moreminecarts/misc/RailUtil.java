@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.misc;
 
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.properties.RailShape;
 
 public class RailUtil {
 

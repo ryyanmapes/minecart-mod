@@ -3,21 +3,22 @@ package com.alc.moreminecarts.entities;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import io.netty.buffer.Unpooled;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +26,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.UUID;
 
-public class CouplerEntity extends Entity {
+public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String COUPLED_COMPOUND = "Couples";
@@ -33,7 +34,7 @@ public class CouplerEntity extends Entity {
     private static final String TAG_COUPLED_UUID_2 = "coupled_UUID_2";
     private static final double PREFERRED_DISTANCE = 2;
 
-    private CompoundNBT vehicleNBTTag;
+    private CompoundTag vehicleNBTTag;
 
     public Entity vehicle1;
     public int vehicle1_id;
@@ -44,7 +45,7 @@ public class CouplerEntity extends Entity {
     public double lastForceZ = 0;
     public double lastDiff = 0;
 
-    public CouplerEntity(EntityType<?> type, World worldIn, Entity vehicle1, Entity vehicle2) {
+    public CouplerEntity(EntityType<?> type, Level worldIn, Entity vehicle1, Entity vehicle2) {
         super( type, worldIn);
         this.vehicle1 = vehicle1;
         this.vehicle1_id = vehicle1.getId();
@@ -53,7 +54,7 @@ public class CouplerEntity extends Entity {
         this.updateDisplay();
     }
 
-    public CouplerEntity(EntityType<CouplerEntity> type, World world) {
+    public CouplerEntity(EntityType<CouplerEntity> type, Level world) {
         super(type, world);
     }
 
@@ -102,19 +103,19 @@ public class CouplerEntity extends Entity {
             this.onBroken(true);
         }
         else {
-            Vector3d motion1 = vehicle1.getDeltaMovement();
-            Vector3d motion2 = vehicle2.getDeltaMovement();
+            Vec3 motion1 = vehicle1.getDeltaMovement();
+            Vec3 motion2 = vehicle2.getDeltaMovement();
 
             double distance_diff = distance - PREFERRED_DISTANCE;
             //if (distance_diff < 0) distance_diff = 0;
 
             lastDiff = distance_diff;
 
-            Vector3d between = vehicle1.position().subtract(vehicle2.position());
+            Vec3 between = vehicle1.position().subtract(vehicle2.position());
             lastForceX = between.x;
             lastForceY = between.y;
             lastForceZ = between.z;
-            Vector3d force = between.normalize().scale(getSpringForce(distance_diff));
+            Vec3 force = between.normalize().scale(getSpringForce(distance_diff));
 
             vehicle1.setDeltaMovement(motion1.add(force.scale(-1 * getEntityForceScale(vehicle1) )));
             vehicle2.setDeltaMovement(motion2.add(force.scale( 1 * getEntityForceScale(vehicle2) )));
@@ -145,12 +146,12 @@ public class CouplerEntity extends Entity {
     public PushReaction getPistonPushReaction() { return PushReaction.IGNORE; }
 
     public boolean isPickable() {
-        return !this.removed;
+        return this.isAlive();
     }
 
     public static double getEntityForceScale(Entity ent) {
-        if (ent instanceof AbstractMinecartEntity) {
-            if ( ((AbstractMinecartEntity) ent).getMinecartType() == AbstractMinecartEntity.Type.FURNACE) return 0.1;
+        if (ent instanceof AbstractMinecart) {
+            if ( ((AbstractMinecart) ent).getMinecartType() == AbstractMinecart.Type.FURNACE) return 0.1;
         }
         return 1;
     }
@@ -172,11 +173,11 @@ public class CouplerEntity extends Entity {
     private void recreateCouple() {
         if (this.vehicleNBTTag == null) return;
 
-        if (this.level instanceof ServerWorld) {
+        if (this.level instanceof ServerLevel) {
 
             if (this.vehicleNBTTag.hasUUID(TAG_COUPLED_UUID_1)) {
                 UUID uuid = this.vehicleNBTTag.getUUID(TAG_COUPLED_UUID_1);
-                Entity entity = ((ServerWorld)this.level).getEntity(uuid);
+                Entity entity = ((ServerLevel)this.level).getEntity(uuid);
                 if (entity != null) {
                     this.vehicle1 = entity;
                     this.vehicle1_id = vehicle1.getId();
@@ -184,7 +185,7 @@ public class CouplerEntity extends Entity {
             }
             if (this.vehicleNBTTag.hasUUID(TAG_COUPLED_UUID_2)) {
                 UUID uuid = this.vehicleNBTTag.getUUID(TAG_COUPLED_UUID_2);
-                Entity entity = ((ServerWorld)this.level).getEntity(uuid);
+                Entity entity = ((ServerLevel)this.level).getEntity(uuid);
                 if (entity != null) {
                     this.vehicle2 = entity;
                     this.vehicle2_id = vehicle2.getId();
@@ -207,18 +208,18 @@ public class CouplerEntity extends Entity {
         Entity to = is_first? vehicle1 : vehicle2;
         int scalar = is_first? 1 : -1;
 
-        Vector3d motion = to.getDeltaMovement();
-        Vector3d between = new Vector3d(lastForceX, lastForceY, lastForceZ);
-        Vector3d force = between.normalize().scale(getIntegratedSpringForce(lastDiff));
+        Vec3 motion = to.getDeltaMovement();
+        Vec3 between = new Vec3(lastForceX, lastForceY, lastForceZ);
+        Vec3 force = between.normalize().scale(getIntegratedSpringForce(lastDiff));
         to.setDeltaMovement(motion.add(force.scale(scalar)));
     }
 
     private void releaseTensionToBoth() {
-        Vector3d motion1 = vehicle1.getDeltaMovement();
-        Vector3d motion2 = vehicle2.getDeltaMovement();
+        Vec3 motion1 = vehicle1.getDeltaMovement();
+        Vec3 motion2 = vehicle2.getDeltaMovement();
 
-        Vector3d between = new Vector3d(lastForceX, lastForceY, lastForceZ);
-        Vector3d force = between.normalize().scale(getIntegratedSpringForce(lastDiff));
+        Vec3 between = new Vec3(lastForceX, lastForceY, lastForceZ);
+        Vec3 force = between.normalize().scale(getIntegratedSpringForce(lastDiff));
 
         vehicle1.setDeltaMovement(motion1.add(force.scale(0.5)));
         vehicle2.setDeltaMovement(motion2.add(force.scale(-0.5)));
@@ -226,8 +227,8 @@ public class CouplerEntity extends Entity {
 
     @Override
     public boolean skipAttackInteraction(Entity player) {
-        if (player instanceof PlayerEntity) {
-            PlayerEntity playerentity = (PlayerEntity)player;
+        if (player instanceof Player) {
+            Player playerentity = (Player)player;
             return !this.level.mayInteract(playerentity, this.getOnPos()) ? true : this.hurt(DamageSource.playerAttack(playerentity), 0.0F);
         } else {
             return false;
@@ -252,20 +253,20 @@ public class CouplerEntity extends Entity {
     public void onBroken(boolean drop_item) {
         this.playSound(SoundEvents.CHAIN_BREAK, 1.0F, 1.0F);
         if (drop_item) spawnAtLocation(MMItemReferences.coupler);
-        this.remove();
+        this.remove(RemovalReason.KILLED);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains(COUPLED_COMPOUND, 10)) {
             this.vehicleNBTTag = compound.getCompound(COUPLED_COMPOUND);
         }
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         if (vehicle1 != null && vehicle2 != null) {
-            CompoundNBT new_compound = new CompoundNBT();
+            CompoundTag new_compound = new CompoundTag();
             new_compound.putUUID(TAG_COUPLED_UUID_1, vehicle1.getUUID());
             new_compound.putUUID(TAG_COUPLED_UUID_2, vehicle2.getUUID());
             compound.put(COUPLED_COMPOUND, new_compound);
@@ -283,8 +284,8 @@ public class CouplerEntity extends Entity {
             return;
         }
 
-        Vector3d v1 = ent1.position();
-        Vector3d v2 = ent2.position();
+        Vec3 v1 = ent1.position();
+        Vec3 v2 = ent2.position();
         double x = (v1.x + v2.x)/2;
         double y = (v1.y + v2.y)/2;
         double z = (v1.z + v2.z)/2;
@@ -292,24 +293,20 @@ public class CouplerEntity extends Entity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
-        IPacket<?> packet = NetworkHooks.getEntitySpawningPacket(this);
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer() );
-        try {
-            packet.write(buf);
-        } catch (IOException e) {
-            LOGGER.info("UNABLE TO WRITE TO BUFFER!");
-        }
-        buf.writeInt(vehicle1_id);
-        buf.writeInt(vehicle2_id);
-        try {
-            packet.read(buf);
-        } catch (IOException e) {
-            LOGGER.info("UNABLE TO READ FROM BUFFER!");
-        }
-        return packet;
+    public Packet<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
 
+    @Override
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        buffer.writeInt(vehicle1_id);
+        buffer.writeInt(vehicle2_id);
+    }
 
+    @Override
+    public void readSpawnData(FriendlyByteBuf additionalData) {
+        vehicle2_id = additionalData.readInt();
+        vehicle1_id = additionalData.readInt();
+    }
 }

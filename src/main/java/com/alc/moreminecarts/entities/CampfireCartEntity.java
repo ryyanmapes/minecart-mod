@@ -1,35 +1,39 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMItemReferences;
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.FurnaceMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.RailBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RailShape;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.Random;
 
-public class CampfireCartEntity extends AbstractMinecartEntity {
-    private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(FurnaceMinecartEntity.class, DataSerializers.BOOLEAN);
+public class CampfireCartEntity extends AbstractMinecart {
+    private static final EntityDataAccessor<Boolean> POWERED = SynchedEntityData.defineId(CampfireCartEntity.class, EntityDataSerializers.BOOLEAN);
     private static final String PUSH_X_NAME = "PushX";
     private static final String PUSH_Z_NAME = "PushZ";
     private static final String POWERED_NAME = "powered";
@@ -40,16 +44,16 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
 
     // Taken from FurnaceMinecartEntity
 
-    public CampfireCartEntity(EntityType<?> furnaceCart, World world) {
+    public CampfireCartEntity(EntityType<?> furnaceCart, Level world) {
         super(furnaceCart, world);
     }
 
-    public CampfireCartEntity(EntityType<?> furnaceCart, World worldIn, double x, double y, double z) {
+    public CampfireCartEntity(EntityType<?> furnaceCart, Level worldIn, double x, double y, double z) {
         super(furnaceCart, worldIn, x, y, z);
     }
 
-    public AbstractMinecartEntity.Type getMinecartType() {
-        return AbstractMinecartEntity.Type.FURNACE;
+    public AbstractMinecart.Type getMinecartType() {
+        return AbstractMinecart.Type.FURNACE;
     }
 
 
@@ -65,9 +69,9 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         }
 
         if (this.isMinecartPowered() && level.isClientSide()){
-            Vector3d pos = this.position();
+            Vec3 pos = this.position();
             if (random.nextInt(10) == 0) {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.2F + random.nextFloat()/3, random.nextFloat() * 0.7F + 0.6F, false);
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.2F + random.nextFloat()/3, random.nextFloat() * 0.7F + 0.6F, false);
             }
 
             if (random.nextInt(10) == 0) {
@@ -79,10 +83,10 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     }
 
     // Taken from Campfire Block
-    private static void spawnSmokeParticles(World worldIn, Vector3d pos, boolean isSignalFire, boolean spawnExtraSmoke) {
+    private static void spawnSmokeParticles(Level worldIn, Vec3 pos, boolean isSignalFire, boolean spawnExtraSmoke) {
         if (!worldIn.isClientSide()) return;
         Random random = worldIn.getRandom();
-        BasicParticleType basicparticletype = isSignalFire ? ParticleTypes.CAMPFIRE_SIGNAL_SMOKE : ParticleTypes.CAMPFIRE_COSY_SMOKE;
+        SimpleParticleType basicparticletype = isSignalFire ? ParticleTypes.CAMPFIRE_SIGNAL_SMOKE : ParticleTypes.CAMPFIRE_COSY_SMOKE;
         worldIn.addParticle(basicparticletype, true, pos.x + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.y + 0.4 + random.nextDouble(), (double)pos.z + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
         if (spawnExtraSmoke) {
             worldIn.addParticle(ParticleTypes.SMOKE, pos.x, pos.y + 0.8D, pos.z, 0.0D, 0.005D, 0.0D);
@@ -91,7 +95,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     }
 
     public void destroy(DamageSource source) {
-        this.remove();
+        this.remove(RemovalReason.KILLED);
         if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.spawnAtLocation(MMItemReferences.campfire_cart);
         }
@@ -102,12 +106,12 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
         double d0 = 1.0E-4D;
         double d1 = 0.001D;
         super.moveAlongTrack(pos, state);
-        Vector3d vector3d = this.getDeltaMovement();
-        double d2 = getHorizontalDistanceSqr(vector3d);
+        Vec3 vector3d = this.getDeltaMovement();
+        double d2 = vector3d.horizontalDistanceSqr();
         double d3 = this.pushX * this.pushX + this.pushZ * this.pushZ;
         if (isMinecartPowered() && d3 > 1.0E-4D && d2 > 0.001D) {
-            double d4 = (double)MathHelper.sqrt(d2);
-            double d5 = (double)MathHelper.sqrt(d3);
+            double d4 = (double)Math.sqrt(d2);
+            double d5 = (double)Math.sqrt(d3);
             this.pushX = vector3d.x / d4 * d5;
             this.pushZ = vector3d.z / d4 * d5;
         }
@@ -118,11 +122,11 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     protected void applyNaturalSlowdown() {
         double d0 = this.pushX * this.pushX + this.pushZ * this.pushZ;
         if (isMinecartPowered() && d0 > 1.0E-7D && isMinecartPowered() && !isGoingUphill()) {
-            d0 = (double)MathHelper.sqrt(d0);
+            d0 = (double)Math.sqrt(d0);
             this.pushX /= d0;
             this.pushZ /= d0;
             // Four times slower than a furnace cart.
-            Vector3d min_motion = this.getDeltaMovement().multiply(0.8D, 0.0D, 0.8D);
+            Vec3 min_motion = this.getDeltaMovement().multiply(0.8D, 0.0D, 0.8D);
             double speed_coeff = this.getSpeedDiv();
             double new_x = (Math.abs(this.pushX/speed_coeff) > Math.abs(min_motion.x))? this.pushX/speed_coeff : min_motion.x;
             double new_z = (Math.abs(this.pushZ/speed_coeff) > Math.abs(min_motion.z))? this.pushZ/speed_coeff : min_motion.z;
@@ -139,14 +143,14 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     }
 
     public boolean isGoingUphill() {
-        int i = MathHelper.floor(this.position().x);
-        int j = MathHelper.floor(this.position().y);
-        int k = MathHelper.floor(this.position().z);
+        int i = Mth.floor(this.position().x);
+        int j = Mth.floor(this.position().y);
+        int k = Mth.floor(this.position().z);
 
         BlockPos pos = new BlockPos(i, j, k);
         BlockState state = this.level.getBlockState(pos);
-        if (AbstractRailBlock.isRail(state)) {
-            RailShape railshape = ((AbstractRailBlock) state.getBlock()).getRailDirection(state, this.level, pos, this);
+        if (RailBlock.isRail(state)) {
+            RailShape railshape = ((BaseRailBlock) state.getBlock()).getRailDirection(state, this.level, pos, this);
 
             boolean is_uphill = (railshape == RailShape.ASCENDING_EAST || railshape == RailShape.ASCENDING_WEST
                     || railshape == RailShape.ASCENDING_NORTH || railshape == RailShape.ASCENDING_SOUTH);
@@ -159,8 +163,8 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     }
 
     @Override
-    public ActionResultType interact(PlayerEntity player, Hand hand) {
-        ActionResultType ret = super.interact(player, hand);
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        InteractionResult ret = super.interact(player, hand);
         if (ret.consumesAction()) return ret;
 
         if (this.pushX == 0 && this.pushZ == 0) {
@@ -168,19 +172,19 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
             this.pushZ = this.position().z - player.position().z;
         }
 
-        Vector3d pos = this.position();
+        Vec3 pos = this.position();
         if (level.isClientSide()) {
             if (isMinecartPowered()) {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.3F, 1.0F, false);
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.3F, 1.0F, false);
                 spawnSmokeParticles(level, this.position(), false, true);
             } else {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundCategory.NEUTRAL, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
+                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
             }
         }
 
         setMinecartPowered(!isMinecartPowered());
 
-        return ActionResultType.sidedSuccess(this.level.isClientSide());
+        return InteractionResult.sidedSuccess(this.level.isClientSide());
     }
 
     protected void defineSynchedData() {
@@ -197,14 +201,14 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
     }
 
 
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putDouble(PUSH_X_NAME, this.pushX);
         compound.putDouble(PUSH_Z_NAME, this.pushZ);
         compound.putBoolean(POWERED_NAME, this.isMinecartPowered());
     }
 
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.pushX = compound.getDouble("PushX");
         this.pushZ = compound.getDouble("PushZ");
@@ -217,7 +221,7 @@ public class CampfireCartEntity extends AbstractMinecartEntity {
 
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

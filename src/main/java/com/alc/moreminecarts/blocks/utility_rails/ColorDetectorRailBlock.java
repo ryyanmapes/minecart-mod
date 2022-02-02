@@ -1,27 +1,22 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
 import com.alc.moreminecarts.entities.FlagCartEntity;
-import net.minecraft.block.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -29,7 +24,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class ColorDetectorRailBlock extends AbstractRailBlock {
+public class ColorDetectorRailBlock extends BaseRailBlock {
 
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -39,49 +34,49 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
 
     public ColorDetectorRailBlock(Properties builder,  java.util.function.Supplier<Item> det) {
         super(true, builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, Boolean.valueOf(false)).setValue(SHAPE, RailShape.NORTH_SOUTH));
+        this.registerDefaultState(defaultBlockState().setValue(POWERED, Boolean.valueOf(false)).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(WATERLOGGED, Boolean.valueOf(false)));
         this.detected_item = det;
     }
 
     @Override
-    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+    public boolean canMakeSlopes(BlockState state, BlockGetter world, BlockPos pos) {
         return false;
     }
 
     @Override
-    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+    public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
         if (worldIn.isClientSide()) return;
         this.checkPressed(worldIn, pos, state);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
         this.checkPressed(worldIn, pos, state);
     }
 
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(SHAPE, POWERED);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(SHAPE, POWERED, WATERLOGGED);
     }
 
     // Below is slightly modified from DetectorRailBlock
 
-    private void checkPressed(World worldIn, BlockPos pos, BlockState state) {
+    private void checkPressed(Level worldIn, BlockPos pos, BlockState state) {
         if (this.canSurvive(state, worldIn, pos)) {
             boolean was_powered = state.getValue(POWERED);
             boolean activate = false;
-            List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (entity) -> true);
+            List<AbstractMinecart> list = this.findMinecarts(worldIn, pos, AbstractMinecart.class, (entity) -> true);
             if (!list.isEmpty()) {
                 if (was_powered) activate = true;
                 else {
-                    for (AbstractMinecartEntity minecart : list) {
-                        if (minecart.getMinecartType() == AbstractMinecartEntity.Type.RIDEABLE) {
+                    for (AbstractMinecart minecart : list) {
+                        if (minecart.getMinecartType() == AbstractMinecart.Type.RIDEABLE) {
                             List<Entity> passengers = minecart.getPassengers();
                             if (passengers.isEmpty()) continue;
                             Entity entity = passengers.get(0);
-                            if (!(entity instanceof PlayerEntity)) continue;
-                            PlayerEntity player = (PlayerEntity) entity;
-                            if (player.getItemInHand(Hand.MAIN_HAND).getItem() == detected_item.get()
-                                    || player.getItemInHand(Hand.OFF_HAND).getItem() == detected_item.get()) {
+                            if (!(entity instanceof Player)) continue;
+                            Player player = (Player) entity;
+                            if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == detected_item.get()
+                                    || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == detected_item.get()) {
                                 activate = true;
                             }
                         }
@@ -90,8 +85,8 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
                                 activate = true;
                             }
                         }
-                        else if (minecart instanceof ContainerMinecartEntity) {
-                            ContainerMinecartEntity container = (ContainerMinecartEntity)minecart;
+                        else if (minecart instanceof AbstractMinecartContainer) {
+                            AbstractMinecartContainer container = (AbstractMinecartContainer)minecart;
                             HashSet<Item> set = new HashSet<>();
                             set.add(detected_item.get());
                             if (container.hasAnyOf(set)) {
@@ -121,14 +116,14 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
             }
 
             if (activate) {
-                worldIn.getBlockTicks().scheduleTick(pos, this, 20);
+                worldIn.scheduleTick(pos, this, 20);
             }
 
             worldIn.updateNeighbourForOutputSignal(pos, this);
         }
     }
 
-    protected void updatePowerToConnected(World worldIn, BlockPos pos, BlockState state, boolean powered) {
+    protected void updatePowerToConnected(Level worldIn, BlockPos pos, BlockState state, boolean powered) {
         RailState railstate = new RailState(worldIn, pos, state);
 
         for(BlockPos blockpos : railstate.getConnections()) {
@@ -139,18 +134,18 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
             this.checkPressed(worldIn, pos, this.updateState(state, worldIn, pos, isMoving));
         }
     }
 
-    protected <T extends AbstractMinecartEntity> List<T> findMinecarts(World worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
+    protected <T extends AbstractMinecart> List<T> findMinecarts(Level worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
         return worldIn.getEntitiesOfClass(cartType, this.getDectectionBox(pos), filter);
     }
 
-    private AxisAlignedBB getDectectionBox(BlockPos pos) {
-        return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
+    private AABB getDectectionBox(BlockPos pos) {
+        return new AABB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
     }
 
     @Override
@@ -164,12 +159,12 @@ public class ColorDetectorRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
         return blockState.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
-    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+    public int getDirectSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
         if (!blockState.getValue(POWERED)) {
             return 0;
         } else {

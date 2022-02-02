@@ -1,34 +1,35 @@
 package com.alc.moreminecarts.client;
 
 import com.alc.moreminecarts.containers.TankCartContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class TankCartScreen extends ContainerScreen<TankCartContainer>{
+public class TankCartScreen extends AbstractContainerScreen<TankCartContainer> {
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/blank.png");
 
-    public TankCartScreen(TankCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Minecart with Tank"));
+    public TankCartScreen(TankCartContainer container, Inventory inv, Component titleIn) {
+        super(container, inv, new TranslatableComponent("Minecart with Tank"));
     }
 
     @Override
-    public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+    public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
         this.renderBackground(p_230430_1_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
         this.renderTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
     }
 
     @Override
-    protected void renderBg(MatrixStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
-        this.minecraft.getTextureManager().bind(display);
+    protected void renderBg(PoseStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+        RenderSystem.setShaderTexture(0, display);
         this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
 
         FluidStack fluid_stack = menu.getFluids();

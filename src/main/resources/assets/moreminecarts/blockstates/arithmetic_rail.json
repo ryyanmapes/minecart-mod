@@ -56,6 +56,18 @@
 	"effect=left,powered=false,shape=east_west": {
       "model": "moreminecarts:block/left_rail_off",
 	  "y": 90
+    },
+    "shape=ascending_east": {
+      "model": "moreminecarts:block/wooden_rail"
+    },
+    "shape=ascending_west": {
+      "model": "moreminecarts:block/wooden_rail"
+    },
+    "shape=ascending_north": {
+      "model": "moreminecarts:block/wooden_rail"
+    },
+    "shape=ascending_south": {
+      "model": "moreminecarts:block/wooden_rail"
     }
   }
 }

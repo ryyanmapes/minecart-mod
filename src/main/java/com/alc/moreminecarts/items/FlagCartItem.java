@@ -2,8 +2,8 @@ package com.alc.moreminecarts.items;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.FlagCartEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class FlagCartItem extends AbstractMinecartItem {
 
@@ -12,7 +12,7 @@ public class FlagCartItem extends AbstractMinecartItem {
     }
 
     @Override
-    void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
+    void createMinecart(ItemStack stack, Level world, double posX, double posY, double posZ) {
 
         FlagCartEntity minecart = new FlagCartEntity(MMReferences.flag_cart, world, posX, posY, posZ);
         if (stack.hasCustomHoverName()) {

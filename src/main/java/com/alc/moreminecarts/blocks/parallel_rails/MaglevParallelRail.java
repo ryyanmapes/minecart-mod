@@ -1,10 +1,10 @@
 package com.alc.moreminecarts.blocks.parallel_rails;
 
 import com.alc.moreminecarts.MMConstants;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class MaglevParallelRail extends ParallelRail {
 
@@ -13,7 +13,7 @@ public class MaglevParallelRail extends ParallelRail {
     }
 
     @Override
-    public float getRailMaxSpeed(BlockState state, World world, BlockPos pos, AbstractMinecartEntity cart) {
+    public float getRailMaxSpeed(BlockState state, Level world, BlockPos pos, AbstractMinecart cart) {
         return MMConstants.MAGLEV_MAX_SPEED;
     }
 

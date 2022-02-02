@@ -1,11 +1,11 @@
 package com.alc.moreminecarts.proxy;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public interface IProxy {
-    public World getWorld();
-    public PlayerEntity getPlayer();
+    public Level getWorld();
+    public Player getPlayer();
     public boolean isHoldingJump();
     public boolean isHoldingRun();
     public void setupKeybindings();

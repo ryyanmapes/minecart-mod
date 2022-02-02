@@ -1,37 +1,47 @@
 package com.alc.moreminecarts.blocks.rail_turns;
 
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.*;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
-public class RailTurn extends AbstractRailBlock {
+;
+
+public class RailTurn extends BaseRailBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty FLIPPED = BooleanProperty.create("flipped");
 
 
-    public RailTurn(Properties builder) {
+    public RailTurn(BlockBehaviour.Properties builder) {
         super(true, builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(POWERED, false).setValue(FLIPPED, false));
+        this.registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, RailShape.NORTH_SOUTH)
+                .setValue(WATERLOGGED, Boolean.valueOf(false))
+                .setValue(POWERED, false).setValue(FLIPPED, false));
     }
 
 
     @Override
-    protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
+    protected void updateState(BlockState state, Level worldIn, BlockPos pos, Block blockIn) {
         boolean flag1 = state.getValue(POWERED);
         boolean flag2 = worldIn.hasNeighborSignal(pos);
         if (flag1 != flag2) {
@@ -42,7 +52,7 @@ public class RailTurn extends AbstractRailBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction direction = context.getHorizontalDirection();
         return this.defaultBlockState().setValue(FACING, direction);
     }
@@ -54,7 +64,7 @@ public class RailTurn extends AbstractRailBlock {
     }
 
     @Override
-    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
             this.updateState(state, worldIn, pos, state.getBlock());
         }
@@ -62,28 +72,28 @@ public class RailTurn extends AbstractRailBlock {
     }
 
     @Override
-    protected BlockState updateState(BlockState state, World world, BlockPos pos, boolean isMoving) {
+    protected BlockState updateState(BlockState state, Level world, BlockPos pos, boolean isMoving) {
         return state;
     }
 
     @Override
-    protected BlockState updateDir(World worldIn, BlockPos pos, BlockState state, boolean placing) {
+    protected BlockState updateDir(Level worldIn, BlockPos pos, BlockState state, boolean placing) {
         return state;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, SHAPE, POWERED, FLIPPED);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, SHAPE, POWERED, FLIPPED, WATERLOGGED);
     }
 
     @Override
-    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+    public boolean canMakeSlopes(BlockState state, BlockGetter world, BlockPos pos) {
         return false;
     }
 
 
     @Override
-    public RailShape getRailDirection(BlockState state, IBlockReader world, BlockPos pos, @Nullable AbstractMinecartEntity cart) {
+    public RailShape getRailDirection(BlockState state, BlockGetter world, BlockPos pos, @Nullable AbstractMinecart cart) {
 
         boolean is_powered = state.getValue(POWERED);
         Direction facing = state.getValue(FACING);
@@ -118,12 +128,12 @@ public class RailTurn extends AbstractRailBlock {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (!worldIn.isClientSide()) {
             worldIn.setBlockAndUpdate(pos, state.setValue(FLIPPED, !state.getValue(FLIPPED)));
-            worldIn.playSound((PlayerEntity)null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            worldIn.playSound((Player)null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
-        return ActionResultType.sidedSuccess(worldIn.isClientSide());
+        return InteractionResult.sidedSuccess(worldIn.isClientSide());
     }
 
 

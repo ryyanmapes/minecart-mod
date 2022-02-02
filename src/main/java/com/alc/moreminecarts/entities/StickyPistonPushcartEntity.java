@@ -1,22 +1,22 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMItemReferences;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 
 public class StickyPistonPushcartEntity extends PistonPushcartEntity{
 
-    public StickyPistonPushcartEntity(EntityType<?> type, World world) {
+    public StickyPistonPushcartEntity(EntityType<?> type, Level world) {
         super(type, world);
     }
 
-    public StickyPistonPushcartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public StickyPistonPushcartEntity(EntityType<?> type, Level worldIn, double x, double y, double z) {
         super(type, worldIn, x, y, z);
     }
 
@@ -26,13 +26,13 @@ public class StickyPistonPushcartEntity extends PistonPushcartEntity{
 
         if (ContainsPlayerPassenger()) {
             if (going_up && going_down) {
-                attempt_contract();
+                attemptContract();
             }
         }
 
     }
 
-    public void attempt_contract() {
+    public void attemptContract() {
         if (getHeight() <= 1) return;
 
         this.moveTo(this.position().add(0, getHeight(), 0));
@@ -40,13 +40,15 @@ public class StickyPistonPushcartEntity extends PistonPushcartEntity{
         setHeight(0);
 
         if (this.level.isClientSide) {
-            level.playLocalSound(position().x, position().y, position().z, SoundEvents.PISTON_CONTRACT, SoundCategory.NEUTRAL, 0.3F, 1.0F, false);
+            level.playLocalSound(position().x, position().y, position().z, SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 0.3F, 1.0F, false);
         }
+
+        onHeightChanged();
     }
 
     @Override
     public void destroy(DamageSource source) {
-        this.remove();
+        this.remove(RemovalReason.KILLED);
         if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             ItemStack stack = new ItemStack(MMItemReferences.iron_pushcart);
             if (this.hasCustomName()) {

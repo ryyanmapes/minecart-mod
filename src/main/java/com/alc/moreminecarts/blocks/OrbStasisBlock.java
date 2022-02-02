@@ -1,53 +1,52 @@
 package com.alc.moreminecarts.blocks;
 
 import com.alc.moreminecarts.tile_entities.OrbStasisTile;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
-public class OrbStasisBlock extends Block implements ITileEntityProvider {
+public class OrbStasisBlock extends Block implements EntityBlock {
 
     public static final BooleanProperty CONTAINS_PEARL = BooleanProperty.create("has_orb");
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public OrbStasisBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(CONTAINS_PEARL, false).setValue(POWERED, false));
+        this.registerDefaultState(defaultBlockState().setValue(CONTAINS_PEARL, false).setValue(POWERED, false));
     }
 
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(CONTAINS_PEARL, POWERED);
     }
 
     @Override
-    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
             this.updateState(state, worldIn, pos, state.getBlock());
         }
     }
 
     @Override
-    public void neighborChanged(BlockState p_220069_1_, World p_220069_2_, BlockPos p_220069_3_, Block p_220069_4_, BlockPos p_220069_5_, boolean p_220069_6_) {
+    public void neighborChanged(BlockState p_220069_1_, Level p_220069_2_, BlockPos p_220069_3_, Block p_220069_4_, BlockPos p_220069_5_, boolean p_220069_6_) {
         super.neighborChanged(p_220069_1_, p_220069_2_, p_220069_3_, p_220069_4_, p_220069_5_, p_220069_6_);
         updateState(p_220069_1_, p_220069_2_, p_220069_3_, p_220069_4_);
     }
 
-    protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
+    protected void updateState(BlockState state, Level worldIn, BlockPos pos, Block blockIn) {
         boolean old_powered = state.getValue(POWERED);
         boolean new_powered = worldIn.hasNeighborSignal(pos);
         if (old_powered != new_powered) {
@@ -59,21 +58,21 @@ public class OrbStasisBlock extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult blocktrace) {
-        if (state.getValue(CONTAINS_PEARL)) return ActionResultType.PASS;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult blocktrace) {
+        if (state.getValue(CONTAINS_PEARL)) return InteractionResult.PASS;
 
         ItemStack item_used = playerEntity.getItemInHand(hand);
         if (item_used.getItem() == Items.ENDER_PEARL) {
-            if (world.isClientSide) return ActionResultType.CONSUME;
+            if (world.isClientSide) return InteractionResult.CONSUME;
             if (updateTileEntity(state, world, pos, playerEntity) && !playerEntity.isCreative()) {
                 item_used.shrink(1);
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    private boolean updateTileEntity(BlockState state, World worldIn, BlockPos pos, PlayerEntity user) {
-        TileEntity te = worldIn.getBlockEntity(pos);
+    private boolean updateTileEntity(BlockState state, Level worldIn, BlockPos pos, Player user) {
+        BlockEntity te = worldIn.getBlockEntity(pos);
         if (te instanceof OrbStasisTile) {
             boolean now_has_pearl = ((OrbStasisTile)te).updateLock(state.getValue(POWERED), user);
 
@@ -87,15 +86,10 @@ public class OrbStasisBlock extends Block implements ITileEntityProvider {
         return false;
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
     @Nullable
     @Override
-    public TileEntity newBlockEntity(IBlockReader p_196283_1_) {
-        return new OrbStasisTile();
+    public BlockEntity newBlockEntity(BlockPos p_153277_, BlockState p_153278_) {
+        return new OrbStasisTile(p_153277_, p_153278_);
     }
 
     @Override
@@ -104,7 +98,7 @@ public class OrbStasisBlock extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, World p_180641_2_, BlockPos p_180641_3_) {
+    public int getAnalogOutputSignal(BlockState state, Level p_180641_2_, BlockPos p_180641_3_) {
         return state.getValue(CONTAINS_PEARL)? 15 : 0;
     }
 }

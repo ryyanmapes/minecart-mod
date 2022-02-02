@@ -5,47 +5,45 @@ import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.tile_entities.AbstractCommonLoader;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntArray;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 
-public class MinecartUnLoaderContainer extends Container {
+public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
     private final AbstractCommonLoader tile;
-    private final IInventory inventory;
-    private final IIntArray data;
-    protected final World level;
+    private final Container inventory;
+    private final ContainerData data;
 
-    public MinecartUnLoaderContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public MinecartUnLoaderContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
         super(MMReferences.minecart_loader_c, n);
 
         this.tile = null;
-        this.inventory = new Inventory(1);
-        this.data = new IntArray(3);
-        this.level = player_inventory.player.level;
+        this.inventory = new SimpleContainer(9);
+        this.data = new SimpleContainerData(2);
 
         CommonInitialization(player_inventory);
     }
 
-    // For use with tile entity loaders.
-    public MinecartUnLoaderContainer(int n, World world, BlockPos pos, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    // For use with tile entity loaders (server).
+    public MinecartUnLoaderContainer(int n, Level world, BlockPos pos, Inventory player_inventory, Player player_entity) {
         super(MMReferences.minecart_loader_c, n);
 
-        TileEntity te = world.getBlockEntity(pos);
+        BlockEntity te = world.getBlockEntity(pos);
 
         if (te instanceof MinecartLoaderTile) {
             MinecartLoaderTile loader = (MinecartLoaderTile) te;
@@ -59,17 +57,26 @@ public class MinecartUnLoaderContainer extends Container {
             this.tile = unloader;
         } else {
             // should error out?
-            this.inventory = new Inventory(1);
-            this.data = new IntArray(2);
+            this.inventory = new SimpleContainer(9);
+            this.data = new SimpleContainerData(2);
             this.tile = null;
         }
-
-        this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
     }
 
-    public void CommonInitialization(PlayerInventory player_inventory) {
+    // For use with tile entity loaders (client).
+    public MinecartUnLoaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_, AbstractCommonLoader tile) {
+        super(MMReferences.minecart_loader_c, p_38969_);
+
+        this.tile = tile;
+        this.inventory = p_38971_;
+        this.data = p_38972_;
+
+        CommonInitialization(p_38970_);
+    }
+
+    public void CommonInitialization(Inventory player_inventory) {
 
         checkContainerSize(inventory, 9);
         checkContainerDataCount(data, 2);
@@ -94,13 +101,13 @@ public class MinecartUnLoaderContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return this.inventory.stillValid(player);
     }
 
     // Taken from the chest container. No clue what this does really.
     @Override
-    public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int p_82846_2_) {
+    public ItemStack quickMoveStack(Player p_82846_1_, int p_82846_2_) {
         int containerRows = 1;
         ItemStack lvt_3_1_ = ItemStack.EMPTY;
         Slot lvt_4_1_ = (Slot)this.slots.get(p_82846_2_);

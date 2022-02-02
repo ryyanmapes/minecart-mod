@@ -2,34 +2,34 @@ package com.alc.moreminecarts.containers;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.BatteryCartEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntArray;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.level.Level;
 
-public class BatteryCartContainer extends Container {
+public class BatteryCartContainer extends AbstractContainerMenu {
 
     private BatteryCartEntity entity;
-    private final IIntArray data;
-    protected final World level;
+    private final ContainerData data;
+    protected final Level level;
 
     // For use on the client.
-    public BatteryCartContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public BatteryCartContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
         super(MMReferences.tank_cart_c, n);
 
         this.entity = null;
         this.level = world;
-        this.data = new IntArray(1);
+        this.data = new SimpleContainerData(1);
 
         CommonInitialization(player_inventory);
     }
 
     // For use with the entity cart.
-    public BatteryCartContainer(int n, World world, BatteryCartEntity entity, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public BatteryCartContainer(int n, Level world, BatteryCartEntity entity, Inventory player_inventory, Player player_entity) {
         super(MMReferences.battery_cart_c, n);
 
         this.entity = entity;
@@ -40,7 +40,7 @@ public class BatteryCartContainer extends Container {
     }
 
     // Only adds player inventory slots here.
-    public void CommonInitialization(PlayerInventory player_inventory) {
+    public void CommonInitialization(Inventory player_inventory) {
 
         checkContainerDataCount(data, 1);
 
@@ -59,7 +59,7 @@ public class BatteryCartContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return this.entity.stillValid(player);
     }
 

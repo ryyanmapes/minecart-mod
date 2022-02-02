@@ -7,27 +7,32 @@ import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
+import io.netty.buffer.Unpooled;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CUseEntityPacket;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundDisconnectPacket;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -100,13 +105,13 @@ public class MoreMinecartsPacketHandler {
             this.v2 = v2;
         }
 
-        public static void encode(CouplePacket msg,  PacketBuffer buf) {
+        public static void encode(CouplePacket msg, FriendlyByteBuf buf) {
             buf.writeInt(msg.v1);
             buf.writeInt(msg.v2);
             buf.writeInt(msg.coupler_id);
         }
 
-        public static CouplePacket decode(PacketBuffer buf) {
+        public static CouplePacket decode(FriendlyByteBuf buf) {
             CouplePacket packet = new CouplePacket(0,0,0);
             packet.v1 = buf.readInt();
             packet.v2 = buf.readInt();
@@ -119,7 +124,7 @@ public class MoreMinecartsPacketHandler {
             //LogManager.getLogger().info("HERE!!!");
             ctx.get().enqueueWork(() -> {
 
-                World world = MoreMinecartsMod.PROXY.getWorld();
+                Level world = MoreMinecartsMod.PROXY.getWorld();
 
                 Entity ent = world.getEntity(msg.coupler_id);
                 if (ent != null && ent instanceof CouplerEntity) {
@@ -140,11 +145,11 @@ public class MoreMinecartsPacketHandler {
             this.set_enabled = set_enabled;
         }
 
-        public static void encode(ChunkLoaderPacket msg, PacketBuffer buf) {
+        public static void encode(ChunkLoaderPacket msg, FriendlyByteBuf buf) {
             buf.writeBoolean(msg.set_enabled);
         }
 
-        public static ChunkLoaderPacket decode(PacketBuffer buf) {
+        public static ChunkLoaderPacket decode(FriendlyByteBuf buf) {
             ChunkLoaderPacket packet = new ChunkLoaderPacket(false);
             packet.set_enabled = buf.readBoolean();
             return packet;
@@ -154,7 +159,7 @@ public class MoreMinecartsPacketHandler {
         public static void handle(ChunkLoaderPacket msg, Supplier<NetworkEvent.Context> ctx) {
 
             ctx.get().enqueueWork(() -> {
-                ServerPlayerEntity sender = ctx.get().getSender();
+                ServerPlayer sender = ctx.get().getSender();
                 if (sender.containerMenu instanceof ChunkLoaderContainer) {
                     ((ChunkLoaderContainer)sender.containerMenu).setEnabled(msg.set_enabled);
                 }
@@ -173,12 +178,12 @@ public class MoreMinecartsPacketHandler {
             this.now_down = now_down;
         }
 
-        public static void encode(PistonPushcartPacket msg, PacketBuffer buf) {
+        public static void encode(PistonPushcartPacket msg, FriendlyByteBuf buf) {
             buf.writeBoolean(msg.is_up_key);
             buf.writeBoolean(msg.now_down);
         }
 
-        public static PistonPushcartPacket decode(PacketBuffer buf) {
+        public static PistonPushcartPacket decode(FriendlyByteBuf buf) {
             PistonPushcartPacket packet = new PistonPushcartPacket(false, false);
             packet.is_up_key = buf.readBoolean();
             packet.now_down = buf.readBoolean();
@@ -189,7 +194,7 @@ public class MoreMinecartsPacketHandler {
         public static void handle(PistonPushcartPacket msg, Supplier<NetworkEvent.Context> ctx) {
 
             ctx.get().enqueueWork(() -> {
-                ServerPlayerEntity sender = ctx.get().getSender();
+                ServerPlayer sender = ctx.get().getSender();
                 if (sender.getRootVehicle() instanceof PistonPushcartEntity) {
                     ((PistonPushcartEntity)sender.getRootVehicle()).setElevating(msg.is_up_key, msg.now_down);
                 }
@@ -199,39 +204,42 @@ public class MoreMinecartsPacketHandler {
 
     }
 
-    public static class ExtendedInteractPacket extends CUseEntityPacket {
+    public static enum FakeInteraction {
+        INTERACTION
+    }
 
-        public ExtendedInteractPacket(){}
+    public static class ExtendedInteractPacket extends ServerboundInteractPacket {
+
+        public ExtendedInteractPacket(FriendlyByteBuf p_179602_) {
+            super(p_179602_);
+        }
 
         @OnlyIn(Dist.CLIENT)
-        public ExtendedInteractPacket(Entity p_i47098_1_, Hand p_i47098_2_, boolean p_i47098_4_) {
-            super(p_i47098_1_, p_i47098_2_, p_i47098_4_);
+        public static ExtendedInteractPacket createExtendedInteractPacket(Entity p_179609_, boolean p_179610_, InteractionHand p_179611_) {
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+
+            buf.writeVarInt(p_179609_.getId());
+            buf.writeEnum(FakeInteraction.INTERACTION);
+            buf.writeEnum(p_179611_);
+            buf.writeBoolean(p_179610_);
+
+            return new ExtendedInteractPacket(buf);
         }
 
-        public static void encode(ExtendedInteractPacket msg, PacketBuffer buf) {
-            try {
-                msg.write(buf);
-            } catch (IOException e) {
-
-            }
+        public static void encode(ExtendedInteractPacket msg, FriendlyByteBuf buf) {
+            msg.write(buf);
         }
 
-        public static ExtendedInteractPacket decode(PacketBuffer buf) {
-            ExtendedInteractPacket packet = new ExtendedInteractPacket();
-            try {
-                packet.read(buf);
-            } catch (IOException e) {
-
-            }
-            return packet;
+        public static ExtendedInteractPacket decode(FriendlyByteBuf buf) {
+            ExtendedInteractPacket interact = new ExtendedInteractPacket(buf);
+            return interact;
         }
 
         public static void handle(ExtendedInteractPacket msg, Supplier<NetworkEvent.Context> ctx) {
-
+            MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "PISTON PUSHCART INTERACT 3");
             ctx.get().enqueueWork(() -> {
-                ServerPlayerEntity sender = ctx.get().getSender();
-                NetworkManager network = ctx.get().getNetworkManager();
-                handleInteract(network, msg, sender);
+                ServerPlayer sender = ctx.get().getSender();
+                handleInteract(msg, sender, ctx.get().getNetworkManager());
             });
             ctx.get().setPacketHandled(true);
         }
@@ -241,41 +249,70 @@ public class MoreMinecartsPacketHandler {
     // TAKEN FROM SERVERNETPLAYHANDLER
     // Works identically to normal interaction, except only when the distance is too far to be considered by
     // the vanilla failsafe. New max distance is 100.
-    public static void handleInteract(NetworkManager network, CUseEntityPacket p_147340_1_, ServerPlayerEntity player) {
-        ServerWorld serverworld = player.getLevel();
-        Entity entity = p_147340_1_.getTarget(serverworld);
+    public static void handleInteract(ServerboundInteractPacket p_9866_, ServerPlayer player, Connection connection) {
+        // hopefully not important?
+        //PacketUtils.ensureRunningOnSameThread(p_9866_, this, player.getLevel());
+
+        ServerLevel serverlevel = player.getLevel();
+        final Entity entity = p_9866_.getTarget(serverlevel);
         player.resetLastActionTime();
-        player.setShiftKeyDown(p_147340_1_.isUsingSecondaryAction());
+        player.setShiftKeyDown(p_9866_.isUsingSecondaryAction());
         if (entity != null) {
-            double d0 = player.distanceToSqr(entity);
-            if (d0 >= 36.0D && d0 < 175.0) {
-                Hand hand = p_147340_1_.getHand();
-                ItemStack itemstack = hand != null ? player.getItemInHand(hand).copy() : ItemStack.EMPTY;
-                Optional<ActionResultType> optional = Optional.empty();
-                if (p_147340_1_.getAction() == CUseEntityPacket.Action.INTERACT) {
-                    optional = Optional.of(player.interactOn(entity, hand));
-                } else if (p_147340_1_.getAction() == CUseEntityPacket.Action.INTERACT_AT) {
-                    if (net.minecraftforge.common.ForgeHooks.onInteractEntityAt(player, entity, p_147340_1_.getLocation(), hand) != null)
-                        return;
-                    optional = Optional.of(entity.interactAt(player, p_147340_1_.getLocation(), hand));
-                } else if (p_147340_1_.getAction() == CUseEntityPacket.Action.ATTACK) {
-                    if (entity instanceof ItemEntity || entity instanceof ExperienceOrbEntity || entity instanceof AbstractArrowEntity || entity == player) {
-                        network.disconnect(new TranslationTextComponent("multiplayer.disconnect.invalid_entity_attacked"));
-                        //LOGGER.warn("Player {} tried to attack an invalid entity", (Object) this.player.getName().getString());
-                        return;
+            if (!serverlevel.getWorldBorder().isWithinBounds(entity.blockPosition())) {
+                return;
+            }
+
+            double d0 = 36.0D;
+            if (player.distanceToSqr(entity) >= 36.0D && player.distanceToSqr(entity) < 100) {
+                MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "PISTON PUSHCART INTERACT 4");
+                p_9866_.dispatch(new ServerboundInteractPacket.Handler() {
+                    private void performInteraction(InteractionHand p_143679_, EntityInteraction p_143680_) {
+                        ItemStack itemstack = player.getItemInHand(p_143679_).copy();
+                        InteractionResult interactionresult = p_143680_.run(player, entity, p_143679_);
+                        if (net.minecraftforge.common.ForgeHooks.onInteractEntityAt(player, entity, entity.position(), p_143679_) != null) return;
+                        if (interactionresult.consumesAction()) {
+                            CriteriaTriggers.PLAYER_INTERACTED_WITH_ENTITY.trigger(player, itemstack, entity);
+                            if (interactionresult.shouldSwing()) {
+                                player.swing(p_143679_, true);
+                            }
+                        }
+
                     }
 
-                    player.attack(entity);
-                }
-
-                if (optional.isPresent() && optional.get().consumesAction()) {
-                    CriteriaTriggers.PLAYER_INTERACTED_WITH_ENTITY.trigger(player, itemstack, entity);
-                    if (optional.get().shouldSwing()) {
-                        player.swing(hand, true);
+                    public void onInteraction(InteractionHand p_143677_) {
+                        this.performInteraction(p_143677_, Player::interactOn);
                     }
-                }
+
+                    public void onInteraction(InteractionHand p_143682_, Vec3 p_143683_) {
+                        this.performInteraction(p_143682_, (p_143686_, p_143687_, p_143688_) -> {
+                            return p_143687_.interactAt(p_143686_, p_143683_, p_143688_);
+                        });
+                    }
+
+                    public void onAttack() {
+                        if (!(entity instanceof ItemEntity) && !(entity instanceof ExperienceOrb) && !(entity instanceof AbstractArrow) && entity != player) {
+                            player.attack(entity);
+                        } else {
+                            disconnect(new TranslatableComponent("multiplayer.disconnect.invalid_entity_attacked"), connection);
+                            //ServerGamePacketListenerImpl.LOGGER.warn("Player {} tried to attack an invalid entity", (Object)ServerGamePacketListenerImpl.this.player.getName().getString());
+                        }
+                    }
+                });
             }
         }
+    }
+
+    public static void disconnect(Component p_9943_, Connection connection) {
+        connection.send(new ClientboundDisconnectPacket(p_9943_), (p_9828_) -> {
+            connection.disconnect(p_9943_);
+        });
+        connection.setReadOnly();
+        connection.handleDisconnection();
+    }
+
+    @FunctionalInterface
+    interface EntityInteraction {
+        InteractionResult run(ServerPlayer p_143695_, Entity p_143696_, InteractionHand p_143697_);
     }
 
 
@@ -297,7 +334,7 @@ public class MoreMinecartsPacketHandler {
             this.redstone_output = redstone_output;
         }
 
-        public static void encode(MinecartLoaderPacket msg, PacketBuffer buf) {
+        public static void encode(MinecartLoaderPacket msg, FriendlyByteBuf buf) {
             buf.writeBoolean(msg.is_unloader);
             buf.writeBoolean(msg.locked_minecarts_only);
             buf.writeBoolean(msg.leave_one_item_in_stack);
@@ -305,7 +342,7 @@ public class MoreMinecartsPacketHandler {
             buf.writeBoolean(msg.redstone_output);
         }
 
-        public static MinecartLoaderPacket decode(PacketBuffer buf) {
+        public static MinecartLoaderPacket decode(FriendlyByteBuf buf) {
             MinecartLoaderPacket packet = new MinecartLoaderPacket();
             packet.is_unloader = buf.readBoolean();
             packet.locked_minecarts_only = buf.readBoolean();
@@ -319,7 +356,7 @@ public class MoreMinecartsPacketHandler {
         public static void handle(MinecartLoaderPacket msg, Supplier<NetworkEvent.Context> ctx) {
 
             ctx.get().enqueueWork(() -> {
-                ServerPlayerEntity sender = ctx.get().getSender();
+                ServerPlayer sender = ctx.get().getSender();
                 if (sender.containerMenu instanceof MinecartUnLoaderContainer) {
                     MinecartUnLoaderContainer container = ((MinecartUnLoaderContainer) sender.containerMenu);
                     container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output);
@@ -339,12 +376,12 @@ public class MoreMinecartsPacketHandler {
             this.is_disclude = is_disclude;
         }
 
-        public static void encode(FlagCartPacket msg, PacketBuffer buf) {
+        public static void encode(FlagCartPacket msg, FriendlyByteBuf buf) {
             buf.writeBoolean(msg.is_decrement);
             buf.writeBoolean(msg.is_disclude);
         }
 
-        public static FlagCartPacket decode(PacketBuffer buf) {
+        public static FlagCartPacket decode(FriendlyByteBuf buf) {
             FlagCartPacket packet = new FlagCartPacket(false, false);
             packet.is_decrement = buf.readBoolean();
             packet.is_disclude = buf.readBoolean();
@@ -355,7 +392,7 @@ public class MoreMinecartsPacketHandler {
         public static void handle(FlagCartPacket msg, Supplier<NetworkEvent.Context> ctx) {
 
             ctx.get().enqueueWork(() -> {
-                ServerPlayerEntity sender = ctx.get().getSender();
+                ServerPlayer sender = ctx.get().getSender();
                 if (sender.containerMenu instanceof FlagCartContainer) {
                     ((FlagCartContainer)sender.containerMenu).changeSelection(msg.is_decrement, msg.is_disclude);
                 }

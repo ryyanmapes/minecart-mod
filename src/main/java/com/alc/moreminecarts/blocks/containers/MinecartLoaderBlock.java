@@ -1,80 +1,79 @@
 package com.alc.moreminecarts.blocks.containers;
 
+import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class MinecartLoaderBlock extends ContainerBlock{
+public class MinecartLoaderBlock extends BaseEntityBlock {
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
     public MinecartLoaderBlock(Properties builder) {
         super(builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(ENABLED, true));
+        this.registerDefaultState(defaultBlockState().setValue(ENABLED, true));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(ENABLED);
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState p_149645_1_) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState p_149645_1_) {
+        return RenderShape.MODEL;
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult trace_result) {
-        if (world.isClientSide) return ActionResultType.SUCCESS;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace_result) {
+        if (world.isClientSide) return InteractionResult.SUCCESS;
 
-        TileEntity tile_entity = world.getBlockEntity(pos);
+        BlockEntity tile_entity = world.getBlockEntity(pos);
         if (tile_entity instanceof MinecartLoaderTile) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile_entity, pos);
-            return ActionResultType.SUCCESS;
+            player.openMenu((MenuProvider)tile_entity);
+            return InteractionResult.SUCCESS;
         }
 
-        return ActionResultType.PASS;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+        return InteractionResult.PASS;
     }
 
     @Nullable
     @Override
-    public TileEntity newBlockEntity(IBlockReader reader) {
-        return new MinecartLoaderTile();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new MinecartLoaderTile(pos, state);
     }
 
     @Override
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState state_2, boolean bool) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState state_2, boolean bool) {
         if (!state.is(state_2.getBlock())) {
-            TileEntity tile_entity = world.getBlockEntity(pos);
+            BlockEntity tile_entity = world.getBlockEntity(pos);
             if (tile_entity instanceof MinecartLoaderTile) {
                 MinecartLoaderTile loader = (MinecartLoaderTile) tile_entity;
-                InventoryHelper.dropContents(world, pos, loader);
+                Containers.dropContents(world, pos, loader);
                 world.updateNeighbourForOutputSignal(pos, this);
             }
             super.onRemove(state, world, pos, state_2, bool);
@@ -84,9 +83,9 @@ public class MinecartLoaderBlock extends ContainerBlock{
     // Stuff taken from FurnaceBlock.
 
     @Override
-    public void setPlacedBy(World p_180633_1_, BlockPos p_180633_2_, BlockState p_180633_3_, LivingEntity p_180633_4_, ItemStack p_180633_5_) {
+    public void setPlacedBy(Level p_180633_1_, BlockPos p_180633_2_, BlockState p_180633_3_, LivingEntity p_180633_4_, ItemStack p_180633_5_) {
         if (p_180633_5_.hasCustomHoverName()) {
-            TileEntity tileentity = p_180633_1_.getBlockEntity(p_180633_2_);
+            BlockEntity tileentity = p_180633_1_.getBlockEntity(p_180633_2_);
             if (tileentity instanceof MinecartLoaderTile) {
                 ((MinecartLoaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
             }
@@ -101,8 +100,8 @@ public class MinecartLoaderBlock extends ContainerBlock{
     }
 
     @Override
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        TileEntity tile_entity = blockAccess.getBlockEntity(pos);
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
+        BlockEntity tile_entity = blockAccess.getBlockEntity(pos);
         if (tile_entity instanceof MinecartLoaderTile) {
             if (!((MinecartLoaderTile) tile_entity).getOutputsRedstone()) return 0;
             return ((MinecartLoaderTile) tile_entity).getSignal();
@@ -116,8 +115,8 @@ public class MinecartLoaderBlock extends ContainerBlock{
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos) {
-        TileEntity tile_entity = world.getBlockEntity(pos);
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+        BlockEntity tile_entity = world.getBlockEntity(pos);
         if (tile_entity instanceof MinecartLoaderTile) {
             if (((MinecartLoaderTile) tile_entity).getOutputsRedstone()) return 0;
             return ((MinecartLoaderTile) tile_entity).getSignal();
@@ -128,21 +127,26 @@ public class MinecartLoaderBlock extends ContainerBlock{
     // Redstone stuff (taken from HopperBlock)
 
     @Override
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState old_state, boolean p_220082_5_) {
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState old_state, boolean p_220082_5_) {
         if (!old_state.is(state.getBlock())) {
             this.checkPoweredState(world, pos, state);
         }
     }
 
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos changed_pos, boolean p_220069_6_) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos changed_pos, boolean p_220069_6_) {
         this.checkPoweredState(world, pos, state);
     }
 
-    private void checkPoweredState(World world, BlockPos pos, BlockState state) {
+    private void checkPoweredState(Level world, BlockPos pos, BlockState state) {
         boolean flag = !world.hasNeighborSignal(pos);
         if (flag != state.getValue(ENABLED)) {
             world.setBlock(pos, state.setValue(ENABLED, flag), 4);
         }
 
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_152180_, BlockState p_152181_, BlockEntityType<T> p_152182_) {
+        return createTickerHelper(p_152182_, MMReferences.minecart_loader_te, MinecartLoaderTile::doTick);
     }
 }

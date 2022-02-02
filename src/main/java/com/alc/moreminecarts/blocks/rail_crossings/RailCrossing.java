@@ -1,20 +1,20 @@
 package com.alc.moreminecarts.blocks.rail_crossings;
 
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.RailShape;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public class RailCrossing extends AbstractRailBlock {
+public class RailCrossing extends BaseRailBlock {
     public static final Property<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
 
     public RailCrossing(Properties builder) {
@@ -22,17 +22,17 @@ public class RailCrossing extends AbstractRailBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(SHAPE);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(SHAPE, WATERLOGGED);
     }
 
     @Override
-    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+    public boolean canMakeSlopes(BlockState state, BlockGetter world, BlockPos pos) {
         return false;
     }
 
     @Override
-    public boolean isFlexibleRail(BlockState state, IBlockReader world, BlockPos pos) {
+    public boolean isFlexibleRail(BlockState state, BlockGetter world, BlockPos pos) {
         return false;
     }
 
@@ -42,10 +42,10 @@ public class RailCrossing extends AbstractRailBlock {
     }
 
     @Override
-    public RailShape getRailDirection(BlockState state, IBlockReader world, BlockPos pos, @Nullable AbstractMinecartEntity cart) {
+    public RailShape getRailDirection(BlockState state, BlockGetter world, BlockPos pos, @Nullable AbstractMinecart cart) {
         if (cart == null) return RailShape.NORTH_SOUTH;
 
-        Vector3d movement = cart.getDeltaMovement();
+        Vec3 movement = cart.getDeltaMovement();
         if (Math.abs(movement.x) > Math.abs(movement.z)) return RailShape.EAST_WEST;
         else return RailShape.NORTH_SOUTH;
     }

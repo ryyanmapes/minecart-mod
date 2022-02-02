@@ -2,34 +2,36 @@ package com.alc.moreminecarts.blocks.utility_rails;
 
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.entities.StickyPistonPushcartEntity;
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.RailShape;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class PistonLifterRailBlock extends AbstractRailBlock {
+public class PistonLifterRailBlock extends BaseRailBlock {
 
-    public enum PistonLifterEffect implements IStringSerializable {
+    public enum PistonLifterEffect implements StringRepresentable {
         lift,
         delift,
         snap;
@@ -68,42 +70,44 @@ public class PistonLifterRailBlock extends AbstractRailBlock {
 
     public PistonLifterRailBlock(Properties builder) {
         super(true, builder);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false)
-                .setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(EFFECT, PistonLifterEffect.lift));
+        this.registerDefaultState(defaultBlockState().setValue(POWERED, false)
+                .setValue(SHAPE, RailShape.NORTH_SOUTH)
+                .setValue(WATERLOGGED, Boolean.valueOf(false))
+                .setValue(EFFECT, PistonLifterEffect.lift));
     }
 
     @Override
-    public boolean canMakeSlopes(BlockState state, IBlockReader world, BlockPos pos) {
+    public boolean canMakeSlopes(BlockState state, BlockGetter world, BlockPos pos) {
         return false;
     }
 
     @Override
-    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+    public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
         if (worldIn.isClientSide() || !state.getValue(POWERED)) return;
         this.checkPressed(worldIn, pos, state);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
         this.checkPressed(worldIn, pos, state);
     }
 
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(SHAPE, POWERED, EFFECT);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(SHAPE, POWERED, EFFECT, WATERLOGGED);
     }
 
     // Below is slightly modified from DetectorRailBlock
 
-    private void checkPressed(World worldIn, BlockPos pos, BlockState state) {
+    private void checkPressed(Level worldIn, BlockPos pos, BlockState state) {
         if (this.canSurvive(state, worldIn, pos)) {
 
-            List<AbstractMinecartEntity> list = this.findMinecarts(worldIn, pos, AbstractMinecartEntity.class, (entity) -> true);
-            for (AbstractMinecartEntity minecart : list) {
+            List<AbstractMinecart> list = this.findMinecarts(worldIn, pos, AbstractMinecart.class, (entity) -> true);
+            for (AbstractMinecart minecart : list) {
 
                 if (state.getValue(EFFECT) == PistonLifterEffect.snap) {
 
                     if (minecart instanceof StickyPistonPushcartEntity) {
-                        ((StickyPistonPushcartEntity)minecart).attempt_contract();
+                        ((StickyPistonPushcartEntity)minecart).attemptContract();
                     }
 
                 }
@@ -117,33 +121,33 @@ public class PistonLifterRailBlock extends AbstractRailBlock {
     }
 
     @Override
-    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(state.getBlock())) {
             this.checkPressed(worldIn, pos, this.updateState(state, worldIn, pos, isMoving));
         }
     }
 
-    protected <T extends AbstractMinecartEntity> List<T> findMinecarts(World worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
+    protected <T extends AbstractMinecart> List<T> findMinecarts(Level worldIn, BlockPos pos, Class<T> cartType, @Nullable Predicate<Entity> filter) {
         return worldIn.getEntitiesOfClass(cartType, this.getDectectionBox(pos), filter);
     }
 
-    private AxisAlignedBB getDectectionBox(BlockPos pos) {
+    private AABB getDectectionBox(BlockPos pos) {
         double d0 = 0.2D;
-        return new AxisAlignedBB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
+        return new AABB((double)pos.getX() + 0.2D, (double)pos.getY(), (double)pos.getZ() + 0.2D, (double)(pos.getX() + 1) - 0.2D, (double)(pos.getY() + 1) - 0.2D, (double)(pos.getZ() + 1) - 0.2D);
     }
 
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (!worldIn.isClientSide()) {
             PistonLifterEffect effect = (PistonLifterEffect) state.getValue(EFFECT);
             worldIn.setBlockAndUpdate(pos, state.setValue(EFFECT, effect.next() ));
-            worldIn.playSound((PlayerEntity)null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            worldIn.playSound((Player)null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
-        return ActionResultType.sidedSuccess(worldIn.isClientSide());
+        return InteractionResult.sidedSuccess(worldIn.isClientSide());
     }
 
     @Override
-    protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
+    protected void updateState(BlockState state, Level worldIn, BlockPos pos, Block blockIn) {
         boolean flag1 = state.getValue(POWERED);
         boolean flag2 = worldIn.hasNeighborSignal(pos);
         if (flag1 != flag2) {

@@ -3,36 +3,36 @@ package com.alc.moreminecarts.containers;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.FlagCartEntity;
 import com.alc.moreminecarts.misc.FlagUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntArray;
-import net.minecraft.world.World;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public class FlagCartContainer extends Container {
+public class FlagCartContainer extends AbstractContainerMenu {
 
-    private final IInventory inventory;
-    private final IIntArray data;
-    protected final World level;
+    private final Container inventory;
+    private final ContainerData data;
+    protected final Level level;
 
     // For use on the client.
-    public FlagCartContainer(int n, World world, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public FlagCartContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
         super(MMReferences.flag_cart_c, n);
 
-        this.inventory = new Inventory(9);
-        this.data = new IntArray(2);
+        this.inventory = new SimpleContainer(9);
+        this.data = new SimpleContainerData(2);
         this.level = world;
 
         CommonInitialization(player_inventory);
     }
 
     // For use with the entity cart.
-    public FlagCartContainer(int n, World world, FlagCartEntity entity, PlayerInventory player_inventory, PlayerEntity player_entity) {
+    public FlagCartContainer(int n, Level world, FlagCartEntity entity, Inventory player_inventory, Player player_entity) {
         super(MMReferences.flag_cart_c, n);
 
         this.inventory = entity;
@@ -42,7 +42,7 @@ public class FlagCartContainer extends Container {
         CommonInitialization(player_inventory);
     }
 
-    public void CommonInitialization(PlayerInventory player_inventory) {
+    public void CommonInitialization(Inventory player_inventory) {
 
         checkContainerSize(inventory, 9);
         checkContainerDataCount(data, 2);
@@ -67,13 +67,13 @@ public class FlagCartContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return this.inventory.stillValid(player);
     }
 
     // Taken from the chest container. No clue what this does really.
     @Override
-    public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int p_82846_2_) {
+    public ItemStack quickMoveStack(Player p_82846_1_, int p_82846_2_) {
         int containerRows = 1;
         ItemStack lvt_3_1_ = ItemStack.EMPTY;
         Slot lvt_4_1_ = (Slot)this.slots.get(p_82846_2_);

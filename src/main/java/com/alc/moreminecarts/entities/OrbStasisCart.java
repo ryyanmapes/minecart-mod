@@ -4,28 +4,29 @@ import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.tile_entities.OrbStasisTile;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.PoweredRailBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.monster.EndermiteEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Endermite;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PoweredRailBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -33,18 +34,18 @@ import java.util.UUID;
 
 // Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
 // but we force it if it's a player
-public class OrbStasisCart extends AbstractMinecartEntity {
+public class OrbStasisCart extends AbstractMinecart {
 
-    private static final DataParameter<Boolean> HAS_ORB = EntityDataManager.defineId(OrbStasisCart.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_ORB = SynchedEntityData.defineId(OrbStasisCart.class, EntityDataSerializers.BOOLEAN);
 
     @Nullable
     public UUID owner_uuid;
 
-    public OrbStasisCart(EntityType<?> type, World world) {
+    public OrbStasisCart(EntityType<?> type, Level world) {
         super(type, world);
     }
 
-    public OrbStasisCart(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public OrbStasisCart(EntityType<?> type, Level worldIn, double x, double y, double z) {
         super(type, worldIn, x, y, z);
     }
 
@@ -62,8 +63,8 @@ public class OrbStasisCart extends AbstractMinecartEntity {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void remove(RemovalReason reason) {
+        super.remove(reason);
         attemptTeleport();
     }
 
@@ -72,24 +73,24 @@ public class OrbStasisCart extends AbstractMinecartEntity {
         if (p_96095_4_) attemptTeleport();
     }
 
-    public ActionResultType interact(PlayerEntity playerEntity, Hand hand) {
-        ActionResultType ret = super.interact(playerEntity, hand);
+    public InteractionResult interact(Player playerEntity, InteractionHand hand) {
+        InteractionResult ret = super.interact(playerEntity, hand);
         if (ret.consumesAction()) return ret;
-        if (getHasOrb()) return ActionResultType.PASS;
+        if (getHasOrb()) return InteractionResult.PASS;
 
         ItemStack item_used = playerEntity.getItemInHand(hand);
         if (item_used.getItem() == Items.ENDER_PEARL) {
-            if (level.isClientSide) return ActionResultType.CONSUME;
+            if (level.isClientSide) return InteractionResult.CONSUME;
             if (owner_uuid == null) {
                 addPearl(playerEntity);
                 if (!playerEntity.isCreative()) item_used.shrink(1);
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
 
     }
 
-    protected void addPearl(PlayerEntity player) {
+    protected void addPearl(Player player) {
         owner_uuid = player.getGameProfile().getId();
         setHasOrb(true);
     }
@@ -99,17 +100,16 @@ public class OrbStasisCart extends AbstractMinecartEntity {
 
         Entity entity = this.level.getPlayerByUUID(owner_uuid);
 
-        if (entity instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) entity;
+        if (entity instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) entity;
             // copied from EnderPearlEntity
             if (player.connection.getConnection().isConnected() && player.level == this.level && !player.isSleeping()) {
-                net.minecraftforge.event.entity.living.EnderTeleportEvent event = new net.minecraftforge.event.entity.living.EnderTeleportEvent(player,
-                        this.getX(), this.getY(), this.getZ(), 5.0F);
+                EntityTeleportEvent.ChorusFruit event = new EntityTeleportEvent.ChorusFruit(player,
+                        this.getX() + 0.5, this.getY() + 1, this.getZ() + 0.5);
                 if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) { // Don't indent to lower patch size
                     if (this.level.random.nextFloat() < 0.05F && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-                        EndermiteEntity endermiteentity = EntityType.ENDERMITE.create(this.level);
-                        endermiteentity.setPlayerSpawned(true);
-                        endermiteentity.moveTo(entity.getX(), entity.getY(), entity.getZ(), entity.yRot, entity.xRot);
+                        Endermite endermiteentity = EntityType.ENDERMITE.create(this.level);
+                        endermiteentity.moveTo(entity.getX(), entity.getY(), entity.getZ());
                         this.level.addFreshEntity(endermiteentity);
                     }
 
@@ -119,7 +119,7 @@ public class OrbStasisCart extends AbstractMinecartEntity {
 
                     entity.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
                     entity.fallDistance = 0.0F;
-                    entity.hurt(DamageSource.FALL, event.getAttackDamage());
+                    entity.hurt(DamageSource.FALL, 5.0f);
                 }
             }
         }
@@ -139,15 +139,15 @@ public class OrbStasisCart extends AbstractMinecartEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putUUID(OrbStasisTile.PLAYER_UUID_PROPERTY, this.owner_uuid);
+        if (this.owner_uuid != null) compound.putUUID(OrbStasisTile.PLAYER_UUID_PROPERTY, this.owner_uuid);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.owner_uuid = compound.getUUID(OrbStasisTile.PLAYER_UUID_PROPERTY);
+        if (compound.hasUUID(OrbStasisTile.PLAYER_UUID_PROPERTY)) this.owner_uuid = compound.getUUID(OrbStasisTile.PLAYER_UUID_PROPERTY);
         setHasOrb(owner_uuid != null);
     }
 
@@ -166,7 +166,7 @@ public class OrbStasisCart extends AbstractMinecartEntity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

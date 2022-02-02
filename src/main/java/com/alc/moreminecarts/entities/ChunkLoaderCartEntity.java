@@ -6,31 +6,31 @@ import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.minecart.ContainerMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.IIntArray;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 
-public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
-    private static final DataParameter<Boolean> POWERED = EntityDataManager.defineId(ChunkLoaderCartEntity.class, DataSerializers.BOOLEAN);
+public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
+    private static final EntityDataAccessor<Boolean> POWERED = SynchedEntityData.defineId(ChunkLoaderCartEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public ChunkLoaderCartEntity(EntityType<?> type, World world) {
+    public ChunkLoaderCartEntity(EntityType<?> type, Level world) {
         super(type, world);
         lit_last_tick = false;
         time_left = -1;
@@ -38,7 +38,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
         last_chunk_z = getOnPos().getZ() >> 4;
     }
 
-    public ChunkLoaderCartEntity(EntityType<?> type, World worldIn, double x, double y, double z) {
+    public ChunkLoaderCartEntity(EntityType<?> type, Level worldIn, double x, double y, double z) {
         super(type, x, y, z, worldIn);
         lit_last_tick = false;
         time_left = -1;
@@ -63,13 +63,13 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     }
 
     @Override
-    public void remove(boolean keepData) {
-        super.remove(keepData);
+    public void remove(RemovalReason reason) {
+        super.remove(reason);
         onRemoval();
     }
 
     @Override
-    protected Container createMenu(int i, PlayerInventory inv) {
+    protected AbstractContainerMenu createMenu(int i, Inventory inv) {
         return new ChunkLoaderContainer(i, level, this, dataAccess, inv, inv.player);
     }
 
@@ -87,7 +87,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -102,14 +102,14 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return player.distanceToSqr((double)this.position().x + 0.5D, (double)this.position().y + 0.5D, (double)this.position().z + 0.5D) <= 64.0D;
     }
 
     // Mostly copied from ChunkLoaderBlock
 
     // See ChunkLoaderBlock for an explanation of this monstrosity.
-    public final IIntArray dataAccess = new IIntArray() {
+    public final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             switch(index) {
@@ -149,7 +149,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     public int last_chunk_z;
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt(ChunkLoaderTile.TIME_LEFT_PROPERTY, this.time_left);
         compound.putInt(ChunkLoaderTile.LAST_CHUNK_X_PROPERTY, this.last_chunk_x);
@@ -157,7 +157,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.time_left = compound.getInt(ChunkLoaderTile.TIME_LEFT_PROPERTY);
         this.last_chunk_x = compound.getInt(ChunkLoaderTile.LAST_CHUNK_X_PROPERTY);
@@ -225,7 +225,7 @@ public class ChunkLoaderCartEntity extends ContainerMinecartEntity {
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerWorld) level, MMConstants.modid, this, chunk_x + i, chunk_z + j, add, true);
+                ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, this, chunk_x + i, chunk_z + j, add, true);
             }
         }
     }

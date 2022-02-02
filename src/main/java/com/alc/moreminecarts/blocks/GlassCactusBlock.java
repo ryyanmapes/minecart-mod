@@ -2,22 +2,23 @@ package com.alc.moreminecarts.blocks;
 
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CactusBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CactusBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.extensions.IForgeBlock;
 
@@ -31,26 +32,27 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(AGE);
     }
 
     // Grows 2x as slow.
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+    public void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
         if (rand.nextInt(2) == 0) super.randomTick(state, world, pos, rand);
     }
 
     // Dies outside of desert biomes.
-    public boolean canSurvive(BlockState state, IWorldReader world_reader, BlockPos pos) {
+    @Override
+    public  boolean canSurvive(BlockState state, LevelReader world_reader, BlockPos pos) {
 
-        Biome.Category category = world_reader.getBiome(pos).getBiomeCategory();
+        Biome.BiomeCategory category = world_reader.getBiome(pos).getBiomeCategory();
 
-        return (category == Biome.Category.DESERT || category == Biome.Category.NONE)
+        return (category == Biome.BiomeCategory.DESERT || category == Biome.BiomeCategory.NONE)
                 && super.canSurvive(state, world_reader, pos);
     }
 
-    public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
 
         // Turn into broken remote if entity is holo remote item.
         if (entity instanceof ItemEntity) {
@@ -67,7 +69,7 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
     }
 
     @Override
-    public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
+    public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
 
         BlockState plant = plantable.getPlant(world, pos.relative(facing));
 

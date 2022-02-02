@@ -1,13 +1,13 @@
 package com.alc.moreminecarts.misc;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class FlagSlot extends Slot {
 
 
-    public FlagSlot(IInventory inventory, int index, int x_pos, int y_pos) {
+    public FlagSlot(Container inventory, int index, int x_pos, int y_pos) {
         super(inventory, index, x_pos, y_pos);
     }
 

@@ -2,8 +2,8 @@ package com.alc.moreminecarts.items;
 
 import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.WoodenPushcartEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class WoodenPushcartItem extends AbstractMinecartItem {
 
@@ -12,7 +12,7 @@ public class WoodenPushcartItem extends AbstractMinecartItem {
     }
 
     @Override
-    void createMinecart(ItemStack stack, World world, double posX, double posY, double posZ) {
+    void createMinecart(ItemStack stack, Level world, double posX, double posY, double posZ) {
 
         WoodenPushcartEntity minecart = new WoodenPushcartEntity(MMReferences.wooden_pushcart, world, posX, posY, posZ);
         if (stack.hasCustomHoverName()) {

@@ -3,14 +3,14 @@ package com.alc.moreminecarts.client;
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class PistonPushcartDownKey extends KeyBinding {
+public class PistonPushcartDownKey extends KeyMapping {
 
 
     public PistonPushcartDownKey(String description, int default_key, String category) {
@@ -25,7 +25,7 @@ public class PistonPushcartDownKey extends KeyBinding {
 
         MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.PistonPushcartPacket(false, pressed));
 
-        PlayerEntity player = MoreMinecartsMod.PROXY.getPlayer();
+        Player player = MoreMinecartsMod.PROXY.getPlayer();
         if (player.getRootVehicle() instanceof PistonPushcartEntity) {
             ((PistonPushcartEntity) player.getRootVehicle()).setElevating(false, pressed);
         }

@@ -3,20 +3,20 @@ package com.alc.moreminecarts.proxy;
 import com.alc.moreminecarts.client.PistonPushcartDownKey;
 import com.alc.moreminecarts.client.PistonPushcartUpKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.client.ClientRegistry;
 
 public class ClientProxy implements IProxy {
 
 
     @Override
-    public World getWorld() {
+    public Level getWorld() {
         return Minecraft.getInstance().level;
     }
 
     @Override
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return Minecraft.getInstance().player;
     }
 

@@ -1,16 +1,16 @@
 package com.alc.moreminecarts.blocks.holo_scaffolds;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.TickPriority;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.ticks.TickPriority;
 
 import java.util.Random;
 
@@ -29,12 +29,12 @@ public class ChaoticHoloScaffold extends HoloScaffold {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> p_206840_1_) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_206840_1_) {
         p_206840_1_.add(TRUE_DISTANCE, WATERLOGGED, BOTTOM, STRENGTH, GROW_DIRECTION, READY_TO_GROW);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
         super.tick(state, world, pos, rand);
 
         BlockState true_state = world.getBlockState(pos);
@@ -62,7 +62,7 @@ public class ChaoticHoloScaffold extends HoloScaffold {
                     .setValue(BOTTOM, this.isBottom(world, new_pos, new_distance))
                     .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(new_distance))
                     .setValue(GROW_DIRECTION, new_direction), 2);
-                world.getBlockTicks().scheduleTick(new_pos, true_state.getBlock(), 3, TickPriority.VERY_LOW);
+                world.scheduleTick(new_pos, true_state.getBlock(), 3, TickPriority.VERY_LOW);
             }
         }
         else {
@@ -74,14 +74,14 @@ public class ChaoticHoloScaffold extends HoloScaffold {
                     .setValue(BOTTOM, this.isBottom(world, new_pos, new_distance))
                     .setValue(STRENGTH, HoloScaffoldStrength.getFromLength(new_distance))
                     .setValue(GROW_DIRECTION, direction), 2);
-                world.getBlockTicks().scheduleTick(new_pos, true_state.getBlock(), 3, TickPriority.VERY_LOW);
+                world.scheduleTick(new_pos, true_state.getBlock(), 3, TickPriority.VERY_LOW);
             }
         }
 
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         return super.getStateForPlacement(context)
             .setValue(GROW_DIRECTION, context.getClickedFace())
             .setValue(READY_TO_GROW, true);
