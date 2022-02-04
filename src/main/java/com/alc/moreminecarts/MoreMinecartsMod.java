@@ -195,14 +195,14 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> PEARL_STASIS_CHAMBER = BLOCKS.register("pearl_stasis_chamber", () -> new OrbStasisBlock(BlockBehaviour.Properties.of(Material.ICE_SOLID, MaterialColor.COLOR_PURPLE).strength(5f).noOcclusion()));
 
     // Other Blocks
-    private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block( BlockBehaviour.Properties.of(Material.METAL).strength(3f,3f).sound(SoundType.METAL)));
+    private static final RegistryObject<Block> SILICA_STEEL_BLOCK = BLOCKS.register("silica_steel_block", () -> new Block( BlockBehaviour.Properties.of(Material.METAL).strength(3f,3f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
     private static final RegistryObject<Block> CHUNKRODITE_BLOCK = BLOCKS.register("chunkrodite_block", () -> new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(2f, 2f)));
-    private static final RegistryObject<Block> CORRUGATED_SILICA_STEEL = BLOCKS.register("corrugated_silica_steel", () -> new Block(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f, 2f)));
-    private static final RegistryObject<Block> SILICA_STEEL_PILLAR = BLOCKS.register("silica_steel_pillar", () -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f, 2f)));
-    private static final RegistryObject<Block> ORGANIC_GLASS = BLOCKS.register("organic_glass", () -> new GlassBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
-    private static final RegistryObject<Block> ORGANIC_GLASS_PANE = BLOCKS.register("organic_glass_pane", () -> new IronBarsBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
-    private static final RegistryObject<Block> CHISELED_ORGANIC_GLASS = BLOCKS.register("chiseled_organic_glass", () -> new GlassBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
-    private static final RegistryObject<Block> CHISELED_ORGANIC_GLASS_PANE = BLOCKS.register("chiseled_organic_glass_pane", () -> new IronBarsBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
+    private static final RegistryObject<Block> CORRUGATED_SILICA_STEEL = BLOCKS.register("corrugated_silica_steel", () -> new Block(BlockBehaviour.Properties.of(Material.METAL).requiresCorrectToolForDrops().sound(SoundType.METAL).strength(2f, 2f)));
+    private static final RegistryObject<Block> SILICA_STEEL_PILLAR = BLOCKS.register("silica_steel_pillar", () -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).requiresCorrectToolForDrops().sound(SoundType.METAL).strength(2f, 2f)));
+    private static final RegistryObject<Block> ORGANIC_GLASS = BLOCKS.register("organic_glass", () -> new GlassBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
+    private static final RegistryObject<Block> ORGANIC_GLASS_PANE = BLOCKS.register("organic_glass_pane", () -> new IronBarsBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
+    private static final RegistryObject<Block> CHISELED_ORGANIC_GLASS = BLOCKS.register("chiseled_organic_glass", () -> new GlassBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
+    private static final RegistryObject<Block> CHISELED_ORGANIC_GLASS_PANE = BLOCKS.register("chiseled_organic_glass_pane", () -> new IronBarsBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn((a,b,c,d)->false).isRedstoneConductor((a,b,c)->false).isSuffocating((a,b,c)->false).isViewBlocking((a,b,c)->false)));
     private static final RegistryObject<Block> GLASS_CACTUS = BLOCKS.register("glass_cactus", () -> new GlassCactusBlock(BlockBehaviour.Properties.of(Material.CACTUS).randomTicks().strength(2F).sound(SoundType.WOOL).noOcclusion()));
     private static final RegistryObject<Block> HOLO_SCAFFOLD_GENERATOR = BLOCKS.register("holo_scaffold_generator", () -> new Block(BlockBehaviour.Properties.of(Material.HEAVY_METAL, MaterialColor.COLOR_GRAY).strength(3f,3f).lightLevel((state) -> 13)));
     private static final RegistryObject<Block> HOLO_SCAFFOLD = BLOCKS.register("holo_scaffold", () -> new HoloScaffold(BlockBehaviour.Properties.of(Material.DECORATION).strength(0.05F).noOcclusion().dynamicShape()));
@@ -414,13 +414,13 @@ public class MoreMinecartsMod
     {
         GLASS_CACTUS_CONFIG =
                 new RandomPatchConfiguration(
-                        5,
+                        3,
                         5,
                         0,
                         () -> {
                             return Feature.BLOCK_COLUMN.configured(
                                 BlockColumnConfiguration.simple(
-                                    BiasedToBottomInt.of(3, 8),
+                                    BiasedToBottomInt.of(1, 4),
                                     BlockStateProvider.simple(glass_cactus)
                                 )).placed(BlockPredicateFilter.forPredicate(
                                     BlockPredicate.allOf(
@@ -440,7 +440,7 @@ public class MoreMinecartsMod
 
         GLASS_CACTUS_PLACER = PlacementUtils.register("glass_cactus",
                 GLASS_CACTUS_FEATURE.placed(
-                        RarityFilter.onAverageOnceEvery(2),
+                        RarityFilter.onAverageOnceEvery(100),
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP,
                         BiomeFilter.biome()

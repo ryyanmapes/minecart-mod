@@ -42,7 +42,8 @@ public class MinecartLoaderTile extends AbstractCommonLoader {
 
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        return new MinecartUnLoaderContainer(i, inventory, this, this.dataAccess, this);
+        setChanged();
+        return new MinecartUnLoaderContainer(i, inventory, this, this.dataAccess, getBlockPos());
     }
 
     @Override

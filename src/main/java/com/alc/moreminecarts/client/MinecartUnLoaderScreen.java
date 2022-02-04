@@ -31,6 +31,11 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
         super(container, inv, new TranslatableComponent(container.getIsUnloader()? "Minecart Unloader" : "Minecart Loader"));
     }
 
+    @Override
+    public Component getTitle() {
+        return new TranslatableComponent(menu.getIsUnloader()? "Minecart Unloader" : "Minecart Loader");
+    }
+
     private void addButton(AbstractButton p_169617_) {
         this.addWidget(p_169617_);
         this.buttons.add(p_169617_);
@@ -47,6 +52,8 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
 
     @Override
     public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+
+
         this.renderBackground(p_230430_1_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
@@ -79,8 +86,10 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     }
 
     // Taken from BeaconScreen, for tooltip rendering.
+    @Override
     protected void renderLabels(PoseStack matrix, int p_230451_2_, int p_230451_3_) {
-        super.renderLabels(matrix, p_230451_2_, p_230451_3_);
+        this.font.draw(matrix, getTitle(), (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+        this.font.draw(matrix, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
 
         Iterator var4 = this.buttons.iterator();
 

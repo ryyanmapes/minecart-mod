@@ -117,6 +117,12 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
                     return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4);
                 case 1:
                     return getIsUnloader()? 1 : 0;
+                case 2:
+                    return getBlockPos().getX();
+                case 3:
+                    return getBlockPos().getY();
+                case 4:
+                    return getBlockPos().getZ();
                 default:
                     return 0;
             }
@@ -138,7 +144,7 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
 
         @Override
         public int getCount() {
-            return 2;
+            return 5;
         }
     };
 

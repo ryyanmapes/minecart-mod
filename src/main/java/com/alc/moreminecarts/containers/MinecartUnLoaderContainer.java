@@ -25,16 +25,19 @@ import javax.annotation.Nullable;
 
 public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
-    private final AbstractCommonLoader tile;
     private final Container inventory;
     private final ContainerData data;
+    private final Level level;
+
+    private AbstractCommonLoader tile;
 
     public MinecartUnLoaderContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
         super(MMReferences.minecart_loader_c, n);
 
         this.tile = null;
+        this.level = player_inventory.player.level;
         this.inventory = new SimpleContainer(9);
-        this.data = new SimpleContainerData(2);
+        this.data = new SimpleContainerData(5);
 
         CommonInitialization(player_inventory);
     }
@@ -58,18 +61,20 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
         } else {
             // should error out?
             this.inventory = new SimpleContainer(9);
-            this.data = new SimpleContainerData(2);
+            this.data = new SimpleContainerData(5);
             this.tile = null;
         }
+        this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
     }
 
     // For use with tile entity loaders (client).
-    public MinecartUnLoaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_, AbstractCommonLoader tile) {
+    public MinecartUnLoaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_, BlockPos tilePos) {
         super(MMReferences.minecart_loader_c, p_38969_);
 
-        this.tile = tile;
+        this.level = p_38970_.player.level;
+        this.tile = (AbstractCommonLoader) level.getBlockEntity(tilePos);
         this.inventory = p_38971_;
         this.data = p_38972_;
 
@@ -79,7 +84,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
     public void CommonInitialization(Inventory player_inventory) {
 
         checkContainerSize(inventory, 9);
-        checkContainerDataCount(data, 2);
+        checkContainerDataCount(data, 5);
 
         // content slots
         for(int i = 0; i < 9; ++i) {
@@ -99,6 +104,8 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
         this.addDataSlots(data);
     }
+
+
 
     @Override
     public boolean stillValid(Player player) {
@@ -140,13 +147,27 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     public FluidStack getFluids() {
-        if (tile == null) return null;
+        if (tile == null) {
+            AttemptFindTile();
+            if (tile == null) return null;
+        }
         return tile.getFluidStack();
     }
 
     public int getEnergy() {
-        if (tile == null) return 0;
+        if (tile == null) {
+            AttemptFindTile();
+            if (tile == null) return 0;
+        }
         return tile.getEnergyAmount();
+    }
+
+    protected void AttemptFindTile() {
+        BlockPos location = new BlockPos(data.get(2),data.get(3),data.get(4));
+        if (location.getX() == 0 && location.getY() == 0 && location.getZ() == 0) return;
+        BlockEntity ent = level.getBlockEntity(location);
+        if (ent == null || !(ent instanceof AbstractCommonLoader)) return;
+        tile = (AbstractCommonLoader) ent;
     }
 
     public boolean getRedstoneOutput()
@@ -180,7 +201,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
     }
 
     public boolean getIsUnloader() {
-        return this.data.get(1) > 0;
+        return data.get(1) >= 1;
     }
 
     public void setOptions(boolean locked_minecarts_only, boolean leave_one_in_stack, MinecartLoaderTile.ComparatorOutputType comparator_output, boolean redstone_output) {
