@@ -118,7 +118,9 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
         double multiplier = MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER.get();
         double fuel = -1;
 
-        if (item == Items.QUARTZ) fuel = 600;
+        if (item == Items.QUARTZ) fuel = 200;
+        else if (item == Items.AMETHYST_SHARD) fuel = 600;
+        else if (item == Items.AMETHYST_BLOCK) fuel = 600;
         else if (item == Items.EMERALD) fuel = 6000;
         else if (item == Items.EMERALD_BLOCK) fuel = 54000;
         else if (item == Items.DIAMOND) fuel = 72000;

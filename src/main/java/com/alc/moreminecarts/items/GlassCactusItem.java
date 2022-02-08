@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.items;
 
+import com.alc.moreminecarts.MMConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.BlockItem;
@@ -23,7 +24,8 @@ public class GlassCactusItem extends BlockItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(new TranslatableComponent("lore.glass_cactus"));
+        if (MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY.get())
+            tooltip.add(new TranslatableComponent("lore.glass_cactus"));
 
     }
 

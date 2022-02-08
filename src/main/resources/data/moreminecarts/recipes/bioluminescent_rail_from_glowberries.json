@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "RGR",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "moreminecarts:wooden_rail"
+    },
+    "G": {
+      "item": "minecraft:glow_berries"
+    }
+  },
+  "result": {
+    "item": "moreminecarts:bioluminescent_rail",
+    "count": 8
+  }
+}

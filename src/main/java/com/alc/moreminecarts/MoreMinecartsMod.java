@@ -403,8 +403,17 @@ public class MoreMinecartsMod
         CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Changes how expensive keeping the chunk loader on is. Set to zero to prevent chunk loading completely.");
-        MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER = builder.defineInRange("chunk_loader_multiplier", ()->1.0D, 0, 100);
+        MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER = builder.defineInRange("chunk_loader_multiplier", ()->1.0D, 0, 9999);
+        builder.comment("How often vitric cactus spawns. A larger number is more rare. Default cactus is 6-13, set to zero to disable.");
+        MMConstants.CONFIG_GLASS_CACTUS_SPAWNS = builder.defineInRange("vitric_cactus_rarity", ()->100, 0, 9999);
+        builder.comment("Requires that vitric cactus be grown only in desert and mesa biomes.");
+        MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY = builder.define("vitric_cactus_desert_only", true);
+        builder.comment("Sets the max speed of various rail types. Default rails are 0.4.");
+        MMConstants.CONFIG_WOOD_RAILS_MAX_SPEED = builder.defineInRange("wood_rails_max_speed", ()->0.2D, 0.1, 10);
+        MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED = builder.defineInRange("maglev_rails_max_speed", ()->1.0D, 0.1, 10);
+        MMConstants.CONFIG_LIGHTSPEED_RAILS_MAX_SPEED = builder.defineInRange("lightspeed_rails_max_speed", ()->2.5D, 0.1, 10);
+        builder.comment("Sets the extra speed boost given by turbo rails. 0.06 is the default for regular powered rails.");
+        MMConstants.CONFIG_TURBO_BOOST = builder.defineInRange("turbo_rails_max_speed", ()->0.2D, 0, 1);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, builder.build(), "moreminecartsconfig.toml");
 
@@ -438,13 +447,21 @@ public class MoreMinecartsMod
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), ()->potted_beet);
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), ()->potted_glass_cactus);
 
+        int actualGlassCactusRarity = MMConstants.CONFIG_GLASS_CACTUS_SPAWNS.get();
+        if (actualGlassCactusRarity == 0) actualGlassCactusRarity = 100;
+
         GLASS_CACTUS_PLACER = PlacementUtils.register("glass_cactus",
                 GLASS_CACTUS_FEATURE.placed(
-                        RarityFilter.onAverageOnceEvery(100),
+                        RarityFilter.onAverageOnceEvery(actualGlassCactusRarity),
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP,
                         BiomeFilter.biome()
                 ));
+
+        MMConstants.WOODEN_MAX_SPEED = MMConstants.CONFIG_WOOD_RAILS_MAX_SPEED.get().floatValue();
+        MMConstants.MAGLEV_MAX_SPEED = MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED.get().floatValue();
+        MMConstants.LIGHTSPEED_MAX_SPEED = MMConstants.CONFIG_LIGHTSPEED_RAILS_MAX_SPEED.get().floatValue();
+        MMConstants.POWERED_LIGHTSPEED_BOOST = MMConstants.CONFIG_TURBO_BOOST.get().floatValue();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

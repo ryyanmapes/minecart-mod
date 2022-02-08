@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.misc;
 
 
+import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.entities.HSMinecartEntities;
@@ -91,7 +92,9 @@ public class MoreMinecartsEventReciever {
 
     @SubscribeEvent
     public static void onBiomeLoad(BiomeLoadingEvent event) {
-        if (event.getCategory() == Biome.BiomeCategory.DESERT) {
+        if (MMConstants.CONFIG_GLASS_CACTUS_SPAWNS.get() == 0) return;
+
+        if (event.getCategory() == Biome.BiomeCategory.DESERT || event.getCategory() == Biome.BiomeCategory.MESA) {
             event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MoreMinecartsMod.GLASS_CACTUS_PLACER);
         }
     }
