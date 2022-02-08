@@ -1,0 +1,24 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "tag": "minecraft:coals"
+    },
+    {
+      "tag": "forge:ingots/iron"
+    },
+    {
+      "item":"minecraft:quartz"
+    },
+    {
+      "item":"minecraft:quartz"
+    }
+  ],
+  "results": [
+    {
+      "item": "moreminecarts:silica_steel",
+      "count": 2
+    }
+  ],
+  "heatRequirement": "heated"
+}
