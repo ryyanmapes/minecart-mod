@@ -392,7 +392,17 @@ public class MoreMinecartsMod
 
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Changes how expensive keeping the chunk loader on is. Set to zero to prevent chunk loading completely.");
-        MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER = builder.defineInRange("chunk_loader_multiplier", ()->1.0D, 0, 100);
+        MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER = builder.defineInRange("chunk_loader_multiplier", ()->1.0D, 0, 9999);
+        builder.comment("Changes the spawn rate of vitric cactus. Default cactus is 10, set to zero to disable.");
+        MMConstants.CONFIG_GLASS_CACTUS_SPAWNS = builder.defineInRange("vitric_cactus_spawns", ()->2, 0, 100);
+        builder.comment("Requires that vitric cactus be grown only in desert and mesa biomes.");
+        MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY = builder.define("vitric_cactus_desert_only", true);
+        builder.comment("Sets the max speed of various rail types. Default rails are 0.4.");
+        MMConstants.CONFIG_WOOD_RAILS_MAX_SPEED = builder.defineInRange("wood_rails_max_speed", ()->0.2D, 0.1, 10);
+        MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED = builder.defineInRange("maglev_rails_max_speed", ()->1.0D, 0.1, 10);
+        MMConstants.CONFIG_LIGHTSPEED_RAILS_MAX_SPEED = builder.defineInRange("lightspeed_rails_max_speed", ()->2.5D, 0.1, 10);
+        builder.comment("Sets the extra speed boost given by turbo rails. 0.06 is the default for regular powered rails.");
+        MMConstants.CONFIG_TURBO_BOOST = builder.defineInRange("turbo_rails_max_speed", ()->0.2D, 0, 1);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, builder.build(), "moreminecartsconfig.toml");
 
@@ -406,11 +416,17 @@ public class MoreMinecartsMod
                         new ColumnBlockPlacer(1, 2))
                         .tries(2).noProjection().build();
         GLASS_CACTUS_FEATURE = Feature.RANDOM_PATCH
-                .configured(GLASS_CACTUS_CONFIG).decorated(Features.Placements.HEIGHTMAP_DOUBLE_SQUARE).count(2);
+                .configured(GLASS_CACTUS_CONFIG).decorated(Features.Placements.HEIGHTMAP_DOUBLE_SQUARE)
+                .count(MMConstants.CONFIG_GLASS_CACTUS_SPAWNS.get());
 
         Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, "glass_cactus", GLASS_CACTUS_FEATURE);
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), ()->potted_beet);
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), ()->potted_glass_cactus);
+
+        MMConstants.WOODEN_MAX_SPEED = MMConstants.CONFIG_WOOD_RAILS_MAX_SPEED.get().floatValue();
+        MMConstants.MAGLEV_MAX_SPEED = MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED.get().floatValue();
+        MMConstants.LIGHTSPEED_MAX_SPEED = MMConstants.CONFIG_LIGHTSPEED_RAILS_MAX_SPEED.get().floatValue();
+        MMConstants.POWERED_LIGHTSPEED_BOOST = MMConstants.CONFIG_TURBO_BOOST.get().floatValue();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
