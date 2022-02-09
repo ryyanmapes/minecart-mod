@@ -47,7 +47,7 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
         Biome.Category category = world_reader.getBiome(pos).getBiomeCategory();
 
-        return (category == Biome.Category.DESERT || category == Biome.Category.NONE || !MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY.get())
+        return (category == Biome.Category.DESERT || category == Biome.Category.MESA || category == Biome.Category.NONE || !MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY.get())
                 && super.canSurvive(state, world_reader, pos);
     }
 
