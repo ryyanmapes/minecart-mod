@@ -1,20 +1,27 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "LLL",
-    "LEL",
-    "LLL"
-  ],
-  "key": {
-    "L": {
-      "item": "moreminecarts:levitation_powder"
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "moreminecarts:silica_steel"
     },
-    "E": {
-      "item": "minecraft:emerald_block"
+    {
+        "item": "moreminecarts:levitation_powder"
+    },
+    {
+        "item": "moreminecarts:levitation_powder"
+    },
+    {
+        "item": "moreminecarts:levitation_powder"
+    },
+    {
+        "item": "moreminecarts:levitation_powder"
+    },
+    {
+      "item": "minecraft:emerald"
     }
-  },
+  ],
   "result": {
     "item": "moreminecarts:high_speed_upgrade",
-    "count": 2
+    "count": 1
   }
 }
