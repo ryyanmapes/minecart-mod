@@ -413,7 +413,7 @@ public class MoreMinecartsMod
         MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED = builder.defineInRange("maglev_rails_max_speed", ()->1.0D, 0.1, 10);
         MMConstants.CONFIG_LIGHTSPEED_RAILS_MAX_SPEED = builder.defineInRange("lightspeed_rails_max_speed", ()->2.5D, 0.1, 10);
         builder.comment("Sets the extra speed boost given by turbo rails. 0.06 is the default for regular powered rails.");
-        MMConstants.CONFIG_TURBO_BOOST = builder.defineInRange("turbo_rails_max_speed", ()->0.2D, 0, 1);
+        MMConstants.CONFIG_TURBO_BOOST = builder.defineInRange("turbo_rails_boost", ()->0.2D, 0, 1);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, builder.build(), "moreminecartsconfig.toml");
 
