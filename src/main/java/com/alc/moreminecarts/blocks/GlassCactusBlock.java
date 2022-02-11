@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.blocks;
 
+import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MMReferences;
 import net.minecraft.block.Block;
@@ -46,7 +47,7 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
         Biome.Category category = world_reader.getBiome(pos).getBiomeCategory();
 
-        return (category == Biome.Category.DESERT || category == Biome.Category.NONE)
+        return (category == Biome.Category.DESERT || category == Biome.Category.MESA || category == Biome.Category.NONE || !MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY.get())
                 && super.canSurvive(state, world_reader, pos);
     }
 

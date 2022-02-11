@@ -10,7 +10,7 @@
       "tag": "forge:ingots/gold"
     },
     "R": {
-      "item": "minecraft:redstone_block"
+      "item": "minecraft:redstone"
     },
     "L": {
       "item": "moreminecarts:levitation_powder"

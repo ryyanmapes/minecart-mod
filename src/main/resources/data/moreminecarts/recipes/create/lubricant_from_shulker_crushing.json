@@ -1,0 +1,15 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:shulker_shell"
+    }
+  ],
+  "results": [
+    {
+      "item": "moreminecarts:levitation_powder",
+      "count": 20
+    }
+  ],
+  "processingTime": 200
+}

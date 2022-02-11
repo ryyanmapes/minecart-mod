@@ -5,10 +5,10 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class MMConstants {
     public static final String modid = "moreminecarts";
 
-    public static final float WOODEN_MAX_SPEED = 0.2f;
-    public static final float MAGLEV_MAX_SPEED = 1f;
-    public static final float LIGHTSPEED_MAX_SPEED = 2.5f;
-    public static final double POWERED_LIGHTSPEED_BOOST = 0.2; // default powered rail: 0.06f
+    public static float WOODEN_MAX_SPEED = 0.2f;
+    public static float MAGLEV_MAX_SPEED = 1f;
+    public static float LIGHTSPEED_MAX_SPEED = 2.5f;
+    public static double POWERED_LIGHTSPEED_BOOST = 0.2; // default powered rail: 0.06f
 
     public static final double POWERED_LOCKING_RAIL_SPEED = 0.05;
 
@@ -20,5 +20,11 @@ public class MMConstants {
     public static final float PISTON_PUSHCART_MAX_HEIGHT = 10f;
 
     public static ForgeConfigSpec.DoubleValue CONFIG_CHUNK_LOADER_MULTIPLIER;
+    public static ForgeConfigSpec.IntValue CONFIG_GLASS_CACTUS_SPAWNS;
+    public static ForgeConfigSpec.BooleanValue CONFIG_GLASS_CACTUS_DESERT_ONLY;
+    public static ForgeConfigSpec.DoubleValue CONFIG_WOOD_RAILS_MAX_SPEED;
+    public static ForgeConfigSpec.DoubleValue CONFIG_MAGLEV_RAILS_MAX_SPEED;
+    public static ForgeConfigSpec.DoubleValue CONFIG_LIGHTSPEED_RAILS_MAX_SPEED;
+    public static ForgeConfigSpec.DoubleValue CONFIG_TURBO_BOOST;
 
 }

@@ -1,0 +1,19 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:phantom_membrane"
+    }
+  ],
+  "results": [
+    {
+      "item": "moreminecarts:levitation_powder",
+      "count": 1
+    },
+    {
+      "item": "moreminecarts:levitation_powder",
+      "chance": 0.5
+    }
+  ],
+  "processingTime": 100
+}

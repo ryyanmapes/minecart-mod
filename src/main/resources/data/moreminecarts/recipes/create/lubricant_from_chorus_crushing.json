@@ -1,0 +1,15 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:popped_chorus_fruit"
+    }
+  ],
+  "results": [
+    {
+      "item": "moreminecarts:levitation_powder",
+      "chance": 0.125
+    }
+  ],
+  "processingTime": 25
+}
