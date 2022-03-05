@@ -205,7 +205,7 @@ public class HoloRemoteItem extends Item {
                         return false;
                     }
 
-                    CompoundTag compoundnbt1 = tileentity.save(new CompoundTag());
+                    CompoundTag compoundnbt1 = tileentity.saveWithFullMetadata();
                     CompoundTag compoundnbt2 = compoundnbt1.copy();
                     compoundnbt1.merge(compoundnbt);
                     compoundnbt1.putInt("x", p_179224_2_.getX());

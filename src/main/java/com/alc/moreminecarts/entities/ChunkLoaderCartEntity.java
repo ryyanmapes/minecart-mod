@@ -225,7 +225,7 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, this, chunk_x + i, chunk_z + j, add, true);
+                ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, this, chunk_x + i, chunk_z + j, add, false);
             }
         }
     }
@@ -258,7 +258,7 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
         return (int)Math.ceil(log_proportion * 15);
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.chunk_loader_cart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.chunk_loader_cart); }
 
 }

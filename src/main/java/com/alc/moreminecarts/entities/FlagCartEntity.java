@@ -212,8 +212,8 @@ public class FlagCartEntity extends AbstractMinecartContainer {
         }
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.flag_cart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.flag_cart); }
 
     /*
     public int getComparatorSignal() {

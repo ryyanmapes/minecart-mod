@@ -181,8 +181,8 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
         TankCartEntity.this.entityData.set(FLUID_TAG, compound);
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.tank_cart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.tank_cart); }
 
     // More Container stuff
 

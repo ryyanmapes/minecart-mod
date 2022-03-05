@@ -33,6 +33,6 @@ public class IronPushcartEntity extends AbstractPushcart {
         }
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.iron_pushcart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.iron_pushcart); }
 }

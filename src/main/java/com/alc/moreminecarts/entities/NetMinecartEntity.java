@@ -105,6 +105,6 @@ public class NetMinecartEntity extends AbstractMinecart {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.minecart_with_net); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.minecart_with_net); }
 }

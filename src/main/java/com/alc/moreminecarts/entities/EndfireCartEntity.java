@@ -43,7 +43,7 @@ public class EndfireCartEntity extends CampfireCartEntity {
         return false;
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.endfire_cart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.endfire_cart); }
 
 }

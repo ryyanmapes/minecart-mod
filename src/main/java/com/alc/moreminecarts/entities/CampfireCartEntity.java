@@ -225,6 +225,6 @@ public class CampfireCartEntity extends AbstractMinecart {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.campfire_cart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.campfire_cart); }
 }

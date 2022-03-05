@@ -43,7 +43,7 @@ public class SoulfireCartEntity extends CampfireCartEntity {
         return false;
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.soulfire_cart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.soulfire_cart); }
 
 }

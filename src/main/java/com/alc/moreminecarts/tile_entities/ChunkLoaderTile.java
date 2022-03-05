@@ -145,8 +145,6 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
 
         if (!level.isClientSide()) {
 
-            // MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "chunk loader tick!");
-
             int burn_duration = getBurnDuration(items.get(0).getItem());
             if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= MAX_TIME) {
                 changed_flag = true;
@@ -180,6 +178,7 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
                 else {
                     forceChucksAt(chunk_x, chunk_z, false);
                 }
+
                 this.level.setBlock(this.worldPosition, this.level.getBlockState(this.worldPosition).setValue(ChunkLoaderBlock.POWERED, Boolean.valueOf(this.isLit())), 3);
 
             }
@@ -194,7 +193,9 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, true);
+                boolean success = ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, false);
+                //MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "Turning chunks " + (add? "on" : "off") + ": " + (chunk_x + i) + " " + (chunk_z + j) + " " + (success? "Successful!" : "Failed!"));
+
             }
         }
     }

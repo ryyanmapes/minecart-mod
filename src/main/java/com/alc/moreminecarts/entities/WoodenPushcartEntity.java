@@ -38,6 +38,6 @@ public class WoodenPushcartEntity extends AbstractPushcart {
         return 0.3D;
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.wooden_pushcart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.wooden_pushcart); }
 }

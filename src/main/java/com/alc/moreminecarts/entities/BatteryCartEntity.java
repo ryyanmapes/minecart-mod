@@ -135,8 +135,8 @@ public class BatteryCartEntity extends AbstractMinecart implements Container, Me
         return InteractionResult.SUCCESS;
     }
 
-    @Override
-    public ItemStack getCartItem() { return new ItemStack(MMItemReferences.battery_cart); }
+    //@Override
+    //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.battery_cart); }
 
 
     public boolean stillValid(Player player) {
