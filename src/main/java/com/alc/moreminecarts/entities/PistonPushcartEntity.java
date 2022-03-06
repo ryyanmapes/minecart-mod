@@ -252,7 +252,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         InteractionResult result = super.interact(player, hand);
-        LOGGER.log(org.apache.logging.log4j.Level.WARN, "PISTON PUSHCART INTERACT");
+        //LOGGER.log(org.apache.logging.log4j.Level.WARN, "PISTON PUSHCART INTERACT");
         // Only used when they are too far away for the normal entity interaction packet.
         double distance = this.distanceToSqr(player);
         if (result == InteractionResult.SUCCESS && level.isClientSide && distance >= 36.0D && distance < 175.0) {

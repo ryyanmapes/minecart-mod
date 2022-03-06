@@ -48,8 +48,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.BiasedToBottomInt;
@@ -112,8 +114,8 @@ public class MoreMinecartsMod
     public static IProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static RandomPatchConfiguration GLASS_CACTUS_CONFIG;
-    public static ConfiguredFeature<?, ?> GLASS_CACTUS_FEATURE;
-    public static PlacedFeature GLASS_CACTUS_PLACER;
+    public static Holder<ConfiguredFeature<RandomPatchConfiguration, ?>> GLASS_CACTUS_FEATURE;
+    public static Holder<PlacedFeature> GLASS_CACTUS_PLACER;
 
 
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
@@ -421,42 +423,17 @@ public class MoreMinecartsMod
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        GLASS_CACTUS_CONFIG =
-                new RandomPatchConfiguration(
-                        3,
-                        5,
-                        0,
-                        () -> {
-                            return Feature.BLOCK_COLUMN.configured(
-                                BlockColumnConfiguration.simple(
-                                    BiasedToBottomInt.of(1, 4),
-                                    BlockStateProvider.simple(glass_cactus)
-                                )).placed(BlockPredicateFilter.forPredicate(
-                                    BlockPredicate.allOf(
-                                        BlockPredicate.matchesBlock(Blocks.AIR, BlockPos.ZERO),
-                                        BlockPredicate.wouldSurvive(glass_cactus.defaultBlockState(), BlockPos.ZERO)
-                                    )
-                                )
-                            );
-                        }
-                );
 
-        GLASS_CACTUS_FEATURE = Feature.RANDOM_PATCH.configured(GLASS_CACTUS_CONFIG);
+        GLASS_CACTUS_FEATURE = FeatureUtils.register("patch_glass_cactus", Feature.RANDOM_PATCH, FeatureUtils.simpleRandomPatchConfiguration(3, PlacementUtils.inlinePlaced(Feature.BLOCK_COLUMN, BlockColumnConfiguration.simple(BiasedToBottomInt.of(1, 4), BlockStateProvider.simple(glass_cactus)), BlockPredicateFilter.forPredicate(BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.wouldSurvive(glass_cactus.defaultBlockState(), BlockPos.ZERO))))));
 
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, "glass_cactus", GLASS_CACTUS_FEATURE);
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, "glass_cactus", GLASS_CACTUS_FEATURE.value());
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), ()->potted_beet);
         ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), ()->potted_glass_cactus);
 
         int actualGlassCactusRarity = MMConstants.CONFIG_GLASS_CACTUS_SPAWNS.get();
         if (actualGlassCactusRarity == 0) actualGlassCactusRarity = 100;
 
-        GLASS_CACTUS_PLACER = PlacementUtils.register("glass_cactus",
-                GLASS_CACTUS_FEATURE.placed(
-                        RarityFilter.onAverageOnceEvery(actualGlassCactusRarity),
-                        InSquarePlacement.spread(),
-                        PlacementUtils.HEIGHTMAP,
-                        BiomeFilter.biome()
-                ));
+        GLASS_CACTUS_PLACER = PlacementUtils.register("glass_cactus", GLASS_CACTUS_FEATURE, RarityFilter.onAverageOnceEvery(actualGlassCactusRarity), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
 
         MMConstants.WOODEN_MAX_SPEED = MMConstants.CONFIG_WOOD_RAILS_MAX_SPEED.get().floatValue();
         MMConstants.MAGLEV_MAX_SPEED = MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED.get().floatValue();

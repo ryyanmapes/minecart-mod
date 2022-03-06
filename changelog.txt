@@ -1,6 +1,21 @@
 1.18.x Changelog
+40.0
+====
+ - 40.0.4 Fixed swim speed attribute (#8499)
+ - 40.0.3 Fix incorrect movement distance calculation (#8497)
+ - 40.0.2 Add support to Forge registry wrappers for new Holder system. Closes #8491
+          Fix TagBasedToolTypesTest not generating needed data correctly.
+ - 40.0.1 Fix JNA not working at runtime and causing issues with natives.
+ - 40.0.0 Update to 1.18.2
+          Co-authored-by: sciwhiz12 <arnoldnunag12@gmail.com>
+          Co-authored-by: Marc Hermans <marc.hermans@ldtteam.com>
+          Co-authored-by: LexManos <LexManos@gmail.com>
+          Co-authored-by: Curle <curle@gemwire.uk>
+
 39.1
 ====
+ - 39.1.2 1.18.x Omnibus (#8239)
+ - 39.1.1 Bump modlauncher and securejarhandler version (#8489)
  - 39.1.0 Update license headers to compact SPDX format.
           License has not changed, this is just more compact and doesn't include years.
           Bump version for RB.
