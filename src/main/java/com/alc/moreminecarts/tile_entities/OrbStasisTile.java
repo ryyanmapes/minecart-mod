@@ -28,13 +28,13 @@ public class OrbStasisTile extends TileEntity {
 
     @Override
     public CompoundNBT save(CompoundNBT compound) {
-        compound.putUUID(PLAYER_UUID_PROPERTY, owner_uuid);
+        if (owner_uuid != null) compound.putUUID(PLAYER_UUID_PROPERTY, owner_uuid);
         return super.save(compound);
     }
 
     @Override
     public void load(BlockState state, CompoundNBT compound) {
-        owner_uuid = compound.getUUID(PLAYER_UUID_PROPERTY);
+        if (compound.hasUUID(PLAYER_UUID_PROPERTY)) owner_uuid = compound.getUUID(PLAYER_UUID_PROPERTY);
         super.load(state, compound);
     }
 
