@@ -35,7 +35,9 @@ public class OrbStasisTile extends BlockEntity {
 
     @Override
     public void load(CompoundTag compound) {
-        owner_uuid = compound.getUUID(PLAYER_UUID_PROPERTY);
+        if (compound.hasUUID(PLAYER_UUID_PROPERTY)) owner_uuid = compound.getUUID(PLAYER_UUID_PROPERTY);
+        else owner_uuid = null;
+
         super.load(compound);
     }
 
