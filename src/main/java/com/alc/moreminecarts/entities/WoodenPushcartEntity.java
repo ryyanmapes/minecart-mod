@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -14,18 +15,6 @@ public class WoodenPushcartEntity extends AbstractPushcart {
 
     public WoodenPushcartEntity(EntityType<?> type, Level worldIn, double x, double y, double z) {
         super(type, worldIn, x, y, z);
-    }
-
-    @Override
-    public void destroy(DamageSource source) {
-        this.remove(RemovalReason.KILLED);
-        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            ItemStack stack = new ItemStack(MMItemReferences.wooden_pushcart);
-            if (this.hasCustomName()) {
-                stack.setHoverName(this.getCustomName());
-            }
-            this.spawnAtLocation(stack);
-        }
     }
 
     @Override
