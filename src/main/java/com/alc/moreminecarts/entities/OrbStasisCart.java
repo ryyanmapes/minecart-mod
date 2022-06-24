@@ -1,6 +1,8 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMItems;
 import com.alc.moreminecarts.tile_entities.OrbStasisTile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -55,7 +57,7 @@ public class OrbStasisCart extends AbstractMinecart {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.minecart_with_stasis;
+        return MMItems.MINECART_WITH_STASIS_ITEM.get();
     }
 
     @Override
@@ -130,7 +132,7 @@ public class OrbStasisCart extends AbstractMinecart {
         BlockState blockState = level.getBlockState(blockPosition());
         boolean is_activated = blockState.is(Blocks.ACTIVATOR_RAIL) && blockState.getValue(PoweredRailBlock.POWERED);
 
-        return MMReferences.pearl_stasis_chamber.defaultBlockState().setValue(OrbStasisBlock.CONTAINS_PEARL, getHasOrb())
+        return MMBlocks.PEARL_STASIS_CHAMBER.get().defaultBlockState().setValue(OrbStasisBlock.CONTAINS_PEARL, getHasOrb())
                 .setValue(OrbStasisBlock.POWERED, is_activated );
     }
 

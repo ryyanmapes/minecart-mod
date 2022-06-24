@@ -1,8 +1,8 @@
 package com.alc.moreminecarts.containers;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.FlagCartEntity;
 import com.alc.moreminecarts.misc.FlagUtil;
+import com.alc.moreminecarts.registry.MMContainers;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +22,7 @@ public class FlagCartContainer extends AbstractContainerMenu {
 
     // For use on the client.
     public FlagCartContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.flag_cart_c, n);
+        super(MMContainers.FLAG_CART_CONTAINER.get(), n);
 
         this.inventory = new SimpleContainer(9);
         this.data = new SimpleContainerData(2);
@@ -33,7 +33,7 @@ public class FlagCartContainer extends AbstractContainerMenu {
 
     // For use with the entity cart.
     public FlagCartContainer(int n, Level world, FlagCartEntity entity, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.flag_cart_c, n);
+        super(MMContainers.FLAG_CART_CONTAINER.get(), n);
 
         this.inventory = entity;
         this.data = entity.dataAccess;

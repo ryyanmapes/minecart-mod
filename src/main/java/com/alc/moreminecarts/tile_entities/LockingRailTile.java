@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.tile_entities;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.CampfireCartEntity;
+import com.alc.moreminecarts.registry.MMTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -39,12 +39,12 @@ public class LockingRailTile extends BlockEntity {
     public AbstractMinecart locked_minecart;
 
     public LockingRailTile(BlockPos pos, BlockState state) {
-        super(MMReferences.locking_rail_te, pos, state);
+        super(MMTileEntities.LOCKING_RAIL_TILE_ENTITY.get(), pos, state);
         locked_minecart = null;
     }
 
     public LockingRailTile(BlockPos pos, BlockState state, boolean is_powered) {
-        super( is_powered? MMReferences.powered_locking_rail_te : MMReferences.locking_rail_te, pos, state );
+        super( is_powered? MMTileEntities.POWERED_LOCKING_RAIL_TILE_ENTITY.get() : MMTileEntities.LOCKING_RAIL_TILE_ENTITY.get(), pos, state );
         locked_minecart = null;
     }
 

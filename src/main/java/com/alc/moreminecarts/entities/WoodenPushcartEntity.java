@@ -19,7 +19,7 @@ public class WoodenPushcartEntity extends AbstractPushcart {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.wooden_pushcart;
+        return MMItems.WOODEN_PUSHCART_ITEM.get();
     }
 
     public double getControlSpeed() { return 40; }

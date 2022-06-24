@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MMItemReferences;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
@@ -45,7 +45,7 @@ public class StickyPistonPushcartEntity extends PistonPushcartEntity{
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.sticky_piston_pushcart;
+        return MMItems.STICKY_PISTON_PUSHCART_ITEM.get();
     }
 
     //@Override

@@ -1,8 +1,8 @@
 package com.alc.moreminecarts.blocks.holo_scaffolds;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.items.HoloRemoteItem;
+import com.alc.moreminecarts.registry.MMBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -88,10 +88,10 @@ public class HoloScaffold extends Block implements SimpleWaterloggedBlock {
         int min_distance = MAX_DISTANCE + 1;
         for(Direction direction : Direction.values()) {
             BlockState blockstate1 = reader.getBlockState(pos.relative(direction));
-            if (blockstate1.is(MMReferences.holo_scaffold) || blockstate1.is(MMReferences.chaotic_holo_scaffold)) {
+            if (blockstate1.is(MMBlocks.HOLO_SCAFFOLD.get()) || blockstate1.is(MMBlocks.CHAOTIC_HOLO_SCAFFOLD.get())) {
                 min_distance = Math.min(min_distance, blockstate1.getValue(TRUE_DISTANCE) + 1);
             }
-            else if (blockstate1.is(MMReferences.holo_scaffold_generator)) {
+            else if (blockstate1.is(MMBlocks.HOLO_SCAFFOLD_GENERATOR.get())) {
                 return 1;
             }
         }
@@ -107,7 +107,7 @@ public class HoloScaffold extends Block implements SimpleWaterloggedBlock {
         for(Direction direction : Direction.values()) {
             BlockPos check_pos = pos.relative(direction);
             BlockState blockstate1 = world.getBlockState(check_pos);
-            if (blockstate1.is(MMReferences.holo_scaffold) || blockstate1.is(MMReferences.chaotic_holo_scaffold)) {
+            if (blockstate1.is(MMBlocks.HOLO_SCAFFOLD.get()) || blockstate1.is(MMBlocks.CHAOTIC_HOLO_SCAFFOLD.get())) {
                 int distance = blockstate1.getValue(TRUE_DISTANCE);
                 if (only_greater && distance >= value) world.scheduleTick(check_pos, this, 1, TickPriority.LOW);
                 if (!only_greater && distance <= value) world.scheduleTick(check_pos, this, 1, TickPriority.LOW);

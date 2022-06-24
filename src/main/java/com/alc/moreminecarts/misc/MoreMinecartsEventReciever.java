@@ -1,12 +1,11 @@
 package com.alc.moreminecarts.misc;
 
 
-import com.alc.moreminecarts.MMConstants;
-import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.entities.HSMinecartEntities;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.items.CouplerItem;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,12 +15,12 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.slf4j.Log4jLogger;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = "moreminecarts")
 public class MoreMinecartsEventReciever {
@@ -42,13 +41,15 @@ public class MoreMinecartsEventReciever {
 
         Entity entity = event.getTarget();
 
+        Item couplerItem = MMItems.COUPLER_ITEM.get();
+
         // We check both hands, but only use one, since this function gets called once for each hand.
-        if (using.getItem() == MMItemReferences.coupler || using_secondary.getItem() == MMItemReferences.coupler) {
+        if (using.getItem() == couplerItem || using_secondary.getItem() == couplerItem) {
             event.setCancellationResult(InteractionResult.CONSUME);
             event.setCanceled(true);
             if (event.getWorld().isClientSide()) return;
 
-            if (using.getItem() == MMItemReferences.coupler) {
+            if (using.getItem() == couplerItem) {
                 if (entity instanceof AbstractMinecart
                     || entity instanceof Boat
                     || entity instanceof Mob
@@ -64,13 +65,16 @@ public class MoreMinecartsEventReciever {
             }
         }
 
-        if (using.getItem() == MMItemReferences.high_speed_upgrade || using_secondary.getItem() == MMItemReferences.high_speed_upgrade) {
+        Item hsUpgradeItem = MMItems.HIGH_SPEED_UPGRADE_ITEM.get();
+
+
+        if (using.getItem() == hsUpgradeItem || using_secondary.getItem() == hsUpgradeItem) {
             event.setCancellationResult(InteractionResult.CONSUME);
             event.setCanceled(true);
 
             if (event.getWorld().isClientSide()) return;
 
-            if (using.getItem() == MMItemReferences.high_speed_upgrade && entity instanceof AbstractMinecart
+            if (using.getItem() == hsUpgradeItem && entity instanceof AbstractMinecart
                 && !(entity instanceof HSMinecartEntities.IHSCart)) {
                 boolean success = HSMinecartEntities.upgradeMinecart((AbstractMinecart) entity);
                 if (!player.isCreative() && success) using.shrink(1);

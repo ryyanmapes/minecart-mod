@@ -1,11 +1,10 @@
 package com.alc.moreminecarts.tile_entities;
 
 import com.alc.moreminecarts.MMConstants;
-import com.alc.moreminecarts.MMItemReferences;
-import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.registry.MMItems;
+import com.alc.moreminecarts.registry.MMTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -13,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -76,7 +74,7 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
     public int last_chunk_z;
 
     public ChunkLoaderTile(BlockPos pos, BlockState state) {
-        super(MMReferences.chunk_loader_te, pos, state);
+        super(MMTileEntities.CHUNK_LOADER_TILE_ENTITY.get(), pos, state);
 
         this.items = NonNullList.withSize(1, ItemStack.EMPTY);
 
@@ -125,8 +123,8 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
         else if (item == Items.DIAMOND) fuel = 72000;
         else if (item == Items.DIAMOND_BLOCK) fuel = 648000;
         else if (item == Items.NETHER_STAR) fuel = 3456000;
-        else if (item == MMItemReferences.chunkrodite) fuel = 18000;
-        else if (item == MMItemReferences.chunkrodite_block) fuel = 162000;
+        else if (item == MMItems.CHUNKRODITE.get()) fuel = 18000;
+        else if (item == MMItems.CHUNKRODITE_BLOCK_ITEM.get()) fuel = 162000;
 
         fuel *= multiplier;
         if (fuel <= 0) return -1;
@@ -259,10 +257,10 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
 
         int count = (int)Math.floor( Math.abs(time_left / multiplier) / 24000.0f);
 
-        Item to_drop = MMItemReferences.chunkrodite;
+        Item to_drop = MMItems.CHUNKRODITE.get();
         if (count > 64) {
             count = (int)Math.floor(count / 9.0f);
-            to_drop = MMItemReferences.chunkrodite_block;
+            to_drop = MMItems.CHUNKRODITE_BLOCK_ITEM.get();
             if (count > 64) count = 64; // Should never occur, but just in case.
         }
 

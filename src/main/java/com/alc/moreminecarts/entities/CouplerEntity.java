@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -249,7 +250,7 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
 
     public void onBroken(boolean drop_item) {
         this.playSound(SoundEvents.CHAIN_BREAK, 1.0F, 1.0F);
-        if (drop_item) spawnAtLocation(MMItemReferences.coupler);
+        if (drop_item) spawnAtLocation(MMItems.COUPLER_ITEM.get());
         this.remove(RemovalReason.KILLED);
     }
 

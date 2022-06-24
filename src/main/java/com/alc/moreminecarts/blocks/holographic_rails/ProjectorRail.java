@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.misc.RailUtil;
+import com.alc.moreminecarts.registry.MMBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -35,7 +35,7 @@ public class ProjectorRail extends BaseRailBlock {
     }
 
     protected int getHologramLength() {return 5;}
-    protected Block getHologramRail() {return MMReferences.hologram_rail;}
+    protected Block getHologramRail() {return MMBlocks.HOLOGRAM_RAIL.get();}
 
     @Override
     protected void updateState(BlockState state, Level worldIn, BlockPos pos, Block blockIn) {

@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.items;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.CouplerEntity;
+import com.alc.moreminecarts.registry.MMEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -62,7 +62,7 @@ public class CouplerItem extends Item {
                             (ent1.position().y + ent2.position().y)/2,
                             (ent1.position().z + ent2.position().z)/2);
 
-                    List<CouplerEntity> list = worldIn.getEntities(MMReferences.coupler,
+                    List<CouplerEntity> list = worldIn.getEntities(MMEntities.COUPLER_ENTITY.get(),
                             new AABB(center_pos.x + 0.5, center_pos.y + 0.5, center_pos.z + 0.5,
                                             center_pos.x - 0.5, center_pos.y - 0.5, center_pos.z - 0.5), (entity) -> true);
 
@@ -76,7 +76,7 @@ public class CouplerItem extends Item {
                     }
 
                     if (!is_duplicate) {
-                        CouplerEntity coupler_ent = new CouplerEntity(MMReferences.coupler, worldIn, ent1, ent2);
+                        CouplerEntity coupler_ent = new CouplerEntity(MMEntities.COUPLER_ENTITY.get(), worldIn, ent1, ent2);
                         worldIn.addFreshEntity(coupler_ent);
                         tag.remove(TAG_COUPLED_UUID_1);
                         return;

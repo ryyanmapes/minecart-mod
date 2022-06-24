@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.containers;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.misc.ChunkLoaderSlot;
+import com.alc.moreminecarts.registry.MMContainers;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -10,8 +10,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 public class ChunkLoaderContainer extends AbstractContainerMenu {
@@ -22,7 +20,7 @@ public class ChunkLoaderContainer extends AbstractContainerMenu {
     private final ContainerData data;
 
     public ChunkLoaderContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.chunk_loader_c, n);
+        super(MMContainers.CHUNK_LOADER_CONTAINER.get(), n);
 
         this.inventory = new SimpleContainer(1);
         this.data = new SimpleContainerData(4);
@@ -32,7 +30,7 @@ public class ChunkLoaderContainer extends AbstractContainerMenu {
 
     // For use with the entity chunk loaders.
     public ChunkLoaderContainer(int n, Level world, Container inventory, ContainerData data, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.chunk_loader_c, n);
+        super(MMContainers.CHUNK_LOADER_CONTAINER.get(), n);
 
         this.inventory = inventory;
         this.data = data;
@@ -42,7 +40,7 @@ public class ChunkLoaderContainer extends AbstractContainerMenu {
 
     // For use with tile entity chunk loaders (server).
     public ChunkLoaderContainer(int n, Level world, BlockPos pos, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.chunk_loader_c, n);
+        super(MMContainers.CHUNK_LOADER_CONTAINER.get(), n);
 
         ChunkLoaderTile tile = (ChunkLoaderTile) world.getBlockEntity(pos);
 
@@ -54,7 +52,7 @@ public class ChunkLoaderContainer extends AbstractContainerMenu {
 
     // For use with tile entity chunk loaders (client).
     public ChunkLoaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_) {
-        super(MMReferences.chunk_loader_c, p_38969_);
+        super(MMContainers.CHUNK_LOADER_CONTAINER.get(), p_38969_);
 
         this.inventory = p_38971_;
         this.data = p_38972_;

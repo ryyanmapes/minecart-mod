@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -21,7 +22,7 @@ public class SoulfireCartEntity extends CampfireCartEntity {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.soulfire_cart;
+        return MMItems.SOULFIRE_CART_ITEM.get();
     }
 
     @Override

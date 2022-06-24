@@ -1,43 +1,24 @@
 package com.alc.moreminecarts.misc;
 
-import com.alc.moreminecarts.MMItemReferences;
+import com.alc.moreminecarts.registry.MMItems;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FlagUtil {
-
     public static byte getFlagColorValue (Item flag) {
-        if (MMItemReferences.rail_signal_white.equals(flag)) {
-            return 1;
-        } else if (MMItemReferences.rail_signal_orange.equals(flag)) {
-            return 2;
-        } else if (MMItemReferences.rail_signal_magenta.equals(flag)) {
-            return 3;
-        } else if (MMItemReferences.rail_signal_light_blue.equals(flag)) {
-            return 4;
-        } else if (MMItemReferences.rail_signal_yellow.equals(flag)) {
-            return 5;
-        } else if (MMItemReferences.rail_signal_lime.equals(flag)) {
-            return 6;
-        } else if (MMItemReferences.rail_signal_pink.equals(flag)) {
-            return 7;
-        } else if (MMItemReferences.rail_signal_gray.equals(flag)) {
-            return 8;
-        } else if (MMItemReferences.rail_signal_light_gray.equals(flag)) {
-            return 9;
-        } else if (MMItemReferences.rail_signal_cyan.equals(flag)) {
-            return 10;
-        } else if (MMItemReferences.rail_signal_purple.equals(flag)) {
-            return 11;
-        } else if (MMItemReferences.rail_signal_blue.equals(flag)) {
-            return 12;
-        } else if (MMItemReferences.rail_signal_brown.equals(flag)) {
-            return 13;
-        } else if (MMItemReferences.rail_signal_green.equals(flag)) {
-            return 14;
-        } else if (MMItemReferences.rail_signal_red.equals(flag)) {
-            return 15;
-        } else if (MMItemReferences.rail_signal_black.equals(flag)) {
-            return 16;
+        // Not doing this statically since it is not recommended to keep static references to Items.
+        Map<Item, DyeColor> railSignalMap = new HashMap<>();
+
+        for (Map.Entry<RegistryObject<Item>, DyeColor> entry : MMItems.RAIL_SIGNALS.inverse().entrySet()) {
+            railSignalMap.put(entry.getKey().get(), entry.getValue());
+        }
+
+        if(railSignalMap.containsKey(flag)) {
+            return (byte) railSignalMap.get(flag).getId();
         }
         return 0;
     }

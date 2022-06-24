@@ -1,11 +1,9 @@
 package com.alc.moreminecarts.blocks.containers;
 
-import com.alc.moreminecarts.MMReferences;
-import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
+import com.alc.moreminecarts.registry.MMTileEntities;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -147,6 +144,6 @@ public class MinecartLoaderBlock extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_152180_, BlockState p_152181_, BlockEntityType<T> p_152182_) {
-        return createTickerHelper(p_152182_, MMReferences.minecart_loader_te, MinecartLoaderTile::doTick);
+        return createTickerHelper(p_152182_, MMTileEntities.MINECART_LOADER_TILE_ENTITY.get(), MinecartLoaderTile::doTick);
     }
 }

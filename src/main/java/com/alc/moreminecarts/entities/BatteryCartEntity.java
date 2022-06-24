@@ -3,6 +3,8 @@ package com.alc.moreminecarts.entities;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.containers.BatteryCartContainer;
 import com.alc.moreminecarts.misc.SettableEnergyStorage;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -102,12 +104,12 @@ public class BatteryCartEntity extends AbstractMinecart implements Container, Me
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.battery_cart;
+        return MMItems.BATTERY_CART_ITEM.get();
     }
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 5);
+        return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 5);
     }
 
     @Override

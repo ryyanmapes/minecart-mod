@@ -1,8 +1,8 @@
 package com.alc.moreminecarts.tile_entities;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
+import com.alc.moreminecarts.registry.MMTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +30,7 @@ import java.util.List;
 public class MinecartLoaderTile extends AbstractCommonLoader {
 
     public MinecartLoaderTile(BlockPos pos, BlockState state) {
-        super(MMReferences.minecart_loader_te, pos, state);
+        super(MMTileEntities.MINECART_LOADER_TILE_ENTITY.get(), pos, state);
         last_redstone_output = !redstone_output;
     }
 

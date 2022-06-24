@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.tile_entities;
 
-import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.registry.MMTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +24,7 @@ public class OrbStasisTile extends BlockEntity {
     public UUID owner_uuid;
 
     public OrbStasisTile(BlockPos pos, BlockState state) {
-        super(MMReferences.pearl_stasis_chamber_te, pos, state);
+        super(MMTileEntities.PEARL_STASIS_CHAMBER_TILE_ENTITY.get(), pos, state);
         owner_uuid = null;
     }
 
