@@ -11,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -250,7 +249,7 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
 
     @Override
     protected Component getDefaultName() {
-        return new TranslatableComponent("Chunk Loader");
+        return Component.translatable("Chunk Loader");
     }
 
     // For dropping MMItemReferences.

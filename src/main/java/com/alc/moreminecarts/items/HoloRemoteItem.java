@@ -2,16 +2,12 @@ package com.alc.moreminecarts.items;
 
 import com.alc.moreminecarts.MMReferences;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -81,11 +77,10 @@ public class HoloRemoteItem extends Item {
 
             while(i < 30) {
                 if (!world.isClientSide && !context.getLevel().isInWorldBounds(blockpos$mutable)) {
-                    Player playerentity = context.getPlayer();
+                    Player player = context.getPlayer();
                     int j = world.getMaxBuildHeight();
-                    if (playerentity instanceof ServerPlayer && blockpos$mutable.getY() >= j) {
-                        ClientboundChatPacket schatpacket = new ClientboundChatPacket((new TranslatableComponent("build.tooHigh", j)).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.RED))), ChatType.GAME_INFO, Util.NIL_UUID);
-                        ((ServerPlayer)playerentity).connection.send(schatpacket);
+                    if (player instanceof ServerPlayer && blockpos$mutable.getY() >= j) {
+                        ((ServerPlayer)player).sendSystemMessage(Component.translatable("build.tooHigh", j - 1).withStyle(ChatFormatting.RED), ChatType.GAME_INFO);
                     }
                     break;
                 }

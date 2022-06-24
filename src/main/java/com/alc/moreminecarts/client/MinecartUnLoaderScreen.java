@@ -11,8 +11,6 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,12 +26,12 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     private final List<AbstractButton> buttons = Lists.newArrayList();
 
     public MinecartUnLoaderScreen(MinecartUnLoaderContainer container, Inventory inv, Component titleIn) {
-        super(container, inv, new TranslatableComponent(container.getIsUnloader()? "Minecart Unloader" : "Minecart Loader"));
+        super(container, inv, Component.translatable(container.getIsUnloader()? "Minecart Unloader" : "Minecart Loader"));
     }
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent(menu.getIsUnloader()? "Minecart Unloader" : "Minecart Loader");
+        return Component.translatable(menu.getIsUnloader()? "Minecart Unloader" : "Minecart Loader");
     }
 
     private void addButton(AbstractButton p_169617_) {
@@ -107,7 +105,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     class ComparatorOutputButton extends AbstractButton {
 
         protected ComparatorOutputButton(int x, int y) {
-            super(x, y, 18, 18, TextComponent.EMPTY);
+            super(x, y, 18, 18, Component.empty());
         }
 
         public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
@@ -127,7 +125,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
                     text = "ERROR";
             }
 
-            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_, new TranslatableComponent(text) , p_230443_2_, p_230443_3_);
+            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_, Component.translatable(text) , p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -183,12 +181,12 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     class OnlyLockedButton extends AbstractButton {
 
         protected OnlyLockedButton(int x, int y) {
-            super(x, y, 18, 18, TextComponent.EMPTY);
+            super(x, y, 18, 18, Component.empty());
         }
 
         public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new TranslatableComponent(menu.getLockedMinecartsOnly()
+                    Component.translatable(menu.getLockedMinecartsOnly()
                             ? "Consider only locked minecarts"
                             : "Consider all minecarts"
                     ) , p_230443_2_, p_230443_3_);
@@ -236,12 +234,12 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     class LeaveOneInStackButton extends AbstractButton {
 
         protected LeaveOneInStackButton(int x, int y) {
-            super(x, y, 18, 18, TextComponent.EMPTY);
+            super(x, y, 18, 18, Component.empty());
         }
 
         public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new TranslatableComponent(
+                    Component.translatable(
                             menu.getIsUnloader()
                                 ? (menu.getLeaveOneInStack()
                                     ? "Leave one item in minecart slots"
@@ -294,12 +292,12 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     class OutputTypeButton extends AbstractButton {
 
         protected OutputTypeButton(int x, int y) {
-            super(x, y, 18, 18, TextComponent.EMPTY);
+            super(x, y, 18, 18, Component.empty());
         }
 
         public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new TranslatableComponent(menu.getRedstoneOutput()
+                    Component.translatable(menu.getRedstoneOutput()
                             ? "Output redstone activation"
                             : "Output to comparator"
                     ) , p_230443_2_, p_230443_3_);

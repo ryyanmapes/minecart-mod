@@ -12,7 +12,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundDisconnectPacket;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -293,7 +292,7 @@ public class MoreMinecartsPacketHandler {
                         if (!(entity instanceof ItemEntity) && !(entity instanceof ExperienceOrb) && !(entity instanceof AbstractArrow) && entity != player) {
                             player.attack(entity);
                         } else {
-                            disconnect(new TranslatableComponent("multiplayer.disconnect.invalid_entity_attacked"), connection);
+                            disconnect(Component.translatable("multiplayer.disconnect.invalid_entity_attacked"), connection);
                             //ServerGamePacketListenerImpl.LOGGER.warn("Player {} tried to attack an invalid entity", (Object)ServerGamePacketListenerImpl.this.player.getName().getString());
                         }
                     }
