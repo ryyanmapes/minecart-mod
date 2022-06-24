@@ -6,6 +6,7 @@ import com.alc.moreminecarts.items.HoloRemoteItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -29,8 +30,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.TickPriority;
-
-import java.util.Random;
 
 public class HoloScaffold extends Block implements SimpleWaterloggedBlock {
 
@@ -117,7 +116,7 @@ public class HoloScaffold extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         super.tick(state, world, pos, rand);
 
         MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "attempt holo-scaffold tick!");

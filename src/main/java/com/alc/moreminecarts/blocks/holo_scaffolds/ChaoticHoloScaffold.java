@@ -3,6 +3,7 @@ package com.alc.moreminecarts.blocks.holo_scaffolds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -11,8 +12,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.ticks.TickPriority;
-
-import java.util.Random;
 
 public class ChaoticHoloScaffold extends HoloScaffold {
 
@@ -34,7 +33,7 @@ public class ChaoticHoloScaffold extends HoloScaffold {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         super.tick(state, world, pos, rand);
 
         BlockState true_state = world.getBlockState(pos);

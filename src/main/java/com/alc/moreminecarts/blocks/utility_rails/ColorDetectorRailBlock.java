@@ -4,6 +4,7 @@ import com.alc.moreminecarts.entities.FlagCartEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +22,6 @@ import net.minecraft.world.phys.AABB;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Predicate;
 
 public class ColorDetectorRailBlock extends BaseRailBlock {
@@ -50,7 +50,7 @@ public class ColorDetectorRailBlock extends BaseRailBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         this.checkPressed(worldIn, pos, state);
     }
 
