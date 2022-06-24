@@ -1,0 +1,36 @@
+{
+  "feature": "moreminecarts:glass_cactus",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:all_of",
+        "predicates": [
+          {
+            "type": "minecraft:matching_blocks",
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "blocks": [
+              "minecraft:air"
+            ]
+          },
+          {
+            "type": "minecraft:would_survive",
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "state": {
+              "Name": "moreminecarts:glass_cactus",
+              "Properties": {}
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -421,19 +421,12 @@ public class MoreMinecartsMod
 
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-
-        GLASS_CACTUS_FEATURE = FeatureUtils.register("patch_glass_cactus", Feature.RANDOM_PATCH, FeatureUtils.simpleRandomPatchConfiguration(3, PlacementUtils.inlinePlaced(Feature.BLOCK_COLUMN, BlockColumnConfiguration.simple(BiasedToBottomInt.of(1, 4), BlockStateProvider.simple(glass_cactus)), BlockPredicateFilter.forPredicate(BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.wouldSurvive(glass_cactus.defaultBlockState(), BlockPos.ZERO))))));
-
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, "glass_cactus", GLASS_CACTUS_FEATURE.value());
-        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), ()->potted_beet);
-        ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), ()->potted_glass_cactus);
+    private void setup(final FMLCommonSetupEvent event) {
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), MMBlocks.POTTED_BEET);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), MMBlocks.POTTED_GLASS_CACTUS);
 
         int actualGlassCactusRarity = MMConstants.CONFIG_GLASS_CACTUS_SPAWNS.get();
         if (actualGlassCactusRarity == 0) actualGlassCactusRarity = 100;
-
-        GLASS_CACTUS_PLACER = PlacementUtils.register("glass_cactus", GLASS_CACTUS_FEATURE, RarityFilter.onAverageOnceEvery(actualGlassCactusRarity), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
 
         MMConstants.WOODEN_MAX_SPEED = MMConstants.CONFIG_WOOD_RAILS_MAX_SPEED.get().floatValue();
         MMConstants.MAGLEV_MAX_SPEED = MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED.get().floatValue();
