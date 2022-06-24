@@ -1,6 +1,8 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMConstants;
+import com.alc.moreminecarts.registry.MMEntities;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,30 +26,30 @@ public class HSMinecartEntities {
 
         if (minecart instanceof IHSCart) return false;
         if (minecart instanceof Minecart) {
-            HSMinecart newer_minecart = MMReferences.high_speed_minecart.create(minecart.level);
+            HSMinecart newer_minecart = MMEntities.HS_CART_ENTITY.get().create(minecart.level);
             for (Entity passenger : minecart.getPassengers()) {
                 passenger.stopRiding();
             }
             new_minecart = newer_minecart;
         }
-        else if (minecart instanceof MinecartChest) new_minecart = MMReferences.high_speed_chest_minecart.create(minecart.level);
-        else if (minecart instanceof MinecartTNT) new_minecart = MMReferences.high_speed_tnt_minecart.create(minecart.level);
-        else if (minecart instanceof MinecartCommandBlock) new_minecart = MMReferences.high_speed_command_block_minecart.create(minecart.level);
-        else if (minecart instanceof MinecartHopper) new_minecart = MMReferences.high_speed_hopper_minecart.create(minecart.level);
-        else if (minecart instanceof MinecartSpawner) new_minecart = MMReferences.high_speed_spawner_minecart.create(minecart.level);
-        else if (minecart instanceof MinecartFurnace) new_minecart = MMReferences.high_speed_furnace_minecart.create(minecart.level);
-        else if (minecart instanceof NetMinecartEntity) new_minecart = MMReferences.high_speed_net_minecart.create(minecart.level);
-        else if (minecart instanceof ChunkLoaderCartEntity) new_minecart = MMReferences.high_speed_chunk_loader_minecart.create(minecart.level);
-        else if (minecart instanceof OrbStasisCart) new_minecart = MMReferences.high_speed_stasis_minecart.create(minecart.level);
-        else if (minecart instanceof FlagCartEntity) new_minecart = MMReferences.high_speed_flag_minecart.create(minecart.level);
-        else if (minecart instanceof TankCartEntity) new_minecart = MMReferences.high_speed_tank_minecart.create(minecart.level);
-        else if (minecart instanceof BatteryCartEntity) new_minecart = MMReferences.high_speed_battery_minecart.create(minecart.level);
-        else if (minecart instanceof EndfireCartEntity) new_minecart = MMReferences.high_speed_endfire_minecart.create(minecart.level);
-        else if (minecart instanceof SoulfireCartEntity) new_minecart = MMReferences.high_speed_soulfire_minecart.create(minecart.level);
-        else if (minecart instanceof CampfireCartEntity) new_minecart = MMReferences.high_speed_campfire_minecart.create(minecart.level);
-        else if (minecart instanceof StickyPistonPushcartEntity) new_minecart = MMReferences.high_speed_sticky_piston_pushcart.create(minecart.level);
-        else if (minecart instanceof PistonPushcartEntity) new_minecart = MMReferences.high_speed_piston_pushcart.create(minecart.level);
-        else if (minecart instanceof IronPushcartEntity) new_minecart = MMReferences.high_speed_pushcart.create(minecart.level);
+        else if (minecart instanceof MinecartChest) new_minecart = MMEntities.HS_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof MinecartTNT) new_minecart = MMEntities.HS_TNT_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof MinecartCommandBlock) new_minecart = MMEntities.HS_COMMAND_BLOCK_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof MinecartHopper) new_minecart = MMEntities.HS_HOPPER_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof MinecartSpawner) new_minecart = MMEntities.HS_SPAWNER_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof MinecartFurnace) new_minecart = MMEntities.HS_FURNACE_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof NetMinecartEntity) new_minecart = MMEntities.HS_NET_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof ChunkLoaderCartEntity) new_minecart = MMEntities.HS_CHUNK_LOADER_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof OrbStasisCart) new_minecart = MMEntities.HS_STASIS_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof FlagCartEntity) new_minecart = MMEntities.HS_FLAG_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof TankCartEntity) new_minecart = MMEntities.HS_TANK_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof BatteryCartEntity) new_minecart = MMEntities.HS_BATTERY_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof EndfireCartEntity) new_minecart = MMEntities.HS_ENDFIRE_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof SoulfireCartEntity) new_minecart = MMEntities.HS_SOULFIRE_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof CampfireCartEntity) new_minecart = MMEntities.HS_CAMPFIRE_CART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof StickyPistonPushcartEntity) new_minecart = MMEntities.HS_STICKY_PISTON_PUSHCART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof PistonPushcartEntity) new_minecart = MMEntities.HS_PISTON_PUSHCART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof IronPushcartEntity) new_minecart = MMEntities.HS_PUSHCART_ENTITY.get().create(minecart.level);
         else return false;
 
         if (minecart instanceof IronPushcartEntity) {
@@ -95,7 +97,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -127,7 +129,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -159,7 +161,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -189,7 +191,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -221,7 +223,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -253,7 +255,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -285,7 +287,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
 
         @Override
@@ -331,7 +333,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -360,7 +362,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -389,7 +391,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -418,7 +420,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -447,7 +449,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -476,7 +478,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -505,7 +507,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
@@ -534,7 +536,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
@@ -563,7 +565,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
@@ -592,7 +594,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -623,7 +625,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -658,7 +660,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItemReferences.high_speed_upgrade);
+            if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }

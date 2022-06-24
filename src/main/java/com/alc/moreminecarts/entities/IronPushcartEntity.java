@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -20,7 +21,7 @@ public class IronPushcartEntity extends AbstractPushcart {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.iron_pushcart;
+        return MMItems.IRON_PUSHCART_ITEM.get();
     }
 
     //@Override

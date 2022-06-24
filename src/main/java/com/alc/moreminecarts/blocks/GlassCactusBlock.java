@@ -1,6 +1,8 @@
 package com.alc.moreminecarts.blocks;
 
 import com.alc.moreminecarts.MMConstants;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -61,11 +63,11 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
             ItemStack item_stack = ((ItemEntity)entity).getItem();
             Item item = item_stack.getItem();
 
-            if (item == MMItemReferences.holo_remote || item == MMItemReferences.backwards_holo_remote || item == MMItemReferences.simple_holo_remote){
-                ((ItemEntity)entity).setItem(new ItemStack(MMItemReferences.broken_holo_remote, item_stack.getCount()));
+            if (item == MMItems.HOLO_REMOTE_ITEM.get() || item == MMItems.BACKWARDS_HOLO_REMOTE_ITEM.get() || item == MMItems.SIMPLE_HOLO_REMOTE_ITEM.get()){
+                ((ItemEntity)entity).setItem(new ItemStack(MMItems.BROKEN_HOLO_REMOTE_ITEM.get(), item_stack.getCount()));
                 return;
             }
-            else if (item == MMItemReferences.broken_holo_remote) return;
+            else if (item == MMItems.BROKEN_HOLO_REMOTE_ITEM.get()) return;
         }
         entity.hurt(DamageSource.CACTUS, 2.0F);
     }
@@ -75,7 +77,9 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
         BlockState plant = plantable.getPlant(world, pos.relative(facing));
 
-        if (plant.getBlock() == MMReferences.glass_cactus && state.is(MMReferences.glass_cactus))
+        Block glassCactus = MMBlocks.GLASS_CACTUS.get();
+
+        if (plant.getBlock() == glassCactus && state.is(glassCactus))
             return true;
 
         return super.canSustainPlant(state, world, pos, facing, plantable);

@@ -4,6 +4,8 @@ import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.blocks.utility_rails.ArithmeticRailBlock;
 import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.misc.FlagUtil;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -46,7 +48,7 @@ public class FlagCartEntity extends AbstractMinecartContainer {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.flag_cart;
+        return MMItems.FLAG_CART_ITEM.get();
     }
 
     @Override
@@ -57,7 +59,7 @@ public class FlagCartEntity extends AbstractMinecartContainer {
     @Override
     public BlockState getDefaultDisplayBlockState() {
         int raw_display = 6 + getDisplayType();
-        return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, raw_display);
+        return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState().setValue(PistonDisplayBlock.VARIANT, raw_display);
     }
 
     @Override
@@ -195,7 +197,7 @@ public class FlagCartEntity extends AbstractMinecartContainer {
             BlockPos new_block_pos = blockPosition();
             if (!old_block_pos.equals(new_block_pos)) {
                 BlockState new_blockstate = level.getBlockState(new_block_pos);
-                if (new_blockstate.getBlock() == MMReferences.arithmetic_rail && new_blockstate.getValue(ArithmeticRailBlock.POWERED)) {
+                if (new_blockstate.getBlock() == MMBlocks.ARITHMETIC_RAIL.get() && new_blockstate.getValue(ArithmeticRailBlock.POWERED)) {
                     cycleFlag((ArithmeticRailBlock.SignalEffect) new_blockstate.getValue(ArithmeticRailBlock.EFFECT));
                 }
                 old_block_pos = new_block_pos;

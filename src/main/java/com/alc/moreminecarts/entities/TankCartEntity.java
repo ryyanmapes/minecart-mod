@@ -2,6 +2,8 @@ package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.containers.TankCartContainer;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -98,12 +100,12 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.tank_cart;
+        return MMItems.TANK_CART_ITEM.get();
     }
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        return MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 4);
+        return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 4);
     }
 
     @Override

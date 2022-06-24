@@ -1,7 +1,8 @@
 package com.alc.moreminecarts.containers;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMContainers;
 import com.alc.moreminecarts.tile_entities.AbstractCommonLoader;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
@@ -32,7 +33,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
     private AbstractCommonLoader tile;
 
     public MinecartUnLoaderContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.minecart_loader_c, n);
+        super(MMContainers.MINECART_LOADER_CONTAINER.get(), n);
 
         this.tile = null;
         this.level = player_inventory.player.level;
@@ -44,7 +45,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
     // For use with tile entity loaders (server).
     public MinecartUnLoaderContainer(int n, Level world, BlockPos pos, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.minecart_loader_c, n);
+        super(MMContainers.MINECART_LOADER_CONTAINER.get(), n);
 
         BlockEntity te = world.getBlockEntity(pos);
 
@@ -71,7 +72,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
     // For use with tile entity loaders (client).
     public MinecartUnLoaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_, BlockPos tilePos) {
-        super(MMReferences.minecart_loader_c, p_38969_);
+        super(MMContainers.MINECART_LOADER_CONTAINER.get(), p_38969_);
 
         this.level = p_38970_.player.level;
         this.tile = (AbstractCommonLoader) level.getBlockEntity(tilePos);

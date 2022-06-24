@@ -3,6 +3,8 @@ package com.alc.moreminecarts.entities;
 import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMItems;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -61,7 +63,7 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.chunk_loader_cart;
+        return MMItems.MINECART_WITH_CHUNK_LOADER_ITEM.get();
     }
 
     @Override
@@ -85,7 +87,7 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        return MMReferences.chunk_loader.defaultBlockState().setValue(ChunkLoaderBlock.POWERED, Boolean.valueOf(isMinecartPowered()));
+        return MMBlocks.CHUNK_LOADER_BLOCK.get().defaultBlockState().setValue(ChunkLoaderBlock.POWERED, Boolean.valueOf(isMinecartPowered()));
     }
 
     @Override

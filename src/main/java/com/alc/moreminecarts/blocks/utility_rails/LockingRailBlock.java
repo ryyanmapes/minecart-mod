@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
-import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.registry.MMTileEntities;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -15,7 +15,6 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -249,7 +248,7 @@ public class LockingRailBlock extends BaseRailBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_152180_, BlockState p_152181_, BlockEntityType<T> p_152182_) {
-        return p_152180_.isClientSide ? null : createTickerHelper(p_152182_, MMReferences.locking_rail_te, LockingRailTile::doTick);
+        return p_152180_.isClientSide ? null : createTickerHelper(p_152182_, MMTileEntities.LOCKING_RAIL_TILE_ENTITY.get(), LockingRailTile::doTick);
     }
 
     @Nullable

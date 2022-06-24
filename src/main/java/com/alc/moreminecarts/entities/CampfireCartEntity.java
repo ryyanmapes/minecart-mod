@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -92,7 +93,7 @@ public class CampfireCartEntity extends AbstractMinecart {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.campfire_cart;
+        return MMItems.CAMPFIRE_CART_ITEM.get();
     }
 
     protected void moveAlongTrack(BlockPos pos, BlockState state) {

@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
 import com.alc.moreminecarts.MMConstants;
-import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.registry.MMBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
@@ -15,7 +15,7 @@ public class MaglevHolographicRail extends HolographicRail {
     }
 
     @Override
-    protected Block getProjectorRail() {return MMReferences.maglev_projector_rail;}
+    protected Block getProjectorRail() {return MMBlocks.MAGLEV_PROJECTOR_RAIL.get();}
 
     @Override
     public float getRailMaxSpeed(BlockState state, Level world, BlockPos pos, AbstractMinecart cart) {

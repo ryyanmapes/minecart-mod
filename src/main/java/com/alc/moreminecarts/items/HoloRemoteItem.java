@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.items;
 
-import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.registry.MMBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -27,8 +27,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.ticks.TickPriority;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class HoloRemoteItem extends Item {
 
@@ -39,8 +41,8 @@ public class HoloRemoteItem extends Item {
         broken
     }
 
-    public Block regular_block = MMReferences.holo_scaffold;
-    public Block chaotic_block = MMReferences.chaotic_holo_scaffold;
+    public Supplier<Block> regular_block = MMBlocks.HOLO_SCAFFOLD;
+    public Supplier<Block> chaotic_block = MMBlocks.CHAOTIC_HOLO_SCAFFOLD;
     public HoloRemoteType remote_type;
 
     public HoloRemoteItem(HoloRemoteType remote_type, Item.Properties properties) {
@@ -58,7 +60,7 @@ public class HoloRemoteItem extends Item {
 
         //if (!HoloScaffold.isValidDistance(world, blockpos)) return null;
 
-        if (!(blockstate.is(regular_block) || blockstate.is(chaotic_block)) || remote_type == HoloRemoteType.simple || remote_type == HoloRemoteType.broken) {
+        if (!(blockstate.is(regular_block.get()) || blockstate.is(chaotic_block.get())) || remote_type == HoloRemoteType.simple || remote_type == HoloRemoteType.broken) {
             return context;
         } else {
             Direction direction;
@@ -106,11 +108,11 @@ public class HoloRemoteItem extends Item {
     // All copied from BlockItem, and slightly modified.
 
     public Block getBlock() {
-        return this.getBlockRaw() == null ? null : this.getBlockRaw().delegate.get();
+        return this.getBlockRaw() == null ? null : ForgeRegistries.BLOCKS.getDelegateOrThrow(this.getBlockRaw()).get();
     }
 
     private Block getBlockRaw() {
-        return remote_type == HoloRemoteType.broken? chaotic_block : regular_block;
+        return remote_type == HoloRemoteType.broken? chaotic_block.get() : regular_block.get();
     }
 
     public InteractionResult useOn(UseOnContext p_195939_1_) {

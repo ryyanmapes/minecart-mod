@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,7 +39,7 @@ public class NetMinecartEntity extends AbstractMinecart {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.minecart_with_net;
+        return MMItems.MINECART_WITH_NET_ITEM.get();
     }
 
     // Special Stuff

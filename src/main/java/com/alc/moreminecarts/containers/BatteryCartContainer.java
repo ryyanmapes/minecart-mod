@@ -1,7 +1,7 @@
 package com.alc.moreminecarts.containers;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.BatteryCartEntity;
+import com.alc.moreminecarts.registry.MMContainers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -9,7 +9,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class BatteryCartContainer extends AbstractContainerMenu {
 
@@ -19,7 +21,7 @@ public class BatteryCartContainer extends AbstractContainerMenu {
 
     // For use on the client.
     public BatteryCartContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.tank_cart_c, n);
+        super(MMContainers.TANK_CART_CONTAINER.get(), n);
 
         this.entity = null;
         this.level = world;
@@ -30,7 +32,7 @@ public class BatteryCartContainer extends AbstractContainerMenu {
 
     // For use with the entity cart.
     public BatteryCartContainer(int n, Level world, BatteryCartEntity entity, Inventory player_inventory, Player player_entity) {
-        super(MMReferences.battery_cart_c, n);
+        super(MMContainers.BATTERY_CART_CONTAINER.get(), n);
 
         this.entity = entity;
         this.level = player_inventory.player.level;
@@ -56,6 +58,12 @@ public class BatteryCartContainer extends AbstractContainerMenu {
         }
 
         this.addDataSlots(data);
+    }
+
+    @Override
+    @NotNull
+    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+        return ItemStack.EMPTY;
     }
 
     @Override

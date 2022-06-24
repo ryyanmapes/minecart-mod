@@ -1,9 +1,9 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMConstants;
-import com.alc.moreminecarts.MMItemReferences;
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
+import com.alc.moreminecarts.registry.MMBlocks;
+import com.alc.moreminecarts.registry.MMItems;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
@@ -165,12 +165,12 @@ public class PistonPushcartEntity extends IronPushcartEntity {
 
     @Override
     public BlockState getDisplayBlockState() {
-        return MMReferences.piston_display_block.defaultBlockState();
+        return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState();
     }
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        return MMReferences.piston_display_block.defaultBlockState();
+        return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState();
     }
 
     @Override
@@ -181,7 +181,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
 
     @Override
     protected Item getDropItem() {
-        return MMItemReferences.piston_pushcart;
+        return MMItems.PISTON_PUSHCART_ITEM.get();
     }
 
     // Copied from AbstractMinecart

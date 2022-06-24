@@ -1,6 +1,6 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
-import com.alc.moreminecarts.MMReferences;
+import com.alc.moreminecarts.registry.MMBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -33,7 +33,7 @@ public class HolographicRail extends BaseRailBlock {
         builder.add(FACING, SHAPE, LENGTH, WATERLOGGED);
     }
 
-    protected Block getProjectorRail() {return MMReferences.projector_rail;}
+    protected Block getProjectorRail() {return MMBlocks.PROJECTOR_RAIL.get();}
 
     public boolean canSurvive(BlockState state, Level world_reader, BlockPos pos) {
 

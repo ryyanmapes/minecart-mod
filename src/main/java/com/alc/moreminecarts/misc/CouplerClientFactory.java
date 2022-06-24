@@ -1,8 +1,7 @@
 package com.alc.moreminecarts.misc;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.entities.CouplerEntity;
-import net.minecraft.network.FriendlyByteBuf;
+import com.alc.moreminecarts.registry.MMEntities;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
@@ -16,7 +15,7 @@ public class CouplerClientFactory {
 
     public static CouplerEntity getCouplerFromPacket(PlayMessages.SpawnEntity packet, Level world) {
 
-        CouplerEntity ent = new CouplerEntity(MMReferences.coupler, world);
+        CouplerEntity ent = new CouplerEntity(MMEntities.COUPLER_ENTITY.get(), world);
         /*
         ent.setId(packet.getEntityId());
         ent.setUUID(packet.getUuid());

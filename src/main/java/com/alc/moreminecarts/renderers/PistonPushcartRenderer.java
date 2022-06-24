@@ -1,15 +1,14 @@
 package com.alc.moreminecarts.renderers;
 
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
+import com.alc.moreminecarts.registry.MMBlocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.MinecartModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -117,7 +116,7 @@ public class PistonPushcartRenderer extends EntityRenderer<PistonPushcartEntity>
         matrixStackIn.pushPose();
 
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-                MMReferences.piston_display_block.defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 0),
+                MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 0),
                 matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
 
         boolean is_first = true;
@@ -126,7 +125,7 @@ public class PistonPushcartRenderer extends EntityRenderer<PistonPushcartEntity>
         while( length >= 0 ) {
 
             Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-                    MMReferences.piston_display_block.defaultBlockState()
+                    MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState()
                             .setValue(PistonDisplayBlock.VARIANT, is_first? getPistonHeadVariant() : 1),
                     matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
 
