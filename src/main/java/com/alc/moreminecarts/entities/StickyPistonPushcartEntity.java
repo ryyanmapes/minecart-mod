@@ -3,11 +3,8 @@ package com.alc.moreminecarts.entities;
 import com.alc.moreminecarts.MMItemReferences;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 public class StickyPistonPushcartEntity extends PistonPushcartEntity{
@@ -47,16 +44,8 @@ public class StickyPistonPushcartEntity extends PistonPushcartEntity{
     }
 
     @Override
-    public void destroy(DamageSource source) {
-        this.remove(RemovalReason.KILLED);
-        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            ItemStack stack = new ItemStack(MMItemReferences.iron_pushcart);
-            if (this.hasCustomName()) {
-                stack.setHoverName(this.getCustomName());
-            }
-            this.spawnAtLocation(stack);
-            this.spawnAtLocation(new ItemStack(Items.STICKY_PISTON));
-        }
+    protected Item getDropItem() {
+        return MMItemReferences.sticky_piston_pushcart;
     }
 
     //@Override

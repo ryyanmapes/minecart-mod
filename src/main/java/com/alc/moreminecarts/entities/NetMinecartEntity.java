@@ -1,18 +1,14 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MMItemReferences;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,16 +37,8 @@ public class NetMinecartEntity extends AbstractMinecart {
     }
 
     @Override
-    public void destroy(DamageSource source) {
-        super.destroy(source);
-        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(Items.STRING);
-            this.spawnAtLocation(Items.STRING);
-            this.spawnAtLocation(Items.STRING);
-            this.spawnAtLocation(Items.STRING);
-            this.spawnAtLocation(Items.FERMENTED_SPIDER_EYE);
-        }
-
+    protected Item getDropItem() {
+        return MMItemReferences.minecart_with_net;
     }
 
     // Special Stuff

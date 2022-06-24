@@ -1,6 +1,5 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MMItemReferences;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -12,14 +11,13 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -29,8 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-
-import java.util.Random;
 
 public class CampfireCartEntity extends AbstractMinecart {
     private static final EntityDataAccessor<Boolean> POWERED = SynchedEntityData.defineId(CampfireCartEntity.class, EntityDataSerializers.BOOLEAN);
@@ -85,7 +81,7 @@ public class CampfireCartEntity extends AbstractMinecart {
     // Taken from Campfire Block
     private static void spawnSmokeParticles(Level worldIn, Vec3 pos, boolean isSignalFire, boolean spawnExtraSmoke) {
         if (!worldIn.isClientSide()) return;
-        Random random = worldIn.getRandom();
+        RandomSource random = worldIn.getRandom();
         SimpleParticleType basicparticletype = isSignalFire ? ParticleTypes.CAMPFIRE_SIGNAL_SMOKE : ParticleTypes.CAMPFIRE_COSY_SMOKE;
         worldIn.addParticle(basicparticletype, true, pos.x + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.y + 0.4 + random.nextDouble(), (double)pos.z + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
         if (spawnExtraSmoke) {
@@ -94,12 +90,9 @@ public class CampfireCartEntity extends AbstractMinecart {
 
     }
 
-    public void destroy(DamageSource source) {
-        this.remove(RemovalReason.KILLED);
-        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(MMItemReferences.campfire_cart);
-        }
-
+    @Override
+    protected Item getDropItem() {
+        return MMItemReferences.campfire_cart;
     }
 
     protected void moveAlongTrack(BlockPos pos, BlockState state) {

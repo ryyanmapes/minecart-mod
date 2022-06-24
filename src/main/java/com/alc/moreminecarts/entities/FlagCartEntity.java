@@ -1,7 +1,5 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MMItemReferences;
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.blocks.utility_rails.ArithmeticRailBlock;
 import com.alc.moreminecarts.containers.FlagCartContainer;
@@ -14,7 +12,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,8 +20,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
@@ -50,12 +45,8 @@ public class FlagCartEntity extends AbstractMinecartContainer {
     }
 
     @Override
-    public void destroy(DamageSource source) {
-        super.destroy(source);
-        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(Items.LOOM);
-            this.spawnAtLocation(Items.COMPARATOR);
-        }
+    protected Item getDropItem() {
+        return MMItemReferences.flag_cart;
     }
 
     @Override

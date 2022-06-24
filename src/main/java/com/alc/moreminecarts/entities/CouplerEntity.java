@@ -1,8 +1,6 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MMItemReferences;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
-import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -23,7 +21,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.UUID;
 
 public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData {
