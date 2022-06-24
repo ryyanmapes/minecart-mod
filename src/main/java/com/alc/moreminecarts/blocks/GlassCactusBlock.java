@@ -1,10 +1,9 @@
 package com.alc.moreminecarts.blocks;
 
 import com.alc.moreminecarts.MMConstants;
-import com.alc.moreminecarts.MMItemReferences;
-import com.alc.moreminecarts.MMReferences;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -13,17 +12,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CactusBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.extensions.IForgeBlock;
-
-import java.util.Random;
 
 public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
 
@@ -47,10 +44,12 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
     @Override
     public  boolean canSurvive(BlockState state, LevelReader world_reader, BlockPos pos) {
 
-        Biome.BiomeCategory category = Biome.getBiomeCategory(world_reader.getBiome(pos));
+        Holder<Biome> biome = world_reader.getBiome(pos);
 
-        return (category == Biome.BiomeCategory.DESERT || category == Biome.BiomeCategory.MESA || category == Biome.BiomeCategory.NONE || MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY.get())
-                && super.canSurvive(state, world_reader, pos);
+        var canSurviveInBiome = !MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY.get() ||
+                (biome.is(Biomes.DESERT) || biome.is(BiomeTags.IS_BADLANDS));
+
+        return canSurviveInBiome && super.canSurvive(state, world_reader, pos);
     }
 
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {

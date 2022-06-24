@@ -18,10 +18,7 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.slf4j.Log4jLogger;
@@ -88,15 +85,6 @@ public class MoreMinecartsEventReciever {
             return;
         }
 
-    }
-
-    @SubscribeEvent
-    public static void onBiomeLoad(BiomeLoadingEvent event) {
-        if (MMConstants.CONFIG_GLASS_CACTUS_SPAWNS.get() == 0) return;
-
-        if (event.getCategory() == Biome.BiomeCategory.DESERT || event.getCategory() == Biome.BiomeCategory.MESA) {
-            event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MoreMinecartsMod.GLASS_CACTUS_PLACER);
-        }
     }
 
 }

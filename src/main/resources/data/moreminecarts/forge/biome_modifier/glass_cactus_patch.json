@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#moreminecarts:has_vegetation/glass_cactus",
+  "features": "moreminecarts:glass_cactus_patch",
+  "step": "vegetal_decoration"
+}

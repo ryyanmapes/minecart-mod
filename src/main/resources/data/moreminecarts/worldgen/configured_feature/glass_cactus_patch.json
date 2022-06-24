@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:random_patch",
+  "config": {
+    "tries": 3,
+    "feature": "moreminecarts:glass_cactus"
+  }
+}
