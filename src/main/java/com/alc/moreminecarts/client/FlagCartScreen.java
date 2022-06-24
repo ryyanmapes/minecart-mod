@@ -10,8 +10,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,7 +24,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     private final List<SimpleButton> buttons = Lists.newArrayList();
 
     public FlagCartScreen(FlagCartContainer container, Inventory inv, Component titleIn) {
-        super(container, inv, new TranslatableComponent("Signal Minecart"));
+        super(container, inv, Component.translatable("Signal Minecart"));
     }
 
     private void addButton(SimpleButton p_169617_) {
@@ -73,7 +71,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     @OnlyIn(Dist.CLIENT)
     abstract class SimpleButton extends AbstractButton {
 
-        protected SimpleButton(int x, int y) { super(x, y, 18, 18, TextComponent.EMPTY); }
+        protected SimpleButton(int x, int y) { super(x, y, 18, 18, Component.empty()); }
 
         public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);

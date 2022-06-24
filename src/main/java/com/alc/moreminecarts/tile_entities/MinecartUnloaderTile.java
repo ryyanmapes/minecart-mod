@@ -5,7 +5,6 @@ import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.ChunkLoaderCartEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -245,7 +244,7 @@ public class MinecartUnloaderTile extends AbstractCommonLoader {
 
     @Override
     protected Component getDefaultName() {
-        return new TranslatableComponent("Minecart Unloader");
+        return Component.translatable("Minecart Unloader");
     }
 
     public static void doTick(Level level, BlockPos pos, BlockState state, MinecartUnloaderTile ent) {

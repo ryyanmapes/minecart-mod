@@ -11,8 +11,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,7 +25,7 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
     private final List<AbstractButton> buttons = Lists.newArrayList();
 
     public ChunkLoaderScreen(ChunkLoaderContainer container, Inventory inv, Component titleIn) {
-        super(container, inv, new TranslatableComponent("Chunk Loader"));
+        super(container, inv, Component.translatable("Chunk Loader"));
     }
 
     private void addButton(AbstractButton p_169617_) {
@@ -76,12 +74,12 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
     class ChunkLoaderButton extends AbstractButton {
 
         protected ChunkLoaderButton(int x, int y) {
-            super(x, y, 18, 18, TextComponent.EMPTY);
+            super(x, y, 18, 18, Component.empty());
         }
 
         public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             ChunkLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new TranslatableComponent(menu.isEnabled()
+                    Component.translatable(menu.isEnabled()
                             ? "On"
                             : "Off"
                     ) , p_230443_2_, p_230443_3_);
