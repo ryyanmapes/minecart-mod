@@ -1,9 +1,8 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MMItemReferences;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -21,12 +20,8 @@ public class SoulfireCartEntity extends CampfireCartEntity {
     }
 
     @Override
-    public void destroy(DamageSource source) {
-        this.remove(RemovalReason.KILLED);
-        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(MMItemReferences.soulfire_cart);
-        }
-
+    protected Item getDropItem() {
+        return MMItemReferences.soulfire_cart;
     }
 
     @Override

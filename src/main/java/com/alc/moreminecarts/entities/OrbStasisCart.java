@@ -1,7 +1,5 @@
 package com.alc.moreminecarts.entities;
 
-import com.alc.moreminecarts.MMItemReferences;
-import com.alc.moreminecarts.MMReferences;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.tile_entities.OrbStasisTile;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
@@ -55,11 +54,8 @@ public class OrbStasisCart extends AbstractMinecart {
     }
 
     @Override
-    public void destroy(DamageSource source) {
-        super.destroy(source);
-        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(MMItemReferences.pearl_stasis_chamber);
-        }
+    protected Item getDropItem() {
+        return MMItemReferences.minecart_with_stasis;
     }
 
     @Override

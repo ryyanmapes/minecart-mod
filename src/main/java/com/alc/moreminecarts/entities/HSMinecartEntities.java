@@ -1,8 +1,6 @@
 package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.MMConstants;
-import com.alc.moreminecarts.MMItemReferences;
-import com.alc.moreminecarts.MMReferences;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.damagesource.DamageSource;
