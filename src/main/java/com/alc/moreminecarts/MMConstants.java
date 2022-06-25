@@ -22,7 +22,6 @@ public class MMConstants {
     public static final float PISTON_PUSHCART_MAX_HEIGHT = 5f;
 
     public static ForgeConfigSpec.DoubleValue CONFIG_CHUNK_LOADER_MULTIPLIER;
-    public static ForgeConfigSpec.IntValue CONFIG_GLASS_CACTUS_SPAWNS;
     public static ForgeConfigSpec.BooleanValue CONFIG_GLASS_CACTUS_DESERT_ONLY;
     public static ForgeConfigSpec.DoubleValue CONFIG_WOOD_RAILS_MAX_SPEED;
     public static ForgeConfigSpec.DoubleValue CONFIG_MAGLEV_RAILS_MAX_SPEED;
