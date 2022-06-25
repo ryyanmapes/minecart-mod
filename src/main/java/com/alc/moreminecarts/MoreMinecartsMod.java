@@ -82,8 +82,6 @@ public class MoreMinecartsMod {
 
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER = builder.defineInRange("chunk_loader_multiplier", () -> 1.0D, 0, 9999);
-        builder.comment("How often vitric cactus spawns. A larger number is more rare. Default cactus is 6-13, set to zero to disable.");
-        MMConstants.CONFIG_GLASS_CACTUS_SPAWNS = builder.defineInRange("vitric_cactus_rarity", () -> 100, 0, 9999);
         builder.comment("Requires that vitric cactus be grown only in desert and mesa biomes.");
         MMConstants.CONFIG_GLASS_CACTUS_DESERT_ONLY = builder.define("vitric_cactus_desert_only", true);
         builder.comment("Sets the max speed of various rail types. Default rails are 0.4.");
@@ -100,9 +98,6 @@ public class MoreMinecartsMod {
     private void setup(final FMLCommonSetupEvent event) {
         ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:chunkrodite_block"), MMBlocks.POTTED_BEET);
         ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(new ResourceLocation("moreminecarts:glass_cactus"), MMBlocks.POTTED_GLASS_CACTUS);
-
-        int actualGlassCactusRarity = MMConstants.CONFIG_GLASS_CACTUS_SPAWNS.get();
-        if (actualGlassCactusRarity == 0) actualGlassCactusRarity = 100;
 
         MMConstants.WOODEN_MAX_SPEED = MMConstants.CONFIG_WOOD_RAILS_MAX_SPEED.get().floatValue();
         MMConstants.MAGLEV_MAX_SPEED = MMConstants.CONFIG_MAGLEV_RAILS_MAX_SPEED.get().floatValue();
