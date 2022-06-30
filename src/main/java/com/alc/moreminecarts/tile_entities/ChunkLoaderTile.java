@@ -190,7 +190,7 @@ public class ChunkLoaderTile extends ContainerBlockEntity implements WorldlyCont
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                boolean success = ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, false);
+                boolean success = ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, getBlockPos(), chunk_x + i, chunk_z + j, add, true);
                 //MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "Turning chunks " + (add? "on" : "off") + ": " + (chunk_x + i) + " " + (chunk_z + j) + " " + (success? "Successful!" : "Failed!"));
 
             }
