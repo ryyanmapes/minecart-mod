@@ -109,8 +109,6 @@ public class MoreMinecartsMod {
         // do something that can only be done on the client
         //LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 
-        PROXY.setupKeybindings();
-
         event.enqueueWork(
                 () -> {
                     MenuScreens.register(MMContainers.CHUNK_LOADER_CONTAINER.get(), ChunkLoaderScreen::new);

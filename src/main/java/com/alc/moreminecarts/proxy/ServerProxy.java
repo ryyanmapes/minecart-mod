@@ -24,6 +24,4 @@ public class ServerProxy implements IProxy{
         return false;
     }
 
-    @Override
-    public void setupKeybindings() {}
 }

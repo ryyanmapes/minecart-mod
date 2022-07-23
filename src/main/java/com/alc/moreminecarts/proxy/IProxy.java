@@ -8,5 +8,4 @@ public interface IProxy {
     public Player getPlayer();
     public boolean isHoldingJump();
     public boolean isHoldingRun();
-    public void setupKeybindings();
 }

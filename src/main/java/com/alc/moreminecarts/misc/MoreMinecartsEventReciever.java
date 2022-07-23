@@ -28,12 +28,12 @@ public class MoreMinecartsEventReciever {
     @SubscribeEvent
     public static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
 
-        if (event.getEntity() instanceof PistonPushcartEntity) {
+        if (event.getTarget() instanceof PistonPushcartEntity) {
             MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "piston pushcart interact");
         }
 
         InteractionHand hand = event.getHand();
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         ItemStack using = player.getItemInHand(hand);
 
         InteractionHand other_hand = hand == InteractionHand.MAIN_HAND? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
@@ -47,7 +47,7 @@ public class MoreMinecartsEventReciever {
         if (using.getItem() == couplerItem || using_secondary.getItem() == couplerItem) {
             event.setCancellationResult(InteractionResult.CONSUME);
             event.setCanceled(true);
-            if (event.getWorld().isClientSide()) return;
+            if (event.getLevel().isClientSide()) return;
 
             if (using.getItem() == couplerItem) {
                 if (entity instanceof AbstractMinecart
@@ -55,7 +55,7 @@ public class MoreMinecartsEventReciever {
                     || entity instanceof Mob
                     || entity instanceof EnderDragon){
 
-                    Level world = event.getWorld();
+                    Level world = event.getLevel();
                     player.playSound(SoundEvents.CHAIN_PLACE, 0.9F, 1.0F);
                     CouplerItem.hookIn(player, world, using, entity);
                 }
@@ -72,7 +72,7 @@ public class MoreMinecartsEventReciever {
             event.setCancellationResult(InteractionResult.CONSUME);
             event.setCanceled(true);
 
-            if (event.getWorld().isClientSide()) return;
+            if (event.getLevel().isClientSide()) return;
 
             if (using.getItem() == hsUpgradeItem && entity instanceof AbstractMinecart
                 && !(entity instanceof HSMinecartEntities.IHSCart)) {
