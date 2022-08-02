@@ -12,7 +12,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class PistonPushcartDownKey extends KeyMapping {
 
-
     public PistonPushcartDownKey(String description, int default_key, String category) {
         super(description, default_key, category);
     }

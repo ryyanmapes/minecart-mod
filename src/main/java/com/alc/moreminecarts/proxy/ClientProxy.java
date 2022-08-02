@@ -12,7 +12,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid =  MMConstants.modid, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid =  MMConstants.modid, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ClientProxy implements IProxy {
 
     @Override
@@ -34,14 +34,4 @@ public class ClientProxy implements IProxy {
     public boolean isHoldingRun() {
         return Minecraft.getInstance().player.input.shiftKeyDown;
     }
-
-    @SubscribeEvent
-    public void setupKeybindings(RegisterKeyMappingsEvent event) {
-        // Jump key
-        event.register(new PistonPushcartUpKey("Piston Pushcart Up", 32, "More Minecarts and Rails"));
-        // Left control key
-        event.register(new PistonPushcartDownKey("Piston Pushcart Down", 341, "More Minecarts and Rails"));
-    }
-
-
 }
