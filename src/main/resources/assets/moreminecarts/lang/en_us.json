@@ -43,6 +43,8 @@
   "block.moreminecarts.chunkrodite_block": "Chunkrodite Block",
   "block.moreminecarts.glass_cactus": "Vitric Cactus",
   "block.moreminecarts.holo_scaffold_generator": "Holo-Scaffold Generator",
+  "block.moreminecarts.potted_glass_cactus": "Potted Vitric Cactus",
+  "block.moreminecarts.potted_beet": "Potted Beet",
 
   "block.moreminecarts.color_detector_rail_white": "Color Detector Rail (White)",
   "block.moreminecarts.color_detector_rail_orange": "Color Detector Rail (Orange)",
