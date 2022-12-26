@@ -255,29 +255,23 @@ public class MinecartLoaderTile extends AbstractCommonLoader {
         if (te_at_minecart instanceof LockingRailTile && ((LockingRailTile)te_at_minecart).locked_minecart == minecart) {
             LockingRailTile locking_rail_tile = (LockingRailTile)te_at_minecart;
 
-            if (locking_rail_tile.saved_fuel + 3600 <= 32000) {
-
-                for (ItemStack stack : items) {
-                    if (Ingredient.of(new ItemLike[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
-                        stack.shrink(1);
-                        locking_rail_tile.saved_fuel += 3600;
-                        changed = true;
-                    }
+            for (ItemStack stack : items) {
+                if (locking_rail_tile.saved_fuel + 3600 > 32000) break;
+                if (Ingredient.of(new ItemLike[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
+                    stack.shrink(1);
+                    locking_rail_tile.saved_fuel += 3600;
+                    changed = true;
                 }
-
             }
         }
         else {
 
-            if (minecart.fuel + 3600 <= 32000) {
-
-                for (ItemStack stack : items) {
-                    if (Ingredient.of(new ItemLike[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
-                        stack.shrink(1);
-                        minecart.fuel += 3600;
-                        changed = true;
-
-                    }
+            for (ItemStack stack : items) {
+                if (minecart.fuel + 3600 > 32000) break;
+                if (Ingredient.of(new ItemLike[]{Items.COAL, Items.CHARCOAL}).test(stack) && !(leave_one_in_stack && stack.getCount() == 1)) {
+                    stack.shrink(1);
+                    minecart.fuel += 3600;
+                    changed = true;
                 }
             }
 
