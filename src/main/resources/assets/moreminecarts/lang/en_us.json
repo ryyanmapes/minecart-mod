@@ -1,4 +1,6 @@
 {
+  "itemGroup.moreminecarts": "More Minecarts and Rails",
+
   "lore.glass_cactus": "§6§oCan only grow in desert climates!",
 
   "block.moreminecarts.rail_turn": "Rail Turn",
@@ -32,6 +34,7 @@
   "block.moreminecarts.chunk_loader": "Chunk Loader",
   "block.moreminecarts.minecart_loader": "Minecart Loader",
   "block.moreminecarts.minecart_unloader": "Minecart Unloader",
+  "block.moreminecarts.filter_unloader": "Filter Unloader",
   "block.moreminecarts.pearl_stasis_chamber": "Ender Pearl Stasis Chamber",
   "block.moreminecarts.silica_steel_block": "Silica Steel Block",
   "block.moreminecarts.corrugated_silica_steel": "Corrugated Silica Steel",

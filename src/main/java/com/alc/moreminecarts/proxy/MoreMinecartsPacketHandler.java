@@ -2,10 +2,12 @@ package com.alc.moreminecarts.proxy;
 
 import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
+import com.alc.moreminecarts.containers.FilterUnloaderContainer;
 import com.alc.moreminecarts.containers.FlagCartContainer;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
+import com.alc.moreminecarts.tile_entities.FilterUnloaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import io.netty.buffer.Unpooled;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -36,6 +38,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.logging.Filter;
 
 public class MoreMinecartsPacketHandler {
     private static final String PROTOCOL_VERSION = "1";
@@ -321,16 +324,19 @@ public class MoreMinecartsPacketHandler {
         public boolean leave_one_item_in_stack;
         public boolean redstone_output;
         public MinecartLoaderTile.ComparatorOutputType output_type;
+        public FilterUnloaderTile.FilterType filterType;
 
         public MinecartLoaderPacket(){}
 
         public MinecartLoaderPacket(boolean is_unloader, boolean locked_minecarts_only, boolean leave_one_item_in_stack,
-                                    MinecartLoaderTile.ComparatorOutputType output_type, boolean redstone_output) {
+                                    MinecartLoaderTile.ComparatorOutputType output_type, boolean redstone_output,
+                                    FilterUnloaderTile.FilterType filterType) {
             this.is_unloader = is_unloader;
             this.locked_minecarts_only = locked_minecarts_only;
             this.leave_one_item_in_stack = leave_one_item_in_stack;
             this.output_type = output_type;
             this.redstone_output = redstone_output;
+            this.filterType = filterType;
         }
 
         public static void encode(MinecartLoaderPacket msg, FriendlyByteBuf buf) {
@@ -339,6 +345,7 @@ public class MoreMinecartsPacketHandler {
             buf.writeBoolean(msg.leave_one_item_in_stack);
             buf.writeEnum(msg.output_type);
             buf.writeBoolean(msg.redstone_output);
+            buf.writeEnum(msg.filterType);
         }
 
         public static MinecartLoaderPacket decode(FriendlyByteBuf buf) {
@@ -348,6 +355,7 @@ public class MoreMinecartsPacketHandler {
             packet.leave_one_item_in_stack = buf.readBoolean();
             packet.output_type = buf.readEnum(MinecartLoaderTile.ComparatorOutputType.class);
             packet.redstone_output = buf.readBoolean();
+            packet.filterType = buf.readEnum(FilterUnloaderTile.FilterType.class);
             return packet;
         }
 
@@ -356,9 +364,11 @@ public class MoreMinecartsPacketHandler {
 
             ctx.get().enqueueWork(() -> {
                 ServerPlayer sender = ctx.get().getSender();
-                if (sender.containerMenu instanceof MinecartUnLoaderContainer) {
-                    MinecartUnLoaderContainer container = ((MinecartUnLoaderContainer) sender.containerMenu);
-                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output);
+                if (sender.containerMenu instanceof MinecartUnLoaderContainer container) {
+                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output, msg.filterType);
+                }
+                else if (sender.containerMenu instanceof FilterUnloaderContainer container) {
+                    container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output, msg.filterType);
                 }
             });
             ctx.get().setPacketHandled(true);

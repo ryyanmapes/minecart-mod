@@ -5,6 +5,7 @@ import com.alc.moreminecarts.blocks.GlassCactusBlock;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
+import com.alc.moreminecarts.blocks.containers.FilterUnloaderBlock;
 import com.alc.moreminecarts.blocks.containers.MinecartLoaderBlock;
 import com.alc.moreminecarts.blocks.containers.MinecartUnloaderBlock;
 import com.alc.moreminecarts.blocks.holo_scaffolds.ChaoticHoloScaffold;
@@ -75,8 +76,9 @@ public class MMBlocks {
 
     // Container Blocks
     public static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).noOcclusion().lightLevel(poweredBlockEmission(13))));
-    public static final RegistryObject<Block> MINECART_LOADER_BLOCK = BLOCKS.register("minecart_loader", () -> new MinecartLoaderBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f)));
-    public static final RegistryObject<Block> MINECART_UNLOADER_BLOCK = BLOCKS.register("minecart_unloader", () -> new MinecartUnloaderBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f)));
+    public static final RegistryObject<Block> MINECART_LOADER_BLOCK = BLOCKS.register("minecart_loader", () -> new MinecartLoaderBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(1f)));
+    public static final RegistryObject<Block> MINECART_UNLOADER_BLOCK = BLOCKS.register("minecart_unloader", () -> new MinecartUnloaderBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(1f)));
+    public static final RegistryObject<Block> FILTER_UNLOADER_BLOCK = BLOCKS.register("filter_unloader", () -> new FilterUnloaderBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(1f)));
     public static final RegistryObject<Block> PEARL_STASIS_CHAMBER = BLOCKS.register("pearl_stasis_chamber", () -> new OrbStasisBlock(BlockBehaviour.Properties.of(Material.ICE_SOLID, MaterialColor.COLOR_PURPLE).strength(5f).noOcclusion()));
 
     // Other Blocks

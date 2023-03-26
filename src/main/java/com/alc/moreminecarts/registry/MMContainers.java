@@ -25,6 +25,11 @@ public class MMContainers {
                 if (data != null) return new MinecartUnLoaderContainer(windowId, PROXY.getWorld(), data.readBlockPos(), inv, PROXY.getPlayer());
                 else return new MinecartUnLoaderContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
             }));
+    public static final RegistryObject<MenuType<FilterUnloaderContainer>> FILTER_UNLOADER_CONTAINER = MENU_TYPES.register("filter_loader_c", () -> IForgeMenuType.create(
+            (windowId, inv, data) -> {
+                if (data != null) return new FilterUnloaderContainer(windowId, PROXY.getWorld(), data.readBlockPos(), inv, PROXY.getPlayer());
+                else return new FilterUnloaderContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
+            }));
     public static final RegistryObject<MenuType<TankCartContainer>> TANK_CART_CONTAINER = MENU_TYPES.register("tank_cart_c", () -> IForgeMenuType.create(
             (windowId, inv, data) -> {
                 return new TankCartContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());

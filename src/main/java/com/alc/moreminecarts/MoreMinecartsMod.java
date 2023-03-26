@@ -15,7 +15,9 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -37,6 +39,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 
@@ -113,6 +116,7 @@ public class MoreMinecartsMod {
                 () -> {
                     MenuScreens.register(MMContainers.CHUNK_LOADER_CONTAINER.get(), ChunkLoaderScreen::new);
                     MenuScreens.register(MMContainers.MINECART_LOADER_CONTAINER.get(), MinecartUnLoaderScreen::new);
+                    MenuScreens.register(MMContainers.FILTER_UNLOADER_CONTAINER.get(), FilterUnloaderScreen::new);
                     MenuScreens.register(MMContainers.TANK_CART_CONTAINER.get(), TankCartScreen::new);
                     MenuScreens.register(MMContainers.BATTERY_CART_CONTAINER.get(), BatteryCartScreen::new);
                     MenuScreens.register(MMContainers.FLAG_CART_CONTAINER.get(), FlagCartScreen::new);
@@ -165,6 +169,15 @@ public class MoreMinecartsMod {
         );
 
     }
+
+    public static final CreativeModeTab CREATIVE_TAB = new CreativeModeTab(MMConstants.modid)
+    {
+        @Nonnull
+        @Override
+        public ItemStack makeIcon() {
+            return new ItemStack(MMItems.PISTON_PUSHCART_ITEM.get());
+        }
+    };
 
     @SubscribeEvent
     public void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers evt) {

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "moreminecarts:block/filter_unloader_side",
+    "north": "moreminecarts:block/filter_unloader_side",
+    "south": "moreminecarts:block/filter_unloader_side",
+    "east": "moreminecarts:block/filter_unloader_side",
+    "west": "moreminecarts:block/filter_unloader_side",
+    "up": "moreminecarts:block/filter_unloader_top",
+    "down": "moreminecarts:block/filter_unloader_bottom"
+  }
+}

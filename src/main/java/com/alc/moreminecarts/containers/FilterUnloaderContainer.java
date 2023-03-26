@@ -1,12 +1,11 @@
 package com.alc.moreminecarts.containers;
 
+import com.alc.moreminecarts.misc.SingleSlot;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
-import com.alc.moreminecarts.registry.MMBlocks;
 import com.alc.moreminecarts.registry.MMContainers;
 import com.alc.moreminecarts.tile_entities.AbstractCommonLoader;
 import com.alc.moreminecarts.tile_entities.FilterUnloaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
-import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -22,10 +21,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
-public class MinecartUnLoaderContainer extends AbstractContainerMenu {
+public class FilterUnloaderContainer extends AbstractContainerMenu {
 
     private final Container inventory;
     private final ContainerData data;
@@ -33,47 +33,35 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
     private AbstractCommonLoader tile;
 
-    public MinecartUnLoaderContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
+    public FilterUnloaderContainer(int n, Level world, Inventory player_inventory, Player player_entity) {
         super(MMContainers.MINECART_LOADER_CONTAINER.get(), n);
 
         this.tile = null;
         this.level = player_inventory.player.level;
-        this.inventory = new SimpleContainer(9);
+        this.inventory = new SimpleContainer(18);
         this.data = new SimpleContainerData(5);
 
         CommonInitialization(player_inventory);
     }
 
     // For use with tile entity loaders (server).
-    public MinecartUnLoaderContainer(int n, Level world, BlockPos pos, Inventory player_inventory, Player player_entity) {
-        super(MMContainers.MINECART_LOADER_CONTAINER.get(), n);
+    public FilterUnloaderContainer(int n, Level world, BlockPos pos, Inventory player_inventory, Player player_entity) {
+        super(MMContainers.FILTER_UNLOADER_CONTAINER.get(), n);
 
         BlockEntity te = world.getBlockEntity(pos);
 
-        if (te instanceof MinecartLoaderTile) {
-            MinecartLoaderTile loader = (MinecartLoaderTile) te;
-            this.inventory = loader;
-            this.data = loader.dataAccess;
-            this.tile = loader;
-        } else if (te instanceof MinecartUnloaderTile) {
-            MinecartUnloaderTile unloader = (MinecartUnloaderTile) te;
-            this.inventory = unloader;
-            this.data = unloader.dataAccess;
-            this.tile = unloader;
-        } else {
-            // should error out?
-            this.inventory = new SimpleContainer(9);
-            this.data = new SimpleContainerData(5);
-            this.tile = null;
-        }
+        FilterUnloaderTile unloader = (FilterUnloaderTile) te;
+        this.inventory = unloader;
+        this.data = unloader.dataAccess;
+        this.tile = unloader;
         this.level = player_inventory.player.level;
 
         CommonInitialization(player_inventory);
     }
 
     // For use with tile entity loaders (client).
-    public MinecartUnLoaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_, BlockPos tilePos) {
-        super(MMContainers.MINECART_LOADER_CONTAINER.get(), p_38969_);
+    public FilterUnloaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_, BlockPos tilePos) {
+        super(MMContainers.FILTER_UNLOADER_CONTAINER.get(), p_38969_);
 
         this.level = p_38970_.player.level;
         this.tile = (AbstractCommonLoader) level.getBlockEntity(tilePos);
@@ -85,12 +73,17 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
     public void CommonInitialization(Inventory player_inventory) {
 
-        checkContainerSize(inventory, 9);
+        checkContainerSize(inventory, 18);
         checkContainerDataCount(data, 5);
 
         // content slots
         for(int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(inventory, i, 8 + i * 18, 42));
+            this.addSlot(new Slot(inventory, i, 8 + i * 18, 29));
+        }
+
+        // filter slots
+        for(int i = 0; i < 9; ++i) {
+            this.addSlot(new SingleSlot(inventory, 9 + i, 8 + i * 18, 51));
         }
 
         // player inventory slots, taken from the AbstractFurnaceContainer code.
@@ -143,7 +136,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
 
     @OnlyIn(Dist.CLIENT)
     public int getSize() {
-        return 9;
+        return 18;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -192,6 +185,11 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
         return MinecartLoaderTile.ComparatorOutputType.fromInt((this.data.get(0) & 12) >> 2);
     }
 
+    public FilterUnloaderTile.FilterType getFilterType()
+    {
+        return FilterUnloaderTile.FilterType.fromInt((this.data.get(0) & 96) >> 5);
+    }
+
     public MoreMinecartsPacketHandler.MinecartLoaderPacket getCurrentPacket() {
         return new MoreMinecartsPacketHandler.MinecartLoaderPacket(
                 false,
@@ -199,7 +197,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
                 getLeaveOneInStack(),
                 getComparatorOutputType(),
                 getRedstoneOutput(),
-                FilterUnloaderTile.FilterType.allow_per_slot
+                getFilterType()
         );
     }
 
@@ -208,7 +206,7 @@ public class MinecartUnLoaderContainer extends AbstractContainerMenu {
     }
 
     public void setOptions(boolean locked_minecarts_only, boolean leave_one_in_stack, MinecartLoaderTile.ComparatorOutputType comparator_output, boolean redstone_output, FilterUnloaderTile.FilterType filterType) {
-       int options = (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4);
+       int options = (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4) + (filterType.toInt() << 5);
        this.setData(0, options);
        this.broadcastChanges();
     }

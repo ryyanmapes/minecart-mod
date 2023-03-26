@@ -114,7 +114,7 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4);
+                    return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4) + (filterType.toInt() << 5);
                 case 1:
                     return getIsUnloader()? 1 : 0;
                 case 2:
@@ -136,6 +136,7 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
                     leave_one_in_stack = (set_to & 2) == 2;
                     comparator_output = MinecartLoaderTile.ComparatorOutputType.fromInt((set_to & 12) >> 2);
                     redstone_output = (set_to & 16) == 16;
+                    filterType = FilterUnloaderTile.FilterType.fromInt((set_to & 96) >> 5);
                     break;
                 default:
                     break;
@@ -152,6 +153,7 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
     public boolean locked_minecarts_only;
     public boolean leave_one_in_stack;
     public MinecartLoaderTile.ComparatorOutputType comparator_output;
+    public FilterUnloaderTile.FilterType filterType = FilterUnloaderTile.FilterType.allow_per_slot;
 
     public boolean last_redstone_output;
     public int comparator_output_value;
@@ -276,17 +278,17 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
 
     @Override
     public int[] getSlotsForFace(Direction p_180463_1_) {
-        return new int[0];
+        return FilterUnloaderTile.VALID_TAKE_SLOTS;
     }
 
     @Override
     public boolean canPlaceItemThroughFace(int p_180462_1_, ItemStack p_180462_2_, @Nullable Direction p_180462_3_) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean canTakeItemThroughFace(int p_180461_1_, ItemStack p_180461_2_, Direction p_180461_3_) {
-        return false;
+        return p_180461_1_ < FilterUnloaderTile.VALID_ITEM_SLOTS;
     }
 
     @Override
