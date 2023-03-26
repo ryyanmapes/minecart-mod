@@ -4,6 +4,7 @@ import com.alc.moreminecarts.blocks.GlassCactusBlock;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
 import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
+import com.alc.moreminecarts.blocks.containers.FilterUnloaderBlock;
 import com.alc.moreminecarts.blocks.containers.MinecartLoaderBlock;
 import com.alc.moreminecarts.blocks.containers.MinecartUnloaderBlock;
 import com.alc.moreminecarts.blocks.holo_scaffolds.ChaoticHoloScaffold;
@@ -182,6 +183,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Block> CHUNK_LOADER_BLOCK = BLOCKS.register("chunk_loader", () -> new ChunkLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GREEN).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion().lightLevel(poweredBlockEmission(13))));
     private static final RegistryObject<Block> MINECART_LOADER_BLOCK = BLOCKS.register("minecart_loader", () -> new MinecartLoaderBlock(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f).harvestTool(ToolType.PICKAXE)));
     private static final RegistryObject<Block> MINECART_UNLOADER_BLOCK = BLOCKS.register("minecart_unloader", () -> new MinecartUnloaderBlock(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3f).harvestTool(ToolType.PICKAXE)));
+    private static final RegistryObject<Block> FILTER_UNLOADER_BLOCK = BLOCKS.register("filter_unloader", () -> new FilterUnloaderBlock(of(Material.METAL, MaterialColor.COLOR_GRAY).strength(1f)));
     private static final RegistryObject<Block> PEARL_STASIS_CHAMBER = BLOCKS.register("pearl_stasis_chamber", () -> new OrbStasisBlock(of(Material.ICE_SOLID, MaterialColor.COLOR_PURPLE).strength(5f).harvestTool(ToolType.PICKAXE).noOcclusion()));
 
     // Other Blocks
@@ -274,6 +276,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<Item> CHUNK_LOADER_ITEM = ITEMS.register("chunk_loader", () -> new BlockItem(MMReferences.chunk_loader, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
     private static final RegistryObject<Item> MINECART_LOADER_ITEM = ITEMS.register("minecart_loader", () -> new BlockItem(MMReferences.minecart_loader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> MINECART_UNLOADER_ITEM = ITEMS.register("minecart_unloader", () -> new BlockItem(MMReferences.minecart_unloader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
+    private static final RegistryObject<Item> FILTER_UNLOADER_ITEM = ITEMS.register("filter_unloader", () -> new BlockItem(MMReferences.filter_unloader, new Item.Properties().tab(ItemGroup.TAB_TRANSPORTATION)));
     private static final RegistryObject<Item> PEARL_STASIS_CHAMBER_ITEM = ITEMS.register("pearl_stasis_chamber", () -> new BlockItem(MMReferences.pearl_stasis_chamber, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)));
 
     // Misc Items
@@ -336,6 +339,7 @@ public class MoreMinecartsMod
     private static final RegistryObject<TileEntityType<PoweredLockingRailTile>> POWERED_LOCKING_RAIL_TILE_ENTITY = TILE_ENTITIES.register("powered_locking_rail_te", () -> TileEntityType.Builder.<PoweredLockingRailTile>of(PoweredLockingRailTile::new, powered_locking_rail).build(null));
     private static final RegistryObject<TileEntityType<MinecartLoaderTile>> MINECART_LOADER_TILE_ENTITY = TILE_ENTITIES.register("minecart_loader_te", () -> TileEntityType.Builder.<MinecartLoaderTile>of(MinecartLoaderTile::new, minecart_loader).build(null));
     private static final RegistryObject<TileEntityType<MinecartUnloaderTile>> MINECART_UNLOADER_TILE_ENTITY = TILE_ENTITIES.register("minecart_unloader_te", () -> TileEntityType.Builder.<MinecartUnloaderTile>of(MinecartUnloaderTile::new, minecart_unloader).build(null));
+    private static final RegistryObject<TileEntityType<FilterUnloaderTile>> FILTER_UNLOADER_TILE_ENTITY = TILE_ENTITIES.register("filter_unloader_te", () -> TileEntityType.Builder.of(FilterUnloaderTile::new, filter_unloader).build(null));
     private static final RegistryObject<TileEntityType<OrbStasisTile>> PEARL_STASIS_CHAMBER_TILE_ENTITY = TILE_ENTITIES.register("pearl_stasis_chamber_te", () -> TileEntityType.Builder.<OrbStasisTile>of(OrbStasisTile::new, MMReferences.pearl_stasis_chamber).build(null));
 
     // Containers
@@ -349,6 +353,12 @@ public class MoreMinecartsMod
                 if (data != null) return new MinecartUnLoaderContainer(windowId, PROXY.getWorld(), data.readBlockPos(), inv, PROXY.getPlayer());
                 else return new MinecartUnLoaderContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
             }));
+    private static final RegistryObject<ContainerType<FilterUnloaderContainer>> FILTER_UNLOADER_CONTAINER = CONTAINERS.register("filter_loader_c", () -> IForgeContainerType.create(
+            (windowId, inv, data) -> {
+                if (data != null) return new FilterUnloaderContainer(windowId, PROXY.getWorld(), data.readBlockPos(), inv, PROXY.getPlayer());
+                else return new FilterUnloaderContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
+            }
+    ));
     private static final RegistryObject<ContainerType<TankCartContainer>> TANK_CART_CONTAINER = CONTAINERS.register("tank_cart_c", () -> IForgeContainerType.create(
             (windowId, inv, data) -> {
                 return new TankCartContainer(windowId, PROXY.getWorld(), inv, PROXY.getPlayer());
@@ -437,6 +447,7 @@ public class MoreMinecartsMod
 
         ScreenManager.register(chunk_loader_c, ChunkLoaderScreen::new);
         ScreenManager.register(minecart_loader_c, MinecartUnLoaderScreen::new);
+        ScreenManager.register(filter_loader_c, FilterUnloaderScreen::new);
         ScreenManager.register(tank_cart_c, TankCartScreen::new);
         ScreenManager.register(battery_cart_c, BatteryCartScreen::new);
         ScreenManager.register(flag_cart_c, FlagCartScreen::new);

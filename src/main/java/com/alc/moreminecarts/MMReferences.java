@@ -64,12 +64,14 @@ public class MMReferences {
     public static final TileEntityType<LockingRailTile> powered_locking_rail_te = null;
     public static final TileEntityType<LockingRailTile> minecart_loader_te = null;
     public static final TileEntityType<LockingRailTile> minecart_unloader_te = null;
+    public static final TileEntityType<LockingRailTile> filter_unloader_te = null;
     public static final TileEntityType<ChunkLoaderTile> pearl_stasis_chamber_te = null;
 
     // Containers
 
     public static final ContainerType<ChunkLoaderContainer> chunk_loader_c = null;
     public static final ContainerType<MinecartUnLoaderContainer> minecart_loader_c = null;
+    public static final ContainerType<FilterUnloaderContainer> filter_loader_c = null;
     public static final ContainerType<TankCartContainer> tank_cart_c = null;
     public static final ContainerType<BatteryCartContainer> battery_cart_c = null;
     public static final ContainerType<FlagCartContainer> flag_cart_c = null;
@@ -111,6 +113,7 @@ public class MMReferences {
     public static final Block pearl_stasis_chamber = null;
     public static final Block minecart_loader = null;
     public static final Block minecart_unloader = null;
+    public static final Block filter_unloader = null;
     public static final Block silica_steel_block = null;
     public static final Block chunkrodite_block = null;
     public static final Block corrugated_silica_steel = null;

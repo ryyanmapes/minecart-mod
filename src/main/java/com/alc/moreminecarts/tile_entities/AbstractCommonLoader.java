@@ -4,6 +4,7 @@ import com.alc.moreminecarts.misc.SettableEnergyStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,7 +31,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractCommonLoader extends LockableTileEntity {
+public abstract class AbstractCommonLoader extends LockableTileEntity implements ISidedInventory {
 
     public enum ComparatorOutputType {
         done_loading,
@@ -110,13 +111,13 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public static String COMPARATOR_OUTPUT_PROPERTY = "comparator_output";
     public static String COOLDOWN_PROPERTY = "cooldown";
 
-    protected NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+    protected NonNullList<ItemStack> items;
     public final IIntArray dataAccess = new IIntArray() {
         @Override
         public int get(int index) {
             switch(index) {
                 case 0:
-                    return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4);
+                    return (locked_minecarts_only?1:0) + ((leave_one_in_stack?1:0) << 1) + (comparator_output.toInt() << 2) + ((redstone_output?1:0) << 4) + (filterType.toInt() << 5);
                 case 1:
                     return getIsUnloader()? 1 : 0;
                 default:
@@ -132,6 +133,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
                     leave_one_in_stack = (set_to & 2) == 2;
                     comparator_output = MinecartLoaderTile.ComparatorOutputType.fromInt((set_to & 12) >> 2);
                     redstone_output = (set_to & 16) == 16;
+                    filterType = FilterUnloaderTile.FilterType.fromInt((set_to & 96) >> 5);
                     break;
                 default:
                     break;
@@ -148,6 +150,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
     public boolean locked_minecarts_only;
     public boolean leave_one_in_stack;
     public MinecartLoaderTile.ComparatorOutputType comparator_output;
+    public FilterUnloaderTile.FilterType filterType = FilterUnloaderTile.FilterType.allow_per_slot;
 
     public boolean last_redstone_output;
     public int comparator_output_value;
@@ -162,6 +165,7 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
 
     public AbstractCommonLoader(TileEntityType<?> p_i48285_1_) {
         super(p_i48285_1_);
+        items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         locked_minecarts_only = false;
         leave_one_in_stack = false;
         comparator_output = MinecartLoaderTile.ComparatorOutputType.done_loading;
@@ -273,18 +277,22 @@ public abstract class AbstractCommonLoader extends LockableTileEntity {
 
     // Inventory stuff below, taken from AbstractFurnaceTileEntity.
 
+    @Override
     public int[] getSlotsForFace(Direction p_180463_1_) {
-        return new int[0];
+        return FilterUnloaderTile.VALID_TAKE_SLOTS;
     }
 
+    @Override
     public boolean canPlaceItemThroughFace(int p_180462_1_, ItemStack p_180462_2_, @Nullable Direction p_180462_3_) {
-        return true;
-    }
-
-    public boolean canTakeItemThroughFace(int p_180461_1_, ItemStack p_180461_2_, Direction p_180461_3_) {
         return false;
     }
 
+    @Override
+    public boolean canTakeItemThroughFace(int p_180461_1_, ItemStack p_180461_2_, Direction p_180461_3_) {
+        return p_180461_1_ < FilterUnloaderTile.VALID_ITEM_SLOTS;
+    }
+
+    @Override
     public int getContainerSize() {
         return 9;
     }
