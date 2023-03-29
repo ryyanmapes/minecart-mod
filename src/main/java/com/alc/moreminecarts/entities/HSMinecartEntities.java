@@ -5,6 +5,7 @@ import com.alc.moreminecarts.registry.MMEntities;
 import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -104,7 +105,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -136,7 +137,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -168,7 +169,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -198,7 +199,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -230,7 +231,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -262,7 +263,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -309,7 +310,7 @@ public class HSMinecartEntities {
             return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -340,7 +341,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -369,7 +370,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -398,7 +399,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -427,7 +428,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -456,7 +457,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -485,7 +486,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -514,7 +515,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -543,7 +544,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -572,7 +573,7 @@ public class HSMinecartEntities {
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -603,7 +604,7 @@ public class HSMinecartEntities {
         @Override
         public double getControlSpeed() { return 300; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
     }
@@ -634,7 +635,7 @@ public class HSMinecartEntities {
         @Override
         public double getControlSpeed() { return 300; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
         @Override
@@ -669,7 +670,7 @@ public class HSMinecartEntities {
         @Override
         public double getControlSpeed() { return 300; }
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return NetworkHooks.getEntitySpawningPacket(this);
         }
         @Override

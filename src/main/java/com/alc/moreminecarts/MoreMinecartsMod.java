@@ -11,12 +11,17 @@ import com.alc.moreminecarts.renderers.highspeed.HSMinecartRenderer;
 import com.alc.moreminecarts.renderers.highspeed.HSPistonPushcartRenderer;
 import com.alc.moreminecarts.renderers.highspeed.HSPushcartRenderer;
 import com.alc.moreminecarts.renderers.highspeed.HSStickyPistonPushcartRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,7 +45,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -170,15 +180,6 @@ public class MoreMinecartsMod {
 
     }
 
-    public static final CreativeModeTab CREATIVE_TAB = new CreativeModeTab(MMConstants.modid)
-    {
-        @Nonnull
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(MMItems.PISTON_PUSHCART_ITEM.get());
-        }
-    };
-
     @SubscribeEvent
     public void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers evt) {
 
@@ -228,4 +229,5 @@ public class MoreMinecartsMod {
         //        map(m->m.getMessageSupplier().get()).
         //        collect(Collectors.toList()));
     }
+
 }

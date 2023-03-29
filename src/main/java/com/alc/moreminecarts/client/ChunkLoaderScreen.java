@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -77,16 +78,8 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
             super(x, y, 18, 18, Component.empty());
         }
 
-        public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            ChunkLoaderScreen.this.renderTooltip(p_230443_1_,
-                    Component.translatable(menu.isEnabled()
-                            ? "On"
-                            : "Off"
-                    ) , p_230443_2_, p_230443_3_);
-        }
-
         @Override
-        public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, display);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -108,9 +101,10 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
                 }
             }
 
-            if (this.isHoveredOrFocused()) {
-                this.renderToolTip(matrix, p_230431_2_, p_230431_3_);
-            }
+            this.setTooltip(Tooltip.create(Component.translatable(menu.isEnabled()
+                    ? "On"
+                    : "Off"
+            )));
         }
 
         @Override
@@ -119,7 +113,7 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
         }
 
         @Override
-        public void updateNarration(NarrationElementOutput p_169152_) {
+        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {
 
         }
     }

@@ -3,6 +3,3 @@
 # are changed when only line endings change.
 src/generated/**/.cache/cache text eol=lf
 src/generated/**/*.json text eol=lf
-
-# So linux users don't need to run dos2unix 
-gradlew text eol=lf

@@ -4,7 +4,6 @@ import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.model.LeashKnotModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -20,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 
 public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
 
@@ -78,7 +78,7 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
         Vec3 to_pos = vehicle2_pos.subtract(0, vehicle2.getBoundingBox().getYsize()/2, 0);
 
         double d0 = (double)(vehicle1.getYRot() * ((float)Math.PI / 180F) + (Math.PI / 2D));
-        Vec3 v1_lead_pos = vehicle1.getLeashOffset();
+        Vec3 v1_lead_pos = new Vec3(0.0D, (double)vehicle1.getEyeHeight(), (double)(vehicle1.getBbWidth() * 0.4F));
         double d1 = Math.cos(d0) * v1_lead_pos.z + Math.sin(d0) * v1_lead_pos.x;
         double d2 = Math.sin(d0) * v1_lead_pos.z - Math.cos(d0) * v1_lead_pos.x;
         double d3 = Mth.lerp((double)partialTicks, vehicle1.xOld, vehicle1.position().x) + d1;

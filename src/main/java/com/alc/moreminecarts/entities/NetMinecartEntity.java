@@ -2,6 +2,7 @@ package com.alc.moreminecarts.entities;
 
 import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntitySelector;
@@ -90,7 +91,7 @@ public class NetMinecartEntity extends AbstractMinecart {
 
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -82,7 +82,7 @@ public class HoloRemoteItem extends Item {
                     Player player = context.getPlayer();
                     int j = world.getMaxBuildHeight();
                     if (player instanceof ServerPlayer && blockpos$mutable.getY() >= j) {
-                        ((ServerPlayer)player).sendSystemMessage(Component.translatable("build.tooHigh", j - 1).withStyle(ChatFormatting.RED), ChatType.GAME_INFO);
+                        ((ServerPlayer)player).sendSystemMessage(Component.translatable("build.tooHigh", j - 1).withStyle(ChatFormatting.RED), true);
                     }
                     break;
                 }

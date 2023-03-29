@@ -13,6 +13,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundDisconnectPacket;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
@@ -304,12 +305,28 @@ public class MoreMinecartsPacketHandler {
         }
     }
 
-    public static void disconnect(Component p_9943_, Connection connection) {
-        connection.send(new ClientboundDisconnectPacket(p_9943_), (p_9828_) -> {
-            connection.disconnect(p_9943_);
-        });
+    public static void disconnect(Component comp, Connection connection) {
+        connection.send(new ClientboundDisconnectPacket(comp), new ConnectionPacketListener(comp, connection));
         connection.setReadOnly();
         connection.handleDisconnection();
+    }
+
+    public static class ConnectionPacketListener implements PacketSendListener {
+
+        Component comp;
+        Connection connection;
+
+        public ConnectionPacketListener(Component comp, Connection connection) {
+            this.comp = comp;
+            this.connection = connection;
+        }
+
+        @Override
+        public void onSuccess() {
+            connection.disconnect(comp);
+            PacketSendListener.super.onSuccess();
+        }
+
     }
 
     @FunctionalInterface

@@ -5,7 +5,7 @@ import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.registry.MMBlocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.MinecartModel;
@@ -19,6 +19,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class PistonPushcartRenderer extends EntityRenderer<PistonPushcartEntity> {
 
@@ -71,8 +72,8 @@ public class PistonPushcartRenderer extends EntityRenderer<PistonPushcartEntity>
         }
 
         p_225623_4_.translate(0.0D, 0.375D, 0.0D);
-        p_225623_4_.mulPose(Vector3f.YP.rotationDegrees(180.0F - p_225623_2_));
-        p_225623_4_.mulPose(Vector3f.ZP.rotationDegrees(-f3));
+        p_225623_4_.mulPose(Axis.YP.rotationDegrees(180.0F - p_225623_2_));
+        p_225623_4_.mulPose(Axis.ZP.rotationDegrees(-f3));
         float f5 = (float)p_225623_1_.getHurtTime() - p_225623_3_;
         float f6 = p_225623_1_.getDamage() - p_225623_3_;
         if (f6 < 0.0F) {
@@ -80,7 +81,7 @@ public class PistonPushcartRenderer extends EntityRenderer<PistonPushcartEntity>
         }
 
         if (f5 > 0.0F) {
-            p_225623_4_.mulPose(Vector3f.XP.rotationDegrees(Mth.sin(f5) * f5 * f6 / 10.0F * (float)p_225623_1_.getHurtDir()));
+            p_225623_4_.mulPose(Axis.XP.rotationDegrees(Mth.sin(f5) * f5 * f6 / 10.0F * (float)p_225623_1_.getHurtDir()));
         }
 
         int j = p_225623_1_.getDisplayOffset();
@@ -95,7 +96,7 @@ public class PistonPushcartRenderer extends EntityRenderer<PistonPushcartEntity>
             // p_225623_4_.mulPose(Vector3f.YP.rotationDegrees(90.0F));
             // ADDED
             p_225623_4_.translate(0, -0.15, -1);
-            p_225623_4_.mulPose(Vector3f.ZP.rotationDegrees(f3));
+            p_225623_4_.mulPose(Axis.ZP.rotationDegrees(f3));
 
             this.renderMinecartContents(p_225623_1_, p_225623_3_, blockstate, p_225623_4_, p_225623_5_, p_225623_6_);
             p_225623_4_.popPose();

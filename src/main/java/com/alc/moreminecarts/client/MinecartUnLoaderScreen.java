@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
+import org.jline.reader.Widget;
 
 import java.util.Iterator;
 import java.util.List;
@@ -89,16 +90,6 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
         this.font.draw(matrix, getTitle(), (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
         this.font.draw(matrix, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
 
-        Iterator var4 = this.buttons.iterator();
-
-        while(var4.hasNext()) {
-            Widget lvt_5_1_ = (Widget)var4.next();
-            if (((AbstractButton)lvt_5_1_).isHoveredOrFocused()) {
-                ((AbstractButton)lvt_5_1_).renderToolTip(matrix, p_230451_2_ - this.leftPos, p_230451_3_ - this.topPos);
-                break;
-            }
-        }
-
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -108,27 +99,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             super(x, y, 18, 18, Component.empty());
         }
 
-        public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            String text;
-            switch (menu.getComparatorOutputType()) {
-                case done_loading:
-                    text = "Activate output during loading inactivity";
-                    break;
-                case cart_full:
-                    if (menu.getIsUnloader()) text = "Activate output when cart is empty";
-                    else text = "Activate output when cart is full";
-                    break;
-                case cart_fullness:
-                    text = "Output cart contents";
-                    break;
-                default:
-                    text = "ERROR";
-            }
-
-            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_, Component.translatable(text) , p_230443_2_, p_230443_3_);
-        }
-
-        public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -162,6 +133,24 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
                     break;
                 default:
             }
+
+            String text;
+            switch (menu.getComparatorOutputType()) {
+                case done_loading:
+                    text = "Activate output during loading inactivity";
+                    break;
+                case cart_full:
+                    if (menu.getIsUnloader()) text = "Activate output when cart is empty";
+                    else text = "Activate output when cart is full";
+                    break;
+                case cart_fullness:
+                    text = "Output cart contents";
+                    break;
+                default:
+                    text = "ERROR";
+            }
+
+            this.setTooltip(Tooltip.create(Component.translatable(text)));
         }
 
         @Override
@@ -172,9 +161,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
         }
 
         @Override
-        public void updateNarration(NarrationElementOutput p_169152_) {
-
-        }
+        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -184,15 +171,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             super(x, y, 18, 18, Component.empty());
         }
 
-        public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    Component.translatable(menu.getLockedMinecartsOnly()
-                            ? "Consider only locked minecarts"
-                            : "Consider all minecarts"
-                    ) , p_230443_2_, p_230443_3_);
-        }
-
-        public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -215,6 +194,12 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
                     // Render nothing. This is already on the backdrop.
                 }
             }
+
+            this.setTooltip(Tooltip.create(Component.translatable(
+                    menu.getLockedMinecartsOnly()
+                            ? "Consider only locked minecarts"
+                            : "Consider all minecarts"
+            )));
         }
 
         @Override
@@ -225,9 +210,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
         }
 
         @Override
-        public void updateNarration(NarrationElementOutput p_169152_) {
-
-        }
+        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -237,20 +220,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             super(x, y, 18, 18, Component.empty());
         }
 
-        public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    Component.translatable(
-                            menu.getIsUnloader()
-                                ? (menu.getLeaveOneInStack()
-                                    ? "Leave one item in minecart slots"
-                                    : "Empty minecart slots entirely")
-                                : (menu.getLeaveOneInStack()
-                                    ? "Leave one item in loader slots"
-                                    : "Empty loader slots entirely")
-                    ) , p_230443_2_, p_230443_3_);
-        }
-
-        public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -273,6 +243,16 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
                     // Render nothing. This is already on the backdrop.
                 }
             }
+
+            this.setTooltip(Tooltip.create(Component.translatable(
+                    menu.getIsUnloader()
+                            ? (menu.getLeaveOneInStack()
+                            ? "Leave one item in minecart slots"
+                            : "Empty minecart slots entirely")
+                            : (menu.getLeaveOneInStack()
+                            ? "Leave one item in loader slots"
+                            : "Empty loader slots entirely")
+            )));
         }
 
         @Override
@@ -283,9 +263,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
         }
 
         @Override
-        public void updateNarration(NarrationElementOutput p_169152_) {
-
-        }
+        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -303,7 +281,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
                     ) , p_230443_2_, p_230443_3_);
         }
 
-        public void renderButton(PoseStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -324,6 +302,11 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
                     // Render nothing. This is already on the backdrop.
                 }
             }
+
+            this.setTooltip(Tooltip.create(Component.translatable(menu.getRedstoneOutput()
+                    ? "Output redstone activation"
+                    : "Output to comparator"
+            )));
         }
 
         @Override
@@ -334,9 +317,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
         }
 
         @Override
-        public void updateNarration(NarrationElementOutput p_169152_) {
-
-        }
+        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
     }
 
 }
