@@ -72,10 +72,10 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
 
 
     @OnlyIn(Dist.CLIENT)
-    class ChunkLoaderButton extends AbstractButton {
+    class ChunkLoaderButton extends MMButton {
 
         protected ChunkLoaderButton(int x, int y) {
-            super(x, y, 18, 18, Component.empty());
+            super(x, y);
         }
 
         @Override
@@ -86,15 +86,15 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
 
             if (menu.isEnabled()) {
                 if (isHovered) {
-                    this.blit(matrix, x,y, 194, 18, 18, 18);
+                    this.blit(matrix, xPos,yPos, 194, 18, 18, 18);
                 }
                 else {
-                    this.blit(matrix, x, y, 176, 18, 18, 18);
+                    this.blit(matrix, xPos,yPos, 176, 18, 18, 18);
                 }
             }
             else {
                 if (isHovered) {
-                    this.blit(matrix, x,y, 176, 0, 18, 18);
+                    this.blit(matrix, xPos,yPos, 176, 0, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.

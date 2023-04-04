@@ -69,9 +69,9 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    abstract class SimpleButton extends AbstractButton {
+    abstract class SimpleButton extends MMButton {
 
-        protected SimpleButton(int x, int y) { super(x, y, 18, 18, Component.empty()); }
+        protected SimpleButton(int x, int y) { super(x, y); }
 
         public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
@@ -81,7 +81,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
             boolean mouse_on = isDragging() && this.isHovered;
 
             if (mouse_on) {
-                renderSelected(matrix, x, y);
+                renderSelected(matrix, xPos,yPos);
             }
         }
 
@@ -97,7 +97,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         protected LeftButton(int x, int y) { super(x, y); }
         @Override
         public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, x,y, 194, 18, 18, 18);
+            this.blit(matrix, xPos,yPos, 194, 18, 18, 18);
         }
         @Override
         public void onPress() {
@@ -110,7 +110,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         protected RightButton(int x, int y) { super(x, y); }
         @Override
         public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, x,y, 230, 18, 18, 18);
+            this.blit(matrix, xPos,yPos, 230, 18, 18, 18);
         }
         @Override
         public void onPress() {
@@ -122,7 +122,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         protected MinusButton(int x, int y) { super(x, y); }
         @Override
         public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, x,y, 230, 0, 18, 18);
+            this.blit(matrix, xPos,yPos, 230, 0, 18, 18);
         }
         @Override
         public void onPress() {
@@ -134,7 +134,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         protected PlusButton(int x, int y) { super(x, y); }
         @Override
         public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, x,y, 194, 0, 18, 18);
+            this.blit(matrix, xPos,yPos, 194, 0, 18, 18);
         }
         @Override
         public void onPress() {

@@ -93,10 +93,10 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     }
 
     @OnlyIn(Dist.CLIENT)
-    class ComparatorOutputButton extends AbstractButton {
+    class ComparatorOutputButton extends MMButton {
 
         protected ComparatorOutputButton(int x, int y) {
-            super(x, y, 18, 18, Component.empty());
+            super(x, y);
         }
 
         public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
@@ -107,28 +107,28 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             switch (menu.getComparatorOutputType()) {
                 case done_loading:
                     if (mouse_on) {
-                        this.blit(matrix, x,y, 176+18, 18, 18, 18);
+                        this.blit(matrix, xPos,yPos, 176+18, 18, 18, 18);
                     }
                     else {
-                        this.blit(matrix, x, y, 176, 18, 18, 18);
+                        this.blit(matrix, xPos,yPos, 176, 18, 18, 18);
                     }
                     break;
                 case cart_full:
                     if (mouse_on) {
-                        if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+18+36, 0, 18, 18);
-                        else this.blit(matrix, x,y, 176+18, 0, 18, 18);
+                        if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+18+36, 0, 18, 18);
+                        else this.blit(matrix, xPos,yPos, 176+18, 0, 18, 18);
                     }
                     else {
-                        if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+36, 0, 18, 18);
+                        if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+36, 0, 18, 18);
                         //this.blit(matrix, x, y, 176, 0, 18, 18);
                     }
                     break;
                 case cart_fullness:
                     if (mouse_on) {
-                        this.blit(matrix, x,y, 176+18, 36, 18, 18);
+                        this.blit(matrix, xPos,yPos, 176+18, 36, 18, 18);
                     }
                     else {
-                        this.blit(matrix, x, y, 176, 36, 18, 18);
+                        this.blit(matrix, xPos,yPos, 176, 36, 18, 18);
                     }
                     break;
                 default:
@@ -165,10 +165,10 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     }
 
     @OnlyIn(Dist.CLIENT)
-    class OnlyLockedButton extends AbstractButton {
+    class OnlyLockedButton extends MMButton {
 
         protected OnlyLockedButton(int x, int y) {
-            super(x, y, 18, 18, Component.empty());
+            super(x, y);
         }
 
         public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
@@ -178,17 +178,17 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
 
             if (menu.getLockedMinecartsOnly()) {
                 if (mouse_on) {
-                    if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+18+36, 108, 18, 18);
-                    else this.blit(matrix, x,y, 176+18, 108, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+18+36, 108, 18, 18);
+                    else this.blit(matrix, xPos,yPos, 176+18, 108, 18, 18);
                 }
                 else {
-                    if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+36, 108, 18, 18);
-                    else this.blit(matrix, x, y, 176, 108, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+36, 108, 18, 18);
+                    else this.blit(matrix, xPos,yPos, 176, 108, 18, 18);
                 }
             }
             else {
                 if (mouse_on) {
-                    this.blit(matrix, x,y, 176+18, 108-18, 18, 18);
+                    this.blit(matrix, xPos,yPos, 176+18, 108-18, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.
@@ -214,10 +214,10 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     }
 
     @OnlyIn(Dist.CLIENT)
-    class LeaveOneInStackButton extends AbstractButton {
+    class LeaveOneInStackButton extends MMButton {
 
         protected LeaveOneInStackButton(int x, int y) {
-            super(x, y, 18, 18, Component.empty());
+            super(x, y);
         }
 
         public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
@@ -228,16 +228,16 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             if (menu.getLeaveOneInStack()) {
                 if (mouse_on) {
                     if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+18+36, 72, 18, 18);
-                    else this.blit(matrix, x,y, 176+18, 72, 18, 18);
+                    else this.blit(matrix, xPos,yPos, 176+18, 72, 18, 18);
                 }
                 else {
                     if (menu.getIsUnloader()) this.blit(matrix, x, y, 176+36, 72, 18, 18);
-                    else this.blit(matrix, x, y, 176, 72, 18, 18);
+                    else this.blit(matrix, xPos,yPos, 176, 72, 18, 18);
                 }
             }
             else {
                 if (mouse_on) {
-                    this.blit(matrix, x,y, 176+18, 72-18, 18, 18);
+                    this.blit(matrix, xPos,yPos, 176+18, 72-18, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.
@@ -267,10 +267,10 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     }
 
     @OnlyIn(Dist.CLIENT)
-    class OutputTypeButton extends AbstractButton {
+    class OutputTypeButton extends MMButton {
 
         protected OutputTypeButton(int x, int y) {
-            super(x, y, 18, 18, Component.empty());
+            super(x, y);
         }
 
         public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
@@ -288,15 +288,15 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
 
             if (menu.getRedstoneOutput()) {
                 if (mouse_on) {
-                    this.blit(matrix, x,y, 212+18, 36, 18, 18);
+                    this.blit(matrix, xPos,yPos, 212+18, 36, 18, 18);
                 }
                 else {
-                    this.blit(matrix, x, y, 212, 36, 18, 18);
+                    this.blit(matrix, xPos,yPos, 212, 36, 18, 18);
                 }
             }
             else {
                 if (mouse_on) {
-                    this.blit(matrix, x,y, 230, 18, 18, 18);
+                    this.blit(matrix, xPos,yPos, 230, 18, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.
