@@ -266,7 +266,6 @@ public class MoreMinecartsPacketHandler {
 
             double d0 = 36.0D;
             if (player.distanceToSqr(entity) >= 36.0D && player.distanceToSqr(entity) < 100) {
-                MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "PISTON PUSHCART INTERACT 4");
                 p_9866_.dispatch(new ServerboundInteractPacket.Handler() {
                     private void performInteraction(InteractionHand p_143679_, EntityInteraction p_143680_) {
                         ItemStack itemstack = player.getItemInHand(p_143679_).copy();

@@ -28,10 +28,6 @@ public class MoreMinecartsEventReciever {
     @SubscribeEvent
     public static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
 
-        if (event.getTarget() instanceof PistonPushcartEntity) {
-            MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "piston pushcart interact");
-        }
-
         InteractionHand hand = event.getHand();
         Player player = event.getEntity();
         ItemStack using = player.getItemInHand(hand);

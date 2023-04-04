@@ -83,8 +83,8 @@ public class FilterUnloaderBlock extends BaseEntityBlock {
     public void setPlacedBy(Level p_180633_1_, BlockPos p_180633_2_, BlockState p_180633_3_, LivingEntity p_180633_4_, ItemStack p_180633_5_) {
         if (p_180633_5_.hasCustomHoverName()) {
             BlockEntity tileentity = p_180633_1_.getBlockEntity(p_180633_2_);
-            if (tileentity instanceof MinecartUnloaderTile) {
-                ((MinecartUnloaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
+            if (tileentity instanceof FilterUnloaderTile) {
+                ((FilterUnloaderTile)tileentity).setCustomName(p_180633_5_.getHoverName());
             }
         }
     }
@@ -99,9 +99,9 @@ public class FilterUnloaderBlock extends BaseEntityBlock {
     @Override
     public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
         BlockEntity tile_entity = blockAccess.getBlockEntity(pos);
-        if (tile_entity instanceof MinecartUnloaderTile) {
-            if (!((MinecartUnloaderTile) tile_entity).getOutputsRedstone()) return 0;
-            return ((MinecartUnloaderTile) tile_entity).getSignal();
+        if (tile_entity instanceof FilterUnloaderTile) {
+            if (!((FilterUnloaderTile) tile_entity).getOutputsRedstone()) return 0;
+            return ((FilterUnloaderTile) tile_entity).getSignal();
         }
         return 0;
     }
@@ -114,9 +114,9 @@ public class FilterUnloaderBlock extends BaseEntityBlock {
     @Override
     public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
         BlockEntity tile_entity = world.getBlockEntity(pos);
-        if (tile_entity instanceof MinecartUnloaderTile) {
-            if (((MinecartUnloaderTile) tile_entity).getOutputsRedstone()) return 0;
-            return ((MinecartUnloaderTile) tile_entity).getSignal();
+        if (tile_entity instanceof FilterUnloaderTile) {
+            if (((FilterUnloaderTile) tile_entity).getOutputsRedstone()) return 0;
+            return ((FilterUnloaderTile) tile_entity).getSignal();
         }
         return 0;
     }
