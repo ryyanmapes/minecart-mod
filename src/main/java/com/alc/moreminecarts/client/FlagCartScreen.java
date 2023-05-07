@@ -28,7 +28,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     }
 
     private void addButton(SimpleButton p_169617_) {
-        this.addWidget(p_169617_);
+        this.addRenderableWidget(p_169617_);
         this.buttons.add(p_169617_);
     }
 
@@ -73,7 +73,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
 
         protected SimpleButton(int x, int y) { super(x, y); }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

@@ -55,7 +55,7 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
     @Override
     public void destroy(DamageSource source) {
         super.destroy(source);
-        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             ChunkLoaderTile.dropExtras(level, time_left, getOnPos());
         }
         onRemoval();

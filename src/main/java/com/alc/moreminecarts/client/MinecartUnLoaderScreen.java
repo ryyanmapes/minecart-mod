@@ -36,7 +36,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
     }
 
     private void addButton(AbstractButton p_169617_) {
-        this.addWidget(p_169617_);
+        this.addRenderableWidget(p_169617_);
         this.buttons.add(p_169617_);
     }
 
@@ -99,7 +99,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             super(x, y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -171,7 +171,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             super(x, y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -220,7 +220,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             super(x, y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -273,15 +273,7 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
             super(x, y);
         }
 
-        public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    Component.translatable(menu.getRedstoneOutput()
-                            ? "Output redstone activation"
-                            : "Output to comparator"
-                    ) , p_230443_2_, p_230443_3_);
-        }
-
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;

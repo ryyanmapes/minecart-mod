@@ -228,7 +228,7 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
     public boolean skipAttackInteraction(Entity player) {
         if (player instanceof Player) {
             Player playerentity = (Player)player;
-            return !this.level.mayInteract(playerentity, this.getOnPos()) ? true : this.hurt(DamageSource.playerAttack(playerentity), 0.0F);
+            return !this.level.mayInteract(playerentity, this.getOnPos()) ? true : this.hurt(player.level.damageSources().playerAttack(playerentity), 0.0F);
         } else {
             return false;
         }

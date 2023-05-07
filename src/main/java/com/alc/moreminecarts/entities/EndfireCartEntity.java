@@ -18,7 +18,7 @@ public class EndfireCartEntity extends CampfireCartEntity {
     @Override
     public void destroy(DamageSource source) {
         this.remove(RemovalReason.KILLED);
-        if (!source.isExplosion() && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             // TODO: add enfire cart back (even though it's not registered)
 //            this.spawnAtLocation(MMItemReferences.endfire_cart);
         }

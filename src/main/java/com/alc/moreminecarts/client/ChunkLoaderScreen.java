@@ -30,7 +30,7 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
     }
 
     private void addButton(AbstractButton p_169617_) {
-        this.addWidget(p_169617_);
+        this.addRenderableWidget(p_169617_);
         this.buttons.add(p_169617_);
     }
 
@@ -79,7 +79,7 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
         }
 
         @Override
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, display);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

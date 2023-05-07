@@ -65,7 +65,7 @@ public class GlassCactusBlock extends CactusBlock implements IForgeBlock {
             }
             else if (item == MMItems.BROKEN_HOLO_REMOTE_ITEM.get()) return;
         }
-        entity.hurt(DamageSource.CACTUS, 2.0F);
+        entity.hurt(world.damageSources().cactus(), 2.0F);
     }
 
     @Override

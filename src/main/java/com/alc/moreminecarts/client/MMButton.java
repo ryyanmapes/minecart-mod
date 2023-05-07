@@ -1,7 +1,11 @@
 package com.alc.moreminecarts.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,19 +18,17 @@ public class MMButton extends AbstractButton {
     public int yPos;
 
     public MMButton(int x, int y) {
-        super(x, y, 18, 18, Component.empty());
-
+        super(x, y, 18, 18, CommonComponents.EMPTY);
         this.xPos = x;
         this.yPos = y;
     }
 
     @Override
-    public void onPress() {
-        
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+
     }
 
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput p_259858_) {
+    public void onPress() {
 
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -93,11 +94,11 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
 
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.leash());
         Matrix4f matrix4f = matrixStackIn.last().pose();
-        float dist = Mth.fastInvSqrt(dx * dx + dz * dz) * 0.025F / 2.0F;
+        float dist = (float)Mth.fastInvSqrt(dx * dx + dz * dz) * 0.025F / 2.0F;
         float norm_z = dz * dist;
         float norm_x = dx * dist;
-        BlockPos blockpos1 = new BlockPos(from_pos);
-        BlockPos blockpos2 = new BlockPos(to_pos);
+        BlockPos blockpos1 = new BlockPos((int)from_pos.x, (int)from_pos.y, (int)from_pos.z);
+        BlockPos blockpos2 = new BlockPos((int)to_pos.x, (int)to_pos.y, (int)to_pos.z);
         int i = getBlockLightFake(vehicle1, blockpos1);
         int j = getBlockLightFake(vehicle2, blockpos2);
         int k = world.getBrightness(LightLayer.SKY, blockpos1);
@@ -162,7 +163,7 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
         float center_x = dx * fraction_done;
         float center_y = dy * fraction_done; //dy > 0.0F ? dy * fraction_done * fraction_done : dy - dy * (1.0F - fraction_done) * (1.0F - fraction_done);
         float center_z = dz * fraction_done;
-        float magn = Mth.fastInvSqrt(dx * dx + dy*dy);
+        float magn = (float)Mth.fastInvSqrt(dx * dx + dy*dy);
         float thickness_z = norm_z * thickness*100;
         float thickness_x = norm_x * thickness*100;
         if (!is_first) {

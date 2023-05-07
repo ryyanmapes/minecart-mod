@@ -38,7 +38,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
     }
 
     private void addButton(AbstractButton p_169617_) {
-        this.addWidget(p_169617_);
+        this.addRenderableWidget(p_169617_);
         this.buttons.add(p_169617_);
     }
 
@@ -88,7 +88,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x,y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -160,7 +160,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -229,7 +229,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -278,7 +278,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -331,7 +331,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderButton(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;

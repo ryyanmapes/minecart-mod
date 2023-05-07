@@ -61,7 +61,7 @@ public class OrbStasisTile extends BlockEntity {
         if (entity instanceof ServerPlayer) {
             ServerPlayer player = (ServerPlayer) entity;
             // copied from EnderPearlEntity
-            if (player.connection.getConnection().isConnected() && player.level == this.level && !player.isSleeping()) {
+            if (player.connection.connection.isConnected() && player.level == this.level && !player.isSleeping()) {
                 EntityTeleportEvent.ChorusFruit event = new EntityTeleportEvent.ChorusFruit(player,
                         this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 1, this.getBlockPos().getZ() + 0.5);
                 if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) { // Don't indent to lower patch size
@@ -77,7 +77,7 @@ public class OrbStasisTile extends BlockEntity {
 
                     entity.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
                     entity.fallDistance = 0.0F;
-                    entity.hurt(DamageSource.FALL, 5.0f);
+                    entity.hurt(this.level.damageSources().fall(), 5.0f);
                 }
             }
         }

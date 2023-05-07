@@ -58,14 +58,12 @@ public class MMCreativeTabs {
     private static class DisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
 
         @Override
-        public void accept(FeatureFlagSet features, CreativeModeTab.Output output, boolean isOperator) {
-
+        public void accept(CreativeModeTab.ItemDisplayParameters itemDisplayParameters, CreativeModeTab.Output output) {
             output.acceptAll(
                     MMItems.ITEMS.getEntries().stream().map(
                             (obj) -> new ItemStack( obj.get() )
                     ).collect(Collectors.toList()));
             output.accept(new ItemStack( MMItems.ARITHMETIC_RAIL_ITEM.get()));
-
         }
     }
 
