@@ -227,11 +227,11 @@ public class MinecartUnLoaderScreen extends AbstractContainerScreen<MinecartUnLo
 
             if (menu.getLeaveOneInStack()) {
                 if (mouse_on) {
-                    if (menu.getIsUnloader()) this.blit(matrix, x,y, 176+18+36, 72, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+18+36, 72, 18, 18);
                     else this.blit(matrix, xPos,yPos, 176+18, 72, 18, 18);
                 }
                 else {
-                    if (menu.getIsUnloader()) this.blit(matrix, x, y, 176+36, 72, 18, 18);
+                    if (menu.getIsUnloader()) this.blit(matrix, xPos, yPos, 176+36, 72, 18, 18);
                     else this.blit(matrix, xPos,yPos, 176, 72, 18, 18);
                 }
             }
