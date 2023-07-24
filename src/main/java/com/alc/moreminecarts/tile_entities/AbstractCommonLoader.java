@@ -107,6 +107,7 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
     public static String LOCKED_MINECARTS_ONLY_PROPERTY = "locked_minecarts_only";
     public static String LEAVE_ONE_IN_STACK_PROPERTY = "leave_one_in_stack";
     public static String COMPARATOR_OUTPUT_PROPERTY = "comparator_output";
+    public static String FILTER_PROPERTY = "filter_type";
     public static String COOLDOWN_PROPERTY = "cooldown";
 
     public final ContainerData dataAccess = new ContainerData() {
@@ -192,6 +193,7 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
         compound.putBoolean(LEAVE_ONE_IN_STACK_PROPERTY, leave_one_in_stack);
         compound.putBoolean(REDSTONE_OUTPUT_PROPERTY, redstone_output);
         compound.putInt(COMPARATOR_OUTPUT_PROPERTY, comparator_output.toInt());
+        compound.putInt(FILTER_PROPERTY, filterType.toInt());
         compound.putInt(COOLDOWN_PROPERTY, cooldown_time);
         ((FluidTank)fluid_handler.orElse(null)).writeToNBT(compound);
         compound.putInt(ENERGY_PROPERTY, energy_handler.orElse(null).getEnergyStored());
@@ -203,6 +205,8 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
         leave_one_in_stack = compound.getBoolean(LEAVE_ONE_IN_STACK_PROPERTY);
         redstone_output = compound.getBoolean(REDSTONE_OUTPUT_PROPERTY);
         comparator_output = MinecartLoaderTile.ComparatorOutputType.fromInt( compound.getInt(COMPARATOR_OUTPUT_PROPERTY) );
+        if (compound.contains(FILTER_PROPERTY))
+            filterType = FilterUnloaderTile.FilterType.fromInt(compound.getInt(FILTER_PROPERTY));
         cooldown_time = compound.getInt(COOLDOWN_PROPERTY);
         comparator_output_value = -1;
         last_redstone_output = !redstone_output;
