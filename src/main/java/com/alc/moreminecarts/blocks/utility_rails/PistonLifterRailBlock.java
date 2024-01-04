@@ -1,7 +1,9 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.entities.StickyPistonPushcartEntity;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -67,6 +69,11 @@ public class PistonLifterRailBlock extends BaseRailBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final EnumProperty EFFECT = EnumProperty.create("effect", PistonLifterEffect.class,
             PistonLifterEffect.lift, PistonLifterEffect.delift, PistonLifterEffect.snap);
+
+    public static final MapCodec<PistonLifterRailBlock> CODEC = simpleCodec(PistonLifterRailBlock::new);
+    public MapCodec<PistonLifterRailBlock> codec() {
+        return CODEC;
+    }
 
     public PistonLifterRailBlock(Properties builder) {
         super(true, builder);

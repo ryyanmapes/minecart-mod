@@ -3,6 +3,7 @@ package com.alc.moreminecarts.blocks.containers;
 import com.alc.moreminecarts.registry.MMEntities;
 import com.alc.moreminecarts.registry.MMTileEntities;
 import com.alc.moreminecarts.tile_entities.MinecartUnloaderTile;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
@@ -30,6 +31,11 @@ import javax.annotation.Nullable;
 
 public class MinecartUnloaderBlock extends BaseEntityBlock {
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+
+    public static final MapCodec<ChunkLoaderBlock> CODEC = simpleCodec(ChunkLoaderBlock::new);
+    public MapCodec<ChunkLoaderBlock> codec() {
+        return CODEC;
+    }
 
     public MinecartUnloaderBlock(Properties builder) {
         super(builder);

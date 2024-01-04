@@ -37,7 +37,7 @@ public class FilterUnloaderContainer extends AbstractContainerMenu {
         super(MMContainers.MINECART_LOADER_CONTAINER.get(), n);
 
         this.tile = null;
-        this.level = player_inventory.player.level;
+        this.level = player_inventory.player.level();
         this.inventory = new SimpleContainer(18);
         this.data = new SimpleContainerData(5);
 
@@ -54,7 +54,7 @@ public class FilterUnloaderContainer extends AbstractContainerMenu {
         this.inventory = unloader;
         this.data = unloader.dataAccess;
         this.tile = unloader;
-        this.level = player_inventory.player.level;
+        this.level = player_inventory.player.level();
 
         CommonInitialization(player_inventory);
     }
@@ -63,7 +63,7 @@ public class FilterUnloaderContainer extends AbstractContainerMenu {
     public FilterUnloaderContainer(int p_38969_, Inventory p_38970_, Container p_38971_, ContainerData p_38972_, BlockPos tilePos) {
         super(MMContainers.FILTER_UNLOADER_CONTAINER.get(), p_38969_);
 
-        this.level = p_38970_.player.level;
+        this.level = p_38970_.player.level();
         this.tile = (AbstractCommonLoader) level.getBlockEntity(tilePos);
         this.inventory = p_38971_;
         this.data = p_38972_;

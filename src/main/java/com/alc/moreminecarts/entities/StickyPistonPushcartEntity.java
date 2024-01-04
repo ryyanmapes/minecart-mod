@@ -36,15 +36,14 @@ public class StickyPistonPushcartEntity extends PistonPushcartEntity{
         setLastHeight(0);
         setHeight(0);
 
-        if (this.level.isClientSide) {
-            level.playLocalSound(position().x, position().y, position().z, SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 0.3F, 1.0F, false);
+        if (this.level().isClientSide) {
+            level().playLocalSound(position().x, position().y, position().z, SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 0.3F, 1.0F, false);
         }
 
         onHeightChanged();
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.STICKY_PISTON_PUSHCART_ITEM.get();
     }
 

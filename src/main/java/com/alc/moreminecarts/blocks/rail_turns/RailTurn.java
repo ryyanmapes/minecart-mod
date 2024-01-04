@@ -1,5 +1,7 @@
 package com.alc.moreminecarts.blocks.rail_turns;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -31,6 +33,10 @@ public class RailTurn extends BaseRailBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty FLIPPED = BooleanProperty.create("flipped");
 
+    public static final MapCodec<RailTurn> CODEC = simpleCodec(RailTurn::new);
+    public MapCodec<RailTurn> codec() {
+        return CODEC;
+    }
 
     public RailTurn(BlockBehaviour.Properties builder) {
         super(true, builder);

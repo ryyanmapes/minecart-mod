@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +37,7 @@ public class NetMinecartEntity extends AbstractMinecart {
         return Type.FURNACE;
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.MINECART_WITH_NET_ITEM.get();
     }
 
@@ -54,14 +52,14 @@ public class NetMinecartEntity extends AbstractMinecart {
     public void tick() {
         super.tick();
 
-        if (this.level.isClientSide()) return;
+        if (this.level().isClientSide()) return;
         if (this.tickCount % 20 != 0) return;
 
         int radius = this.getRadius();
         int radSq = radius * radius;
 
         AABB area = new AABB(this.position().add(-radius, -radius, -radius), this.position().add(radius, radius, radius));
-        List<ItemEntity> all_items = this.level.getEntitiesOfClass(ItemEntity.class, area, EntitySelector.ENTITY_STILL_ALIVE); // TODO Is this the correct method?
+        List<ItemEntity> all_items = this.level().getEntitiesOfClass(ItemEntity.class, area, EntitySelector.ENTITY_STILL_ALIVE); // TODO Is this the correct method?
         List<ItemEntity> filtered_items = new ArrayList<ItemEntity>();
         for (ItemEntity ie:all_items) {
             if (!ie.position().closerThan(this.position(), getInnerRadius())) {
@@ -71,7 +69,7 @@ public class NetMinecartEntity extends AbstractMinecart {
         //ItemEntity[] filtered_items = (ItemEntity[]) possible_items.stream().filter(item -> !item.getPosition().setValueinDistance(this.getPosition(), getInnerRadius())).toArray();
 
         if (filtered_items.size() == 0) return;
-        int rand_index = this.level.random.nextInt(filtered_items.size());
+        int rand_index = this.level().random.nextInt(filtered_items.size());
 
         ItemEntity selected_item = filtered_items.get(rand_index);
         double d0 = this.position().x - selected_item.position().x;
@@ -80,7 +78,7 @@ public class NetMinecartEntity extends AbstractMinecart {
         double d3 = 0.1D;
         selected_item.setDeltaMovement(d0 * 0.1D, d1 * 0.1D + Math.sqrt(Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
 
-        this.level.playSound((Player)null, this.position().x, this.position().y, this.position().z, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.NEUTRAL, 0.8F, 0.4F / (this.level.random.nextFloat() * 0.4F + 0.8F));
+        this.level().playSound((Player)null, this.position().x, this.position().y, this.position().z, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.NEUTRAL, 0.8F, 0.4F / (this.level().random.nextFloat() * 0.4F + 0.8F));
     }
 
     @Override
@@ -88,12 +86,6 @@ public class NetMinecartEntity extends AbstractMinecart {
         return Blocks.COBWEB.defaultBlockState();
     }
 
-
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     //@Override
     //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.minecart_with_net); }

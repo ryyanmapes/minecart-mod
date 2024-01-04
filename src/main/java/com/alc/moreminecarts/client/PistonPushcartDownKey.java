@@ -22,10 +22,10 @@ public class PistonPushcartDownKey extends KeyMapping {
 
         if (Minecraft.getInstance().getConnection() == null) return;
 
-        MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.PistonPushcartPacket(false, pressed));
-
         Player player = MoreMinecartsMod.PROXY.getPlayer();
+
         if (player.getRootVehicle() instanceof PistonPushcartEntity) {
+            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.PistonPushcartPacket(false, pressed), Minecraft.getInstance().getConnection().getConnection());
             ((PistonPushcartEntity) player.getRootVehicle()).setElevating(false, pressed);
         }
     }

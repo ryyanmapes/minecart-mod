@@ -20,8 +20,7 @@ public class SoulfireCartEntity extends CampfireCartEntity {
         super(furnaceCart, worldIn, x, y, z);
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.SOULFIRE_CART_ITEM.get();
     }
 

@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 
 public class CampfireCartEntity extends AbstractMinecart {
     private static final EntityDataAccessor<Boolean> POWERED = SynchedEntityData.defineId(CampfireCartEntity.class, EntityDataSerializers.BOOLEAN);
@@ -66,14 +65,14 @@ public class CampfireCartEntity extends AbstractMinecart {
             pushZ = this.getDeltaMovement().z;
         }
 
-        if (this.isMinecartPowered() && level.isClientSide()){
+        if (this.isMinecartPowered() && level().isClientSide()){
             Vec3 pos = this.position();
             if (random.nextInt(10) == 0) {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.2F + random.nextFloat()/3, random.nextFloat() * 0.7F + 0.6F, false);
+                level().playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.2F + random.nextFloat()/3, random.nextFloat() * 0.7F + 0.6F, false);
             }
 
             if (random.nextInt(10) == 0) {
-                spawnSmokeParticles(level, pos, false, false);
+                spawnSmokeParticles(level(), pos, false, false);
             }
         }
 
@@ -92,8 +91,7 @@ public class CampfireCartEntity extends AbstractMinecart {
 
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.CAMPFIRE_CART_ITEM.get();
     }
 
@@ -143,9 +141,9 @@ public class CampfireCartEntity extends AbstractMinecart {
         int k = Mth.floor(this.position().z);
 
         BlockPos pos = new BlockPos(i, j, k);
-        BlockState state = this.level.getBlockState(pos);
+        BlockState state = this.level().getBlockState(pos);
         if (RailBlock.isRail(state)) {
-            RailShape railshape = ((BaseRailBlock) state.getBlock()).getRailDirection(state, this.level, pos, this);
+            RailShape railshape = ((BaseRailBlock) state.getBlock()).getRailDirection(state, this.level(), pos, this);
 
             boolean is_uphill = (railshape == RailShape.ASCENDING_EAST || railshape == RailShape.ASCENDING_WEST
                     || railshape == RailShape.ASCENDING_NORTH || railshape == RailShape.ASCENDING_SOUTH);
@@ -168,18 +166,18 @@ public class CampfireCartEntity extends AbstractMinecart {
         }
 
         Vec3 pos = this.position();
-        if (level.isClientSide()) {
+        if (level().isClientSide()) {
             if (isMinecartPowered()) {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.3F, 1.0F, false);
-                spawnSmokeParticles(level, this.position(), false, true);
+                level().playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.3F, 1.0F, false);
+                spawnSmokeParticles(level(), this.position(), false, true);
             } else {
-                level.playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F, false);
+                level().playLocalSound(pos.x, pos.y + 0.4D, pos.z, SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL, 0.3F, level().getRandom().nextFloat() * 0.4F + 0.8F, false);
             }
         }
 
         setMinecartPowered(!isMinecartPowered());
 
-        return InteractionResult.sidedSuccess(this.level.isClientSide());
+        return InteractionResult.sidedSuccess(this.level().isClientSide());
     }
 
     protected void defineSynchedData() {
@@ -214,11 +212,6 @@ public class CampfireCartEntity extends AbstractMinecart {
         return Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, Boolean.valueOf(isMinecartPowered()));
     }
 
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     //@Override
     //public ItemStack getCartItem() { return new ItemStack(MMItemReferences.campfire_cart); }

@@ -1,5 +1,7 @@
 package com.alc.moreminecarts.blocks.parallel_rails;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -13,6 +15,11 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 
 public class ParallelRail extends BaseRailBlock {
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
+
+    public static final MapCodec<ParallelRail> CODEC = simpleCodec(ParallelRail::new);
+    public MapCodec<ParallelRail> codec() {
+        return CODEC;
+    }
 
     public ParallelRail(Properties builder) {
         super(true, builder);

@@ -15,7 +15,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundDisconnectPacket;
+import net.minecraft.network.protocol.common.ClientboundDisconnectPacket;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -32,9 +32,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -42,58 +41,55 @@ import java.util.function.Supplier;
 import java.util.logging.Filter;
 
 public class MoreMinecartsPacketHandler {
-    private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation("moreminecarts", "example"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
+    private static final int PROTOCOL_VERSION = 1;
+    public static final SimpleChannel INSTANCE = ChannelBuilder
+        .named(new ResourceLocation("moreminecarts", "example"))
+        .networkProtocolVersion(PROTOCOL_VERSION)
+        .simpleChannel();
 
     public static void Init() {
-        int id = 0;
 
         // For syncing the coupler to the server -> client
-        INSTANCE.registerMessage(id++,
-                CouplePacket.class,
-                CouplePacket::encode,
-                CouplePacket::decode,
-                CouplePacket::handle);
+        INSTANCE.messageBuilder(CouplePacket.class, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(CouplePacket::encode)
+                .decoder(CouplePacket::decode)
+                .consumerMainThread(CouplePacket::handle)
+                .add();
 
         // For changing the chunk loader client -> server
-        INSTANCE.registerMessage(id++,
-                ChunkLoaderPacket.class,
-                ChunkLoaderPacket::encode,
-                ChunkLoaderPacket::decode,
-                ChunkLoaderPacket::handle);
+        INSTANCE.messageBuilder(ChunkLoaderPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ChunkLoaderPacket::encode)
+                .decoder(ChunkLoaderPacket::decode)
+                .consumerMainThread(ChunkLoaderPacket::handle)
+                .add();
 
         // For sending the piston pushcart inputs client -> server
-        INSTANCE.registerMessage(id++,
-                PistonPushcartPacket.class,
-                PistonPushcartPacket::encode,
-                PistonPushcartPacket::decode,
-                PistonPushcartPacket::handle);
+        INSTANCE.messageBuilder(PistonPushcartPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(PistonPushcartPacket::encode)
+                .decoder(PistonPushcartPacket::decode)
+                .consumerMainThread(PistonPushcartPacket::handle)
+                .add();
 
         // For sending long-range player interactions client -> server
-        INSTANCE.registerMessage(id++,
-                ExtendedInteractPacket.class,
-                ExtendedInteractPacket::encode,
-                ExtendedInteractPacket::decode,
-                ExtendedInteractPacket::handle);
+        INSTANCE.messageBuilder(ExtendedInteractPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ExtendedInteractPacket::encode)
+                .decoder(ExtendedInteractPacket::decode)
+                .consumerMainThread(ExtendedInteractPacket::handle)
+                .add();
 
         // For changing the minecart loader and unloader client -> server
-        INSTANCE.registerMessage(id++,
-                MinecartLoaderPacket.class,
-                MinecartLoaderPacket::encode,
-                MinecartLoaderPacket::decode,
-                MinecartLoaderPacket::handle);
+        INSTANCE.messageBuilder(MinecartLoaderPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(MinecartLoaderPacket::encode)
+                .decoder(MinecartLoaderPacket::decode)
+                .consumerMainThread(MinecartLoaderPacket::handle)
+                .add();
 
         // For changing the flag cart via GUI client -> server
-        INSTANCE.registerMessage(id++,
-                FlagCartPacket.class,
-                FlagCartPacket::encode,
-                FlagCartPacket::decode,
-                FlagCartPacket::handle);
+        INSTANCE.messageBuilder(FlagCartPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(FlagCartPacket::encode)
+                .decoder(FlagCartPacket::decode)
+                .consumerMainThread(FlagCartPacket::handle)
+                .add();
     }
 
     // Currently unused.
@@ -123,9 +119,9 @@ public class MoreMinecartsPacketHandler {
         }
 
 
-        public static void handle(CouplePacket msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(CouplePacket msg, CustomPayloadEvent.Context ctx) {
             //LogManager.getLogger().info("HERE!!!");
-            ctx.get().enqueueWork(() -> {
+            ctx.enqueueWork(() -> {
 
                 Level world = MoreMinecartsMod.PROXY.getWorld();
 
@@ -136,7 +132,7 @@ public class MoreMinecartsPacketHandler {
                     coupler_ent.vehicle2_id = msg.v2;
                 }
             });
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
     }
@@ -159,15 +155,15 @@ public class MoreMinecartsPacketHandler {
         }
 
 
-        public static void handle(ChunkLoaderPacket msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(ChunkLoaderPacket msg, CustomPayloadEvent.Context ctx) {
 
-            ctx.get().enqueueWork(() -> {
-                ServerPlayer sender = ctx.get().getSender();
+            ctx.enqueueWork(() -> {
+                ServerPlayer sender = ctx.getSender();
                 if (sender.containerMenu instanceof ChunkLoaderContainer) {
                     ((ChunkLoaderContainer)sender.containerMenu).setEnabled(msg.set_enabled);
                 }
             });
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
     }
@@ -194,15 +190,15 @@ public class MoreMinecartsPacketHandler {
         }
 
 
-        public static void handle(PistonPushcartPacket msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(PistonPushcartPacket msg, CustomPayloadEvent.Context ctx) {
 
-            ctx.get().enqueueWork(() -> {
-                ServerPlayer sender = ctx.get().getSender();
+            ctx.enqueueWork(() -> {
+                ServerPlayer sender = ctx.getSender();
                 if (sender.getRootVehicle() instanceof PistonPushcartEntity) {
                     ((PistonPushcartEntity)sender.getRootVehicle()).setElevating(msg.is_up_key, msg.now_down);
                 }
             });
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
     }
@@ -238,13 +234,13 @@ public class MoreMinecartsPacketHandler {
             return interact;
         }
 
-        public static void handle(ExtendedInteractPacket msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(ExtendedInteractPacket msg, CustomPayloadEvent.Context ctx) {
             MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "PISTON PUSHCART INTERACT 3");
-            ctx.get().enqueueWork(() -> {
-                ServerPlayer sender = ctx.get().getSender();
-                handleInteract(msg, sender, ctx.get().getNetworkManager());
+            ctx.enqueueWork(() -> {
+                ServerPlayer sender = ctx.getSender();
+                handleInteract(msg, sender, ctx.getConnection());
             });
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
     }
@@ -256,7 +252,7 @@ public class MoreMinecartsPacketHandler {
         // hopefully not important?
         //PacketUtils.ensureRunningOnSameThread(p_9866_, this, player.getLevel());
 
-        ServerLevel serverlevel = player.getLevel();
+        ServerLevel serverlevel = player.serverLevel();
         final Entity entity = p_9866_.getTarget(serverlevel);
         player.resetLastActionTime();
         player.setShiftKeyDown(p_9866_.isUsingSecondaryAction());
@@ -377,10 +373,10 @@ public class MoreMinecartsPacketHandler {
         }
 
 
-        public static void handle(MinecartLoaderPacket msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(MinecartLoaderPacket msg, CustomPayloadEvent.Context ctx) {
 
-            ctx.get().enqueueWork(() -> {
-                ServerPlayer sender = ctx.get().getSender();
+            ctx.enqueueWork(() -> {
+                ServerPlayer sender = ctx.getSender();
                 if (sender.containerMenu instanceof MinecartUnLoaderContainer container) {
                     container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output, msg.filterType);
                 }
@@ -388,7 +384,7 @@ public class MoreMinecartsPacketHandler {
                     container.setOptions(msg.locked_minecarts_only, msg.leave_one_item_in_stack, msg.output_type, msg.redstone_output, msg.filterType);
                 }
             });
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
     }
@@ -415,15 +411,15 @@ public class MoreMinecartsPacketHandler {
         }
 
 
-        public static void handle(FlagCartPacket msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(FlagCartPacket msg, CustomPayloadEvent.Context ctx) {
 
-            ctx.get().enqueueWork(() -> {
-                ServerPlayer sender = ctx.get().getSender();
+            ctx.enqueueWork(() -> {
+                ServerPlayer sender = ctx.getSender();
                 if (sender.containerMenu instanceof FlagCartContainer) {
                     ((FlagCartContainer)sender.containerMenu).changeSelection(msg.is_decrement, msg.is_disclude);
                 }
             });
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
     }

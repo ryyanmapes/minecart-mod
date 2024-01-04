@@ -17,11 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
@@ -242,13 +241,7 @@ public class FilterUnloaderTile extends AbstractCommonLoader implements WorldlyC
     }
 
     public boolean itemsMatch(ItemStack a, ItemStack b) {
-        if (a.getItem() != b.getItem()) {
-            return false;
-        } else if (a.getDamageValue() != b.getDamageValue()) {
-            return false;
-        } else {
-            return ItemStack.tagMatches(a, b);
-        }
+        return ItemStack.isSameItemSameTags(a, b);
     }
 
     @Override
@@ -261,7 +254,7 @@ public class FilterUnloaderTile extends AbstractCommonLoader implements WorldlyC
 
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && capability == ForgeCapabilities.ITEM_HANDLER) {
             return handlers[0].cast();
         }
         return super.getCapability(capability, facing);

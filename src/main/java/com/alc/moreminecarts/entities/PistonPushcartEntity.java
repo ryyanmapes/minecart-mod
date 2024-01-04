@@ -6,6 +6,7 @@ import com.alc.moreminecarts.registry.MMBlocks;
 import com.alc.moreminecarts.registry.MMItems;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.gui.screens.inventory.BeaconScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class PistonPushcartEntity extends IronPushcartEntity {
     private static final ImmutableMap<Pose, ImmutableList<Integer>> POSE_DISMOUNT_HEIGHTS = ImmutableMap.of(Pose.STANDING, ImmutableList.of(0, 1, -1), Pose.CROUCHING, ImmutableList.of(0, 1, -1), Pose.SWIMMING, ImmutableList.of(0, 1));
@@ -89,8 +91,8 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     }
 
     @Override
-    public double getPassengersRidingOffset() {
-        return 0.65 + getHeight();
+    protected Vector3f getPassengerAttachmentPoint(Entity p_297569_, EntityDimensions p_297882_, float p_300288_) {
+        return new Vector3f(0.0F, 0.65f + getHeight(), 0.0F);
     }
 
     @Override
@@ -114,8 +116,8 @@ public class PistonPushcartEntity extends IronPushcartEntity {
 
         if (going_up) {
             BlockPos test_pos = this.blockPosition().above((int)Math.ceil(height + 1.5));
-            BlockState test_state = level.getBlockState( test_pos );
-            if (!test_state.isCollisionShapeFullBlock(level, test_pos)) setHeight(height + getVerticalSpeed() * (is_reduced? 0.2f : 1) );
+            BlockState test_state = level().getBlockState( test_pos );
+            if (!test_state.isCollisionShapeFullBlock(level(), test_pos)) setHeight(height + getVerticalSpeed() * (is_reduced? 0.2f : 1) );
             if (getHeight() > MMConstants.PISTON_PUSHCART_MAX_HEIGHT) setHeight(MMConstants.PISTON_PUSHCART_MAX_HEIGHT);
         }
         else {
@@ -179,8 +181,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
         return this.hasCustomDisplay() ? axisalignedbb.inflate((double)Math.abs(this.getDisplayOffset()) / 16.0D) : axisalignedbb;
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.PISTON_PUSHCART_ITEM.get();
     }
 
@@ -203,13 +204,13 @@ public class PistonPushcartEntity extends IronPushcartEntity {
                     for(int[] aint1 : aint) {
                         // CHANGED to add height to Y component
                         blockpos$mutable.set(blockpos.getX() + aint1[0], blockpos.getY() + getHeight() + i, blockpos.getZ() + aint1[1]);
-                        double d0 = this.level.getBlockFloorHeight(DismountHelper.nonClimbableShape(this.level, blockpos$mutable), () -> {
-                            return DismountHelper.nonClimbableShape(this.level, blockpos$mutable.below());
+                        double d0 = this.level().getBlockFloorHeight(DismountHelper.nonClimbableShape(this.level(), blockpos$mutable), () -> {
+                            return DismountHelper.nonClimbableShape(this.level(), blockpos$mutable.below());
                         });
                         if (DismountHelper.isBlockFloorValid(d0)) {
                             AABB axisalignedbb = new AABB((double)(-f), 0.0D, (double)(-f), (double)f, (double)entitysize.height, (double)f);
                             Vec3 vector3d = Vec3.upFromBottomCenterOf(blockpos$mutable, d0);
-                            if (DismountHelper.canDismountTo(this.level, p_230268_1_, axisalignedbb.move(vector3d))) {
+                            if (DismountHelper.canDismountTo(this.level(), p_230268_1_, axisalignedbb.move(vector3d))) {
                                 p_230268_1_.setPose(pose);
                                 return vector3d;
                             }
@@ -225,7 +226,7 @@ public class PistonPushcartEntity extends IronPushcartEntity {
                 double d2 = (double)p_230268_1_.getDimensions(pose1).height;
                 int j = Mth.ceil(d1 - (double)blockpos$mutable.getY() + d2);
                 double d3 = DismountHelper.findCeilingFrom(blockpos$mutable, j, (p_242377_1_) -> {
-                    return this.level.getBlockState(p_242377_1_).getCollisionShape(this.level, p_242377_1_);
+                    return this.level().getBlockState(p_242377_1_).getCollisionShape(this.level(), p_242377_1_);
                 });
                 if (d1 + d2 <= d3) {
                     p_230268_1_.setPose(pose1);
@@ -244,11 +245,11 @@ public class PistonPushcartEntity extends IronPushcartEntity {
         //LOGGER.log(org.apache.logging.log4j.Level.WARN, "PISTON PUSHCART INTERACT");
         // Only used when they are too far away for the normal entity interaction packet.
         double distance = this.distanceToSqr(player);
-        if (result == InteractionResult.SUCCESS && level.isClientSide && distance >= 36.0D && distance < 175.0) {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(
-                    MoreMinecartsPacketHandler.ExtendedInteractPacket.createExtendedInteractPacket(
-                        this, player.isShiftKeyDown(), hand
-                    ));
+        if (result == InteractionResult.SUCCESS && level().isClientSide && distance >= 36.0D && distance < 175.0) {
+            level().sendPacketToServer(
+                MoreMinecartsPacketHandler.ExtendedInteractPacket.createExtendedInteractPacket(
+                    this, player.isShiftKeyDown(), hand
+                ));
         }
         return result;
     }

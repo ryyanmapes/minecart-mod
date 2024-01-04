@@ -1,7 +1,9 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.misc.RailUtil;
 import com.alc.moreminecarts.registry.MMBlocks;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +25,11 @@ public class ProjectorRail extends BaseRailBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+
+    public static final MapCodec<ProjectorRail> CODEC = simpleCodec(ProjectorRail::new);
+    public MapCodec<ProjectorRail> codec() {
+        return CODEC;
+    }
 
     public ProjectorRail(Properties builder) {
         super(true, builder);

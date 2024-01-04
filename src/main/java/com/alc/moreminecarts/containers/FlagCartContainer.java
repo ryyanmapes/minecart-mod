@@ -37,7 +37,7 @@ public class FlagCartContainer extends AbstractContainerMenu {
 
         this.inventory = entity;
         this.data = entity.dataAccess;
-        this.level = player_inventory.player.level;
+        this.level = player_inventory.player.level();
 
         CommonInitialization(player_inventory);
     }

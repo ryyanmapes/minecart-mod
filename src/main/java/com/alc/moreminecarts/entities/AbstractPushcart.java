@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 
 
 // Pushcarts can't have entities besides players on them, so we always return canBeRidden as false,
@@ -39,7 +38,7 @@ public abstract class AbstractPushcart extends AbstractMinecart {
         }
         else if (this.isVehicle()) {
             return InteractionResult.PASS; }
-        else if (!this.level.isClientSide) {
+        else if (!this.level().isClientSide) {
             return player.startRiding(this, false) ? InteractionResult.CONSUME : InteractionResult.PASS;
         } else {
             return InteractionResult.SUCCESS;
@@ -113,9 +112,9 @@ public abstract class AbstractPushcart extends AbstractMinecart {
                 int k = Mth.floor(this.position().z);
 
                 BlockPos pos = new BlockPos(i, j, k);
-                BlockState state = this.level.getBlockState(pos);
+                BlockState state = this.level().getBlockState(pos);
                 if (RailBlock.isRail(state)) {
-                    RailShape railshape = ((BaseRailBlock) state.getBlock()).getRailDirection(state, this.level, pos, this);
+                    RailShape railshape = ((BaseRailBlock) state.getBlock()).getRailDirection(state, this.level(), pos, this);
 
                     boolean is_uphill = (railshape == RailShape.ASCENDING_EAST || railshape == RailShape.ASCENDING_WEST
                             || railshape == RailShape.ASCENDING_NORTH || railshape == RailShape.ASCENDING_SOUTH);
@@ -135,9 +134,5 @@ public abstract class AbstractPushcart extends AbstractMinecart {
         }
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
 }

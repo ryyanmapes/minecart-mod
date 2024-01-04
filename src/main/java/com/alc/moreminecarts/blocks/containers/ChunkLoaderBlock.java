@@ -2,6 +2,7 @@ package com.alc.moreminecarts.blocks.containers;
 
 import com.alc.moreminecarts.registry.MMTileEntities;
 import com.alc.moreminecarts.tile_entities.ChunkLoaderTile;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -29,6 +31,11 @@ import javax.annotation.Nullable;
 
 public class ChunkLoaderBlock extends BaseEntityBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+
+    public static final MapCodec<ChunkLoaderBlock> CODEC = simpleCodec(ChunkLoaderBlock::new);
+    public MapCodec<ChunkLoaderBlock> codec() {
+        return CODEC;
+    }
 
     public ChunkLoaderBlock(Properties builder) {
         super(builder);

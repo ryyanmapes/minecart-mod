@@ -26,10 +26,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -47,13 +46,13 @@ public class BatteryCartEntity extends AbstractMinecart implements Container, Me
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
             int ret = super.receiveEnergy(maxReceive, simulate);
-            if (!simulate && level != null) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
+            if (!simulate && level() != null) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
             return ret;
         }
         @Override
         public int extractEnergy(int maxReceive, boolean simulate) {
             int ret = super.extractEnergy(maxReceive, simulate);
-            if (!simulate && level != null) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
+            if (!simulate && level() != null) BatteryCartEntity.this.entityData.set(ENERGY_AMOUNT, energy);
             return ret;
         }
     }
@@ -92,7 +91,7 @@ public class BatteryCartEntity extends AbstractMinecart implements Container, Me
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap) {
-        if (cap == CapabilityEnergy.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY) {
             return energy_handler.cast();
         }
         return super.getCapability(cap);
@@ -103,8 +102,7 @@ public class BatteryCartEntity extends AbstractMinecart implements Container, Me
         return Type.CHEST;
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.BATTERY_CART_ITEM.get();
     }
 
@@ -113,16 +111,11 @@ public class BatteryCartEntity extends AbstractMinecart implements Container, Me
         return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 5);
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
     // Container stuff
 
     @Nullable
     public AbstractContainerMenu createMenu(int i, Inventory inv, Player player) {
-        return new BatteryCartContainer(i, level, this, inv, player);
+        return new BatteryCartContainer(i, level(), this, inv, player);
     }
 
     public InteractionResult interact(Player p_184230_1_, InteractionHand p_184230_2_) {

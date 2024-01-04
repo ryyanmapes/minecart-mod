@@ -1,6 +1,8 @@
 package com.alc.moreminecarts.blocks.rails;
 
 import com.alc.moreminecarts.MMConstants;
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.BlockGetter;
@@ -17,6 +19,11 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 
 public class LightspeedRail extends BaseRailBlock {
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
+
+    public static final MapCodec<LightspeedRail> CODEC = simpleCodec(LightspeedRail::new);
+    public MapCodec<LightspeedRail> codec() {
+        return CODEC;
+    }
 
     public LightspeedRail(Properties builder) {
         super(true, builder);

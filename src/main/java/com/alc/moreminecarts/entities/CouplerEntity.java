@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,16 +62,16 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
 
     @Nullable
     public Entity getFirstVehicle() {
-        if (this.vehicle1 == null && this.vehicle1_id != 0 && this.level.isClientSide) {
-            this.vehicle1 = this.level.getEntity(this.vehicle1_id);
+        if (this.vehicle1 == null && this.vehicle1_id != 0 && this.level().isClientSide) {
+            this.vehicle1 = this.level().getEntity(this.vehicle1_id);
         }
         return this.vehicle1;
     }
 
     @Nullable
     public Entity getSecondVehicle() {
-        if (this.vehicle2 == null && this.vehicle2_id != 0 && this.level.isClientSide) {
-            this.vehicle2 = this.level.getEntity(this.vehicle2_id);
+        if (this.vehicle2 == null && this.vehicle2_id != 0 && this.level().isClientSide) {
+            this.vehicle2 = this.level().getEntity(this.vehicle2_id);
         }
         return this.vehicle2;
     }
@@ -80,7 +79,7 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public void tick() {
 
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             updateDisplay();
             return;
         }
@@ -172,11 +171,11 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
     private void recreateCouple() {
         if (this.vehicleNBTTag == null) return;
 
-        if (this.level instanceof ServerLevel) {
+        if (this.level() instanceof ServerLevel) {
 
             if (this.vehicleNBTTag.hasUUID(TAG_COUPLED_UUID_1)) {
                 UUID uuid = this.vehicleNBTTag.getUUID(TAG_COUPLED_UUID_1);
-                Entity entity = ((ServerLevel)this.level).getEntity(uuid);
+                Entity entity = ((ServerLevel)this.level()).getEntity(uuid);
                 if (entity != null) {
                     this.vehicle1 = entity;
                     this.vehicle1_id = vehicle1.getId();
@@ -184,7 +183,7 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
             }
             if (this.vehicleNBTTag.hasUUID(TAG_COUPLED_UUID_2)) {
                 UUID uuid = this.vehicleNBTTag.getUUID(TAG_COUPLED_UUID_2);
-                Entity entity = ((ServerLevel)this.level).getEntity(uuid);
+                Entity entity = ((ServerLevel)this.level()).getEntity(uuid);
                 if (entity != null) {
                     this.vehicle2 = entity;
                     this.vehicle2_id = vehicle2.getId();
@@ -192,7 +191,7 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
             }
 
             if (this.vehicle1 != null && this.vehicle2 != null) {
-                MoreMinecartsPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(()->this), new MoreMinecartsPacketHandler.CouplePacket(this.getId(), this.vehicle1_id , this.vehicle2_id));
+                MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.CouplePacket(this.getId(), this.vehicle1_id , this.vehicle2_id), PacketDistributor.TRACKING_ENTITY.with(this));
             }
 
             if (this.tickCount > 100) {
@@ -228,7 +227,7 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
     public boolean skipAttackInteraction(Entity player) {
         if (player instanceof Player) {
             Player playerentity = (Player)player;
-            return !this.level.mayInteract(playerentity, this.getOnPos()) ? true : this.hurt(player.level.damageSources().playerAttack(playerentity), 0.0F);
+            return !this.level().mayInteract(playerentity, this.getOnPos()) ? true : this.hurt(player.level().damageSources().playerAttack(playerentity), 0.0F);
         } else {
             return false;
         }
@@ -239,7 +238,7 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (this.isAlive() && !this.level.isClientSide) {
+            if (this.isAlive() && !this.level().isClientSide) {
                 this.releaseTensionToBoth();
                 this.onBroken(!source.isCreativePlayer());
                 this.markHurt();
@@ -289,11 +288,6 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
         double y = (v1.y + v2.y)/2;
         double z = (v1.z + v2.z)/2;
         this.setPos(x,y,z);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
 

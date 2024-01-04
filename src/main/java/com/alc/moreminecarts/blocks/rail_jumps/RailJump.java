@@ -1,6 +1,8 @@
 package com.alc.moreminecarts.blocks.rail_jumps;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.misc.RailUtil;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -23,6 +25,11 @@ import javax.annotation.Nullable;
 public class RailJump extends BaseRailBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final Property<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
+
+    public static final MapCodec<RailJump> CODEC = simpleCodec(RailJump::new);
+    public MapCodec<RailJump> codec() {
+        return CODEC;
+    }
 
     protected static final VoxelShape FULL_BLOCK_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 

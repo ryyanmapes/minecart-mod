@@ -1,5 +1,7 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -69,6 +71,11 @@ public class ArithmeticRailBlock extends BaseRailBlock {
     public static final EnumProperty EFFECT = EnumProperty.create("effect", SignalEffect.class,
             SignalEffect.plus, SignalEffect.minus, SignalEffect.left, SignalEffect.right);
 
+
+    public static final MapCodec<ArithmeticRailBlock> CODEC = simpleCodec(ArithmeticRailBlock::new);
+    public MapCodec<ArithmeticRailBlock> codec() {
+        return CODEC;
+    }
 
     public ArithmeticRailBlock(Properties builder) {
         super(true, builder);

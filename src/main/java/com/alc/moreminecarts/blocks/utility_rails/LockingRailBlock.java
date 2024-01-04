@@ -1,7 +1,9 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.registry.MMTileEntities;
 import com.alc.moreminecarts.tile_entities.LockingRailTile;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -31,6 +33,10 @@ public class LockingRailBlock extends BaseRailBlock implements EntityBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty INVERTED = BooleanProperty.create("inverted");
 
+    public static final MapCodec<LockingRailBlock> CODEC = simpleCodec(LockingRailBlock::new);
+    public MapCodec<LockingRailBlock> codec() {
+        return CODEC;
+    }
 
     public LockingRailBlock(Properties builder) {
         super(true, builder);

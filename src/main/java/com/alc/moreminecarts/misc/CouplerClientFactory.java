@@ -3,17 +3,16 @@ package com.alc.moreminecarts.misc;
 import com.alc.moreminecarts.entities.CouplerEntity;
 import com.alc.moreminecarts.registry.MMEntities;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PlayMessages;
 
 public class CouplerClientFactory {
 
     public CouplerClientFactory() {super();}
 
-    public static java.util.function.BiFunction<net.minecraftforge.network.PlayMessages.SpawnEntity, Level, CouplerEntity> get() {
+    public static java.util.function.BiFunction<net.minecraftforge.network.packets.SpawnEntity, Level, CouplerEntity> get() {
         return CouplerClientFactory::getCouplerFromPacket;
     }
 
-    public static CouplerEntity getCouplerFromPacket(PlayMessages.SpawnEntity packet, Level world) {
+    public static CouplerEntity getCouplerFromPacket(net.minecraftforge.network.packets.SpawnEntity packet, Level world) {
 
         CouplerEntity ent = new CouplerEntity(MMEntities.COUPLER_ENTITY.get(), world);
         /*

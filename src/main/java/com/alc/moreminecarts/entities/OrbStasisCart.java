@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PoweredRailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -56,8 +55,7 @@ public class OrbStasisCart extends AbstractMinecart {
         return Type.CHEST;
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.MINECART_WITH_STASIS_ITEM.get();
     }
 
@@ -79,7 +77,7 @@ public class OrbStasisCart extends AbstractMinecart {
 
         ItemStack item_used = playerEntity.getItemInHand(hand);
         if (item_used.getItem() == Items.ENDER_PEARL) {
-            if (level.isClientSide) return InteractionResult.CONSUME;
+            if (level().isClientSide) return InteractionResult.CONSUME;
             if (owner_uuid == null) {
                 addPearl(playerEntity);
                 if (!playerEntity.isCreative()) item_used.shrink(1);
@@ -95,21 +93,21 @@ public class OrbStasisCart extends AbstractMinecart {
     }
 
     protected void attemptTeleport() {
-        if (level.isClientSide || owner_uuid == null) return;
+        if (level().isClientSide || owner_uuid == null) return;
 
-        Entity entity = this.level.getPlayerByUUID(owner_uuid);
+        Entity entity = this.level().getPlayerByUUID(owner_uuid);
 
         if (entity instanceof ServerPlayer) {
             ServerPlayer player = (ServerPlayer) entity;
             // copied from EnderPearlEntity
-            if (player.connection.connection.isConnected() && player.level == this.level && !player.isSleeping()) {
+            if (player.connection.getConnection().isConnected() && player.level() == this.level() && !player.isSleeping()) {
                 EntityTeleportEvent.ChorusFruit event = new EntityTeleportEvent.ChorusFruit(player,
                         this.getX() + 0.5, this.getY() + 1, this.getZ() + 0.5);
                 if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) { // Don't indent to lower patch size
-                    if (this.level.random.nextFloat() < 0.05F && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-                        Endermite endermiteentity = EntityType.ENDERMITE.create(this.level);
+                    if (this.level().random.nextFloat() < 0.05F && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                        Endermite endermiteentity = EntityType.ENDERMITE.create(this.level());
                         endermiteentity.moveTo(entity.getX(), entity.getY(), entity.getZ());
-                        this.level.addFreshEntity(endermiteentity);
+                        this.level().addFreshEntity(endermiteentity);
                     }
 
                     if (entity.isPassenger()) {
@@ -118,7 +116,7 @@ public class OrbStasisCart extends AbstractMinecart {
 
                     entity.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
                     entity.fallDistance = 0.0F;
-                    entity.hurt(this.level.damageSources().fall(), 5.0f);
+                    entity.hurt(this.level().damageSources().fall(), 5.0f);
                 }
             }
         }
@@ -130,7 +128,7 @@ public class OrbStasisCart extends AbstractMinecart {
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
-        BlockState blockState = level.getBlockState(blockPosition());
+        BlockState blockState = level().getBlockState(blockPosition());
         boolean is_activated = blockState.is(Blocks.ACTIVATOR_RAIL) && blockState.getValue(PoweredRailBlock.POWERED);
 
         return MMBlocks.PEARL_STASIS_CHAMBER.get().defaultBlockState().setValue(OrbStasisBlock.CONTAINS_PEARL, getHasOrb())
@@ -162,11 +160,6 @@ public class OrbStasisCart extends AbstractMinecart {
 
     protected void setHasOrb(boolean powered) {
         this.entityData.set(HAS_ORB, powered);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     //@Override

@@ -25,7 +25,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkHooks;
 
 
 public class FlagCartEntity extends AbstractMinecartContainer {
@@ -47,14 +46,13 @@ public class FlagCartEntity extends AbstractMinecartContainer {
         return Type.CHEST;
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.FLAG_CART_ITEM.get();
     }
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inv) {
-        return new FlagCartContainer(i, level, this, inv, inv.player);
+        return new FlagCartContainer(i, level(), this, inv, inv.player);
     }
 
     @Override
@@ -63,13 +61,8 @@ public class FlagCartEntity extends AbstractMinecartContainer {
         return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState().setValue(PistonDisplayBlock.VARIANT, raw_display);
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
     public void activateMinecart(int p_96095_1_, int p_96095_2_, int p_96095_3_, boolean p_96095_4_) {
-        if (!level.isClientSide) selected_slot = 0;
+        if (!level().isClientSide) selected_slot = 0;
         updateDisplayType();
     }
 
@@ -171,7 +164,7 @@ public class FlagCartEntity extends AbstractMinecartContainer {
             selected_slot = Math.min(8-discluded_slots, selected_slot);
         }
 
-        level.playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundSource.BLOCKS, 0.5f, 1f, true);
+        level().playLocalSound(getX(), getY(), getZ(), SoundEvents.ITEM_FRAME_PLACE, SoundSource.BLOCKS, 0.5f, 1f, true);
         updateDisplayType();
     }
 
@@ -180,7 +173,7 @@ public class FlagCartEntity extends AbstractMinecartContainer {
     }
 
     public void updateDisplayType() {
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             Item this_item = getItem(selected_slot).getItem();
             int full_display = 0;
             full_display += FlagUtil.getFlagColorValue( this_item );
@@ -194,10 +187,10 @@ public class FlagCartEntity extends AbstractMinecartContainer {
 
         super.tick();
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             BlockPos new_block_pos = blockPosition();
             if (!old_block_pos.equals(new_block_pos)) {
-                BlockState new_blockstate = level.getBlockState(new_block_pos);
+                BlockState new_blockstate = level().getBlockState(new_block_pos);
                 if (new_blockstate.getBlock() == MMBlocks.ARITHMETIC_RAIL.get() && new_blockstate.getValue(ArithmeticRailBlock.POWERED)) {
                     cycleFlag((ArithmeticRailBlock.SignalEffect) new_blockstate.getValue(ArithmeticRailBlock.EFFECT));
                 }

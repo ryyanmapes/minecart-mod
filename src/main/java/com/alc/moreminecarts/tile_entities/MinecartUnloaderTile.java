@@ -13,11 +13,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
@@ -54,8 +53,8 @@ public class MinecartUnloaderTile extends AbstractCommonLoader {
                 float criteria_total = 0;
                 for (AbstractMinecart minecart : minecarts) {
 
-                    LazyOptional<IFluidHandler> tankCapability = minecart.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-                    LazyOptional<IEnergyStorage> energyCapability = minecart.getCapability(CapabilityEnergy.ENERGY);
+                    LazyOptional<IFluidHandler> tankCapability = minecart.getCapability(ForgeCapabilities.FLUID_HANDLER);
+                    LazyOptional<IEnergyStorage> energyCapability = minecart.getCapability(ForgeCapabilities.ENERGY);
                     if (tankCapability.isPresent()) {
                         IFluidHandler fluid_handler = tankCapability.orElse(null);
                         criteria_total += doFluidUnloads(fluid_handler);

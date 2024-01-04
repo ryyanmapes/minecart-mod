@@ -17,8 +17,7 @@ public class WoodenPushcartEntity extends AbstractPushcart {
         super(type, worldIn, x, y, z);
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.WOODEN_PUSHCART_ITEM.get();
     }
 

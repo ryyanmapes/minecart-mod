@@ -38,7 +38,7 @@ public class TankCartContainer extends AbstractContainerMenu {
         super(MMContainers.TANK_CART_CONTAINER.get(), n);
 
         this.entity = entity;
-        this.level = player_inventory.player.level;
+        this.level = player_inventory.player.level();
         this.data = entity.dataAccess;
 
         CommonInitialization(player_inventory);

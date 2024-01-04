@@ -46,7 +46,7 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
         if (vehicle1 != null && vehicle2 != null) {
             MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "COUPLER RENDER");
 
-            this.renderCoupler(entityIn.level, partialTicks, matrixStackIn, bufferIn, vehicle1, vehicle2);
+            this.renderCoupler(entityIn.level(), partialTicks, matrixStackIn, bufferIn, vehicle1, vehicle2);
         }
 
 
@@ -109,7 +109,7 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
     }
 
     protected int getBlockLightFake(Entity entityIn, BlockPos partialTicks) {
-        return entityIn.isOnFire() ? 15 : entityIn.level.getBrightness(LightLayer.BLOCK, partialTicks);
+        return entityIn.isOnFire() ? 15 : entityIn.level().getBrightness(LightLayer.BLOCK, partialTicks);
     }
 
     public static void renderSide(VertexConsumer builderIn, Matrix4f matrixIn, float p_229119_2_, float p_229119_3_, float p_229119_4_, int blockLight, int holderBlockLight, int skyLight, int holderSkyLight, float p_229119_9_, float p_229119_10_, float norm_z, float norm_x) {

@@ -25,7 +25,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.network.NetworkHooks;
 
 
 public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
@@ -55,15 +54,14 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
     @Override
     public void destroy(DamageSource source) {
         super.destroy(source);
-        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            ChunkLoaderTile.dropExtras(level, time_left, getOnPos());
+        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            ChunkLoaderTile.dropExtras(level(), time_left, getOnPos());
         }
         onRemoval();
 
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.MINECART_WITH_CHUNK_LOADER_ITEM.get();
     }
 
@@ -75,7 +73,7 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inv) {
-        return new ChunkLoaderContainer(i, level, this, dataAccess, inv, inv.player);
+        return new ChunkLoaderContainer(i, level(), this, dataAccess, inv, inv.player);
     }
 
     protected boolean isMinecartPowered() {
@@ -89,11 +87,6 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
     @Override
     public BlockState getDefaultDisplayBlockState() {
         return MMBlocks.CHUNK_LOADER_BLOCK.get().defaultBlockState().setValue(ChunkLoaderBlock.POWERED, Boolean.valueOf(isMinecartPowered()));
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     public void activateMinecart(int p_96095_1_, int p_96095_2_, int p_96095_3_, boolean p_96095_4_) {
@@ -182,7 +175,7 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
         boolean changed_flag = false;
         if (isLit()) time_left--;
 
-        if (!level.isClientSide()) {
+        if (!level().isClientSide()) {
 
             int burn_duration = ChunkLoaderTile.getBurnDuration(itemStacks.get(0).getItem());
             if (burn_duration >= 0 && Math.abs(time_left) + burn_duration <= ChunkLoaderTile.MAX_TIME) {
@@ -230,13 +223,13 @@ public class ChunkLoaderCartEntity extends AbstractMinecartContainer {
     private void forceChucksAt(int chunk_x, int chunk_z, boolean add) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                ForgeChunkManager.forceChunk((ServerLevel) level, MMConstants.modid, this, chunk_x + i, chunk_z + j, add, true);
+                ForgeChunkManager.forceChunk((ServerLevel) level(), MMConstants.modid, this, chunk_x + i, chunk_z + j, add, true);
             }
         }
     }
 
     public void onRemoval() {
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
 
             int chunk_x = getOnPos().getX() >> 4;
             int chunk_z = getOnPos().getZ() >> 4;

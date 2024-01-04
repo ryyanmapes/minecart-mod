@@ -22,15 +22,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -70,7 +70,7 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
         @Override
         protected void onContentsChanged() {
             super.onContentsChanged();
-            if (level != null && !TankCartEntity.this.level.isClientSide) {
+            if (level() != null && !TankCartEntity.this.level().isClientSide) {
                 updateSynchedData();
             }
         }
@@ -88,7 +88,7 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap) {
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return fluid_handler.cast();
         }
         return super.getCapability(cap);
@@ -99,19 +99,13 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
         return Type.CHEST;
     }
 
-    @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return MMItems.TANK_CART_ITEM.get();
     }
 
     @Override
     public BlockState getDefaultDisplayBlockState() {
         return MMBlocks.PISTON_DISPLAY_BLOCK.get().defaultBlockState().setValue(PistonDisplayBlock.VARIANT, 4);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     public boolean stillValid(Player player) {
@@ -140,7 +134,7 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
     }
 
     public FluidStack getFluidStack() {
-        if (!level.isClientSide) return fluid_handler.orElse(null).getFluidInTank(0);
+        if (!level().isClientSide) return fluid_handler.orElse(null).getFluidInTank(0);
         return ((FluidTank)fluid_handler.orElse(null)).readFromNBT(entityData.get(FLUID_TAG)).getFluid();
     }
 
@@ -152,7 +146,7 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
 
     @Nullable
     public AbstractContainerMenu createMenu(int i, Inventory inv, Player player) {
-        return new TankCartContainer(i, level, this, inv, player);
+        return new TankCartContainer(i, level(), this, inv, player);
     }
 
     public InteractionResult interact(Player p_184230_1_, InteractionHand p_184230_2_) {
@@ -165,7 +159,7 @@ public class TankCartEntity extends AbstractMinecart implements Container, MenuP
     @Override
     public void tick() {
         super.tick();
-        if (changed_flag && !level.isClientSide) {
+        if (changed_flag && !level().isClientSide) {
             updateSynchedData();
             changed_flag = false;
         }

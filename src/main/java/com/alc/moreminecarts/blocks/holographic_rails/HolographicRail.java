@@ -1,6 +1,8 @@
 package com.alc.moreminecarts.blocks.holographic_rails;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.registry.MMBlocks;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -22,6 +24,11 @@ public class HolographicRail extends BaseRailBlock {
     public static final IntegerProperty LENGTH = BlockStateProperties.LEVEL;
 
     protected static final VoxelShape FULL_BLOCK_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+
+    public static final MapCodec<HolographicRail> CODEC = simpleCodec(HolographicRail::new);
+    public MapCodec<HolographicRail> codec() {
+        return CODEC;
+    }
 
     public HolographicRail(Properties builder) {
         super(true, builder);

@@ -12,7 +12,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.*;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
 
 import java.util.UUID;
 
@@ -27,30 +26,30 @@ public class HSMinecartEntities {
 
         if (minecart instanceof IHSCart) return false;
         if (minecart instanceof Minecart) {
-            HSMinecart newer_minecart = MMEntities.HS_CART_ENTITY.get().create(minecart.level);
+            HSMinecart newer_minecart = MMEntities.HS_CART_ENTITY.get().create(minecart.level());
             for (Entity passenger : minecart.getPassengers()) {
                 passenger.stopRiding();
             }
             new_minecart = newer_minecart;
         }
-        else if (minecart instanceof MinecartChest) new_minecart = MMEntities.HS_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof MinecartTNT) new_minecart = MMEntities.HS_TNT_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof MinecartCommandBlock) new_minecart = MMEntities.HS_COMMAND_BLOCK_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof MinecartHopper) new_minecart = MMEntities.HS_HOPPER_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof MinecartSpawner) new_minecart = MMEntities.HS_SPAWNER_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof MinecartFurnace) new_minecart = MMEntities.HS_FURNACE_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof NetMinecartEntity) new_minecart = MMEntities.HS_NET_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof ChunkLoaderCartEntity) new_minecart = MMEntities.HS_CHUNK_LOADER_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof OrbStasisCart) new_minecart = MMEntities.HS_STASIS_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof FlagCartEntity) new_minecart = MMEntities.HS_FLAG_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof TankCartEntity) new_minecart = MMEntities.HS_TANK_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof BatteryCartEntity) new_minecart = MMEntities.HS_BATTERY_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof EndfireCartEntity) new_minecart = MMEntities.HS_ENDFIRE_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof SoulfireCartEntity) new_minecart = MMEntities.HS_SOULFIRE_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof CampfireCartEntity) new_minecart = MMEntities.HS_CAMPFIRE_CART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof StickyPistonPushcartEntity) new_minecart = MMEntities.HS_STICKY_PISTON_PUSHCART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof PistonPushcartEntity) new_minecart = MMEntities.HS_PISTON_PUSHCART_ENTITY.get().create(minecart.level);
-        else if (minecart instanceof IronPushcartEntity) new_minecart = MMEntities.HS_PUSHCART_ENTITY.get().create(minecart.level);
+        else if (minecart instanceof MinecartChest) new_minecart = MMEntities.HS_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof MinecartTNT) new_minecart = MMEntities.HS_TNT_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof MinecartCommandBlock) new_minecart = MMEntities.HS_COMMAND_BLOCK_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof MinecartHopper) new_minecart = MMEntities.HS_HOPPER_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof MinecartSpawner) new_minecart = MMEntities.HS_SPAWNER_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof MinecartFurnace) new_minecart = MMEntities.HS_FURNACE_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof NetMinecartEntity) new_minecart = MMEntities.HS_NET_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof ChunkLoaderCartEntity) new_minecart = MMEntities.HS_CHUNK_LOADER_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof OrbStasisCart) new_minecart = MMEntities.HS_STASIS_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof FlagCartEntity) new_minecart = MMEntities.HS_FLAG_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof TankCartEntity) new_minecart = MMEntities.HS_TANK_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof BatteryCartEntity) new_minecart = MMEntities.HS_BATTERY_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof EndfireCartEntity) new_minecart = MMEntities.HS_ENDFIRE_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof SoulfireCartEntity) new_minecart = MMEntities.HS_SOULFIRE_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof CampfireCartEntity) new_minecart = MMEntities.HS_CAMPFIRE_CART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof StickyPistonPushcartEntity) new_minecart = MMEntities.HS_STICKY_PISTON_PUSHCART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof PistonPushcartEntity) new_minecart = MMEntities.HS_PISTON_PUSHCART_ENTITY.get().create(minecart.level());
+        else if (minecart instanceof IronPushcartEntity) new_minecart = MMEntities.HS_PUSHCART_ENTITY.get().create(minecart.level());
         else return false;
 
         if (minecart instanceof IronPushcartEntity) {
@@ -71,7 +70,7 @@ public class HSMinecartEntities {
 
         minecart.setRemoved(Entity.RemovalReason.DISCARDED);
 
-        minecart.level.addFreshEntity(new_minecart);
+        minecart.level().addFreshEntity(new_minecart);
 
         return true;
     }
@@ -98,16 +97,12 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
     }
 
     public static class HSChestMinecart extends MinecartChest implements IHSCart {
@@ -130,16 +125,12 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
     }
 
     public static class HSTNTMinecart extends MinecartTNT implements IHSCart {
@@ -162,16 +153,12 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
     }
 
     public static class HSCommandBlockMinecart extends MinecartCommandBlock implements IHSCart {
@@ -192,16 +179,12 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
     }
 
     public static class HSHopperMinecart extends MinecartHopper implements IHSCart{
@@ -224,16 +207,12 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
     }
 
     public static class HSSpawnerMinecart extends MinecartSpawner implements IHSCart {
@@ -256,16 +235,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSFurnaceMinecart extends MinecartFurnace implements IHSCart {
@@ -288,7 +264,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
 
         @Override
@@ -309,10 +285,7 @@ public class HSMinecartEntities {
         protected double getMaxSpeed() {
             return MMConstants.LIGHTSPEED_MAX_SPEED;
         }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     // Modded high-speed variants
@@ -334,16 +307,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSChunkLoaderMinecart extends ChunkLoaderCartEntity implements IHSCart {
@@ -363,16 +333,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSStasisMinecart extends OrbStasisCart implements IHSCart {
@@ -392,16 +359,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSFlagMinecart extends FlagCartEntity implements IHSCart {
@@ -421,16 +385,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSTankMinecart extends TankCartEntity implements IHSCart {
@@ -450,16 +411,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSBatteryMinecart extends BatteryCartEntity implements IHSCart {
@@ -479,16 +437,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSCampfireMinecart extends CampfireCartEntity implements IHSCart {
@@ -508,16 +463,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSSoulfireMinecart extends SoulfireCartEntity implements IHSCart {
@@ -537,16 +489,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSEndfireMinecart extends EndfireCartEntity implements IHSCart {
@@ -566,16 +515,13 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         //@Override
         //protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MoreMinecartsConstants.HS_SLOWDOWN, 0.0D, MoreMinecartsConstants.HS_SLOWDOWN)); }
         @Override
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSPushcart extends IronPushcartEntity implements IHSCart {
@@ -595,7 +541,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -603,10 +549,7 @@ public class HSMinecartEntities {
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
         public double getControlSpeed() { return 300; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
     }
 
     public static class HSPistonPushcart extends PistonPushcartEntity implements IHSCart {
@@ -626,7 +569,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -634,10 +577,7 @@ public class HSMinecartEntities {
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
         public double getControlSpeed() { return 300; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
         @Override
         public float getVerticalSpeed() {
             return MMConstants.PISTON_PUSHCART_AERODYNAMIC_VERTICAL_SPEED;
@@ -661,7 +601,7 @@ public class HSMinecartEntities {
         @Override
         public void destroy(DamageSource source) {
             super.destroy(source);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) this.spawnAtLocation(MMItems.HIGH_SPEED_UPGRADE_ITEM.get());
         }
         @Override
         protected void applyNaturalSlowdown() { this.setDeltaMovement(this.getDeltaMovement().multiply(MMConstants.HS_SLOWDOWN, 0.0D, MMConstants.HS_SLOWDOWN)); }
@@ -669,10 +609,7 @@ public class HSMinecartEntities {
         public double getDragAir() { return MMConstants.HS_AIR_DRAG; }
         @Override
         public double getControlSpeed() { return 300; }
-        @Override
-        public Packet<ClientGamePacketListener> getAddEntityPacket() {
-            return NetworkHooks.getEntitySpawningPacket(this);
-        }
+
         @Override
         public float getVerticalSpeed() {
             return MMConstants.PISTON_PUSHCART_AERODYNAMIC_VERTICAL_SPEED;

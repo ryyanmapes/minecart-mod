@@ -3,6 +3,7 @@ package com.alc.moreminecarts.client;
 import com.alc.moreminecarts.containers.TankCartContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,23 +21,23 @@ public class TankCartScreen extends AbstractContainerScreen<TankCartContainer> {
     }
 
     @Override
-    public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-        this.renderBackground(p_230430_1_);
+    public void render(GuiGraphics p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+        this.renderBackground(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
         this.renderTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
     }
 
     @Override
-    protected void renderBg(PoseStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(GuiGraphics matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         RenderSystem.setShaderTexture(0, display);
-        this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
+        matrix.blit(display, leftPos, topPos, 0, 0, 176, 166);
 
         FluidStack fluid_stack = menu.getFluids();
         if (fluid_stack == null || fluid_stack.isEmpty()) {
-            this.font.draw(matrix, "0/40,000 mB fluid", leftPos + 8, topPos + 20, 4210752);
+            matrix.drawString(font, "0/40,000 mB fluid", leftPos + 8, topPos + 20, 4210752, false);
         }
         else {
-            this.font.draw(matrix, fluid_stack.getAmount() + "/40,000 mB " + fluid_stack.getDisplayName().getString(), leftPos + 8, topPos + 20, 4210752);
+            matrix.drawString(font, fluid_stack.getAmount() + "/40,000 mB " + fluid_stack.getDisplayName().getString(), leftPos + 8, topPos + 20, 4210752, false);
         }
 
     }

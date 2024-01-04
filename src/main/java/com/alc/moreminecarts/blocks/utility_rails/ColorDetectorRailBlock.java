@@ -1,6 +1,9 @@
 package com.alc.moreminecarts.blocks.utility_rails;
 
+import com.alc.moreminecarts.blocks.containers.ChunkLoaderBlock;
 import com.alc.moreminecarts.entities.FlagCartEntity;
+import com.alc.moreminecarts.registry.MMItems;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -31,6 +35,10 @@ public class ColorDetectorRailBlock extends BaseRailBlock {
 
     public java.util.function.Supplier<Item> detected_item;
 
+    public static final MapCodec<ColorDetectorRailBlock> CODEC = simpleCodec((builder) -> new ColorDetectorRailBlock(builder, MMItems.RAIL_SIGNALS.get(DyeColor.WHITE)));
+    public MapCodec<ColorDetectorRailBlock> codec() {
+        return CODEC;
+    }
 
     public ColorDetectorRailBlock(Properties builder,  java.util.function.Supplier<Item> det) {
         super(true, builder);

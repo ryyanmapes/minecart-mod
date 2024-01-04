@@ -5,6 +5,7 @@ import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -42,8 +43,8 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     }
 
     @Override
-    public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-        this.renderBackground(p_230430_1_);
+    public void render(GuiGraphics p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+        this.renderBackground(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
         for (AbstractButton button : buttons) {
@@ -54,18 +55,18 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     }
 
     @Override
-    protected void renderBg(PoseStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(GuiGraphics matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         RenderSystem.setShaderTexture(0, display);
-        this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
+        matrix.blit(display, leftPos, topPos, 0, 0, 176, 166);
 
         // Slot disclusion renders
         for (int i = 0; i < menu.getDiscludedSlots(); i++) {
-            this.blit(matrix, leftPos + 151 - (18*i), topPos + 41, 176, 36, 18, 18);
+            matrix.blit(display, leftPos + 151 - (18*i), topPos + 41, 176, 36, 18, 18);
         }
 
         // Selected slot render
         int s = menu.getSelectedSlot();
-        this.blit(matrix, leftPos + 4 + (18*s), topPos + 38, 194, 36, 24, 24);
+        matrix.blit(display, leftPos + 4 + (18*s), topPos + 38, 194, 36, 24, 24);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -73,7 +74,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
 
         protected SimpleButton(int x, int y) { super(x, y); }
 
-        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -85,7 +86,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
             }
         }
 
-        public abstract void renderSelected(PoseStack matrix, int x, int y);
+        public abstract void renderSelected(GuiGraphics matrix, int x, int y);
 
         @Override
         protected void updateWidgetNarration(NarrationElementOutput p_259858_) {
@@ -96,12 +97,12 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     class LeftButton extends SimpleButton {
         protected LeftButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, xPos,yPos, 194, 18, 18, 18);
+        public void renderSelected(GuiGraphics matrix, int x, int y) {
+            matrix.blit(display, xPos,yPos, 194, 18, 18, 18);
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(false, true));
+            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(false, true), FlagCartScreen.this.minecraft.getConnection().getConnection());
         }
 
     }
@@ -109,36 +110,36 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
     class RightButton extends SimpleButton {
         protected RightButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, xPos,yPos, 230, 18, 18, 18);
+        public void renderSelected(GuiGraphics matrix, int x, int y) {
+            matrix.blit(display, xPos,yPos, 230, 18, 18, 18);
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(true, true));
+            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(true, true), FlagCartScreen.this.minecraft.getConnection().getConnection());
         }
     }
 
     class MinusButton extends SimpleButton {
         protected MinusButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, xPos,yPos, 230, 0, 18, 18);
+        public void renderSelected(GuiGraphics matrix, int x, int y) {
+            matrix.blit(display, xPos,yPos, 230, 0, 18, 18);
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(true, false));
+            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(true, false), FlagCartScreen.this.minecraft.getConnection().getConnection());
         }
     }
 
     class PlusButton extends SimpleButton {
         protected PlusButton(int x, int y) { super(x, y); }
         @Override
-        public void renderSelected(PoseStack matrix, int x, int y) {
-            this.blit(matrix, xPos,yPos, 194, 0, 18, 18);
+        public void renderSelected(GuiGraphics matrix, int x, int y) {
+            matrix.blit(display, xPos,yPos, 194, 0, 18, 18);
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.FlagCartPacket(false, false));
+            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(false, false), FlagCartScreen.this.minecraft.getConnection().getConnection());
         }
     }
 

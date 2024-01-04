@@ -7,7 +7,7 @@ import com.alc.moreminecarts.tile_entities.FilterUnloaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -53,10 +53,10 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
     }
 
     @Override
-    public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+    public void render(GuiGraphics p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
 
 
-        this.renderBackground(p_230430_1_);
+        this.renderBackground(p_230430_1_,p_230430_2_, p_230430_3_, p_230430_4_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
         for (AbstractButton button : buttons) {
@@ -67,18 +67,17 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
     }
 
     @Override
-    protected void renderBg(PoseStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(GuiGraphics matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         RenderSystem.setShaderTexture(0, display);
-        this.blit(matrix, leftPos, topPos - 14, 0, 0, 176, 180);
+        matrix.blit(display, leftPos, topPos - 14, 0, 0, 176, 180);
 
     }
 
     // Taken from BeaconScreen, for tooltip rendering.
     @Override
-    protected void renderLabels(PoseStack matrix, int p_230451_2_, int p_230451_3_) {
-        this.font.draw(matrix, getTitle(), (float)this.titleLabelX, (float)this.titleLabelY - 14, 4210752);
-        this.font.draw(matrix, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
-
+    protected void renderLabels(GuiGraphics matrix, int p_230451_2_, int p_230451_3_) {
+        matrix.drawString(font, getTitle(), this.titleLabelX, this.titleLabelY - 14, 4210752, false);
+        matrix.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -88,7 +87,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x,y);
         }
 
-        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -96,28 +95,28 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             switch (menu.getComparatorOutputType()) {
                 case done_loading:
                     if (mouse_on) {
-                        this.blit(matrix, xPos,yPos, 176+18, 18, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176+18, 18, 18, 18);
                     }
                     else {
-                        this.blit(matrix, xPos,yPos, 176, 18, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176, 18, 18, 18);
                     }
                     break;
                 case cart_full:
                     if (mouse_on) {
-                        if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+18+36, 0, 18, 18);
-                        else this.blit(matrix, xPos,yPos, 176+18, 0, 18, 18);
+                        if (menu.getIsUnloader()) matrix.blit(display, xPos,yPos, 176+18+36, 0, 18, 18);
+                        else matrix.blit(display, xPos,yPos, 176+18, 0, 18, 18);
                     }
                     else {
-                        if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+36, 0, 18, 18);
-                        //this.blit(matrix, x, y, 176, 0, 18, 18);
+                        if (menu.getIsUnloader()) matrix.blit(display, xPos,yPos, 176+36, 0, 18, 18);
+                        //matrix.blit(display, x, y, 176, 0, 18, 18);
                     }
                     break;
                 case cart_fullness:
                     if (mouse_on) {
-                        this.blit(matrix, xPos,yPos, 176+18, 36, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176+18, 36, 18, 18);
                     }
                     else {
-                        this.blit(matrix, xPos,yPos, 176, 36, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176, 36, 18, 18);
                     }
                     break;
                 default:
@@ -146,7 +145,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.output_type = MinecartLoaderTile.ComparatorOutputType.next(packet.output_type);
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
+            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
         }
 
         @Override
@@ -160,7 +159,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
@@ -168,26 +167,26 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             switch (menu.getFilterType()) {
                 case allow_for_all:
                     if (mouse_on) {
-                        this.blit(matrix, xPos,yPos, 176+18, 126, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176+18, 126, 18, 18);
                     }
                     else {
-                        this.blit(matrix, xPos,yPos, 176, 126, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176, 126, 18, 18);
                     }
                     break;
                 case disallow_for_all:
                     if (mouse_on) {
-                        this.blit(matrix, xPos,yPos, 176+18, 126+18, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176+18, 126+18, 18, 18);
                     }
                     else {
-                        this.blit(matrix, xPos,yPos, 176, 126+18, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176, 126+18, 18, 18);
                     }
                     break;
                 case allow_per_slot:
                     if (mouse_on) {
-                        this.blit(matrix, xPos,yPos, 176+18, 126+36, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176+18, 126+36, 18, 18);
                     }
                     else {
-                        this.blit(matrix, xPos,yPos, 176, 126+36, 18, 18);
+                        matrix.blit(display, xPos,yPos, 176, 126+36, 18, 18);
                     }
                     break;
                 default:
@@ -215,7 +214,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.filterType = FilterUnloaderTile.FilterType.next(packet.filterType);
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
+            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
         }
 
         @Override
@@ -229,24 +228,24 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
 
             if (menu.getLockedMinecartsOnly()) {
                 if (mouse_on) {
-                    if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+18+36, 108, 18, 18);
-                    else this.blit(matrix, xPos,yPos, 176+18, 108, 18, 18);
+                    if (menu.getIsUnloader()) matrix.blit(display, xPos,yPos, 176+18+36, 108, 18, 18);
+                    else matrix.blit(display, xPos,yPos, 176+18, 108, 18, 18);
                 }
                 else {
-                    if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+36, 108, 18, 18);
-                    else this.blit(matrix, xPos,yPos, 176, 108, 18, 18);
+                    if (menu.getIsUnloader()) matrix.blit(display, xPos,yPos, 176+36, 108, 18, 18);
+                    else matrix.blit(display, xPos,yPos, 176, 108, 18, 18);
                 }
             }
             else {
                 if (mouse_on) {
-                    this.blit(matrix, xPos,yPos, 176+18, 108-18, 18, 18);
+                    matrix.blit(display, xPos,yPos, 176+18, 108-18, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.
@@ -264,7 +263,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.locked_minecarts_only = !packet.locked_minecarts_only;
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
+            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
         }
 
         @Override
@@ -278,24 +277,24 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
 
             if (menu.getLeaveOneInStack()) {
                 if (mouse_on) {
-                    if (menu.getIsUnloader()) this.blit(matrix, xPos,yPos, 176+18+36, 72, 18, 18);
-                    else this.blit(matrix,xPos,yPos, 176+18, 72, 18, 18);
+                    if (menu.getIsUnloader()) matrix.blit(display, xPos,yPos, 176+18+36, 72, 18, 18);
+                    else matrix.blit(display, xPos,yPos, 176+18, 72, 18, 18);
                 }
                 else {
-                    if (menu.getIsUnloader()) this.blit(matrix, xPos, yPos, 176+36, 72, 18, 18);
-                    else this.blit(matrix, xPos,yPos, 176, 72, 18, 18);
+                    if (menu.getIsUnloader()) matrix.blit(display, xPos, yPos, 176+36, 72, 18, 18);
+                    else matrix.blit(display, xPos,yPos, 176, 72, 18, 18);
                 }
             }
             else {
                 if (mouse_on) {
-                    this.blit(matrix, xPos,yPos, 176+18, 72-18, 18, 18);
+                    matrix.blit(display, xPos,yPos, 176+18, 72-18, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.
@@ -317,7 +316,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.leave_one_item_in_stack = !packet.leave_one_item_in_stack;
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
+            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
         }
 
         @Override
@@ -331,22 +330,22 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
             super(x, y);
         }
 
-        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, display);
 
             boolean mouse_on = isDragging() && this.isHovered;
 
             if (menu.getRedstoneOutput()) {
                 if (mouse_on) {
-                    this.blit(matrix, xPos,yPos, 212+18, 36, 18, 18);
+                    matrix.blit(display, xPos,yPos, 212+18, 36, 18, 18);
                 }
                 else {
-                    this.blit(matrix, xPos,yPos, 212, 36, 18, 18);
+                    matrix.blit(display, xPos,yPos, 212, 36, 18, 18);
                 }
             }
             else {
                 if (mouse_on) {
-                    this.blit(matrix, xPos,yPos, 230, 18, 18, 18);
+                    matrix.blit(display, xPos,yPos, 230, 18, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.
@@ -363,7 +362,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.redstone_output = !packet.redstone_output;
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
+            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
         }
 
         @Override

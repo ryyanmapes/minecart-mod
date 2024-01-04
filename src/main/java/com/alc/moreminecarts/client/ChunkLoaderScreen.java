@@ -6,10 +6,12 @@ import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.BeaconScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,8 +43,8 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
     }
 
     @Override
-    public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-        this.renderBackground(p_230430_1_);
+    public void render(GuiGraphics p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+        this.renderBackground(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
         for (AbstractButton button : buttons) {
@@ -53,20 +55,20 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
     }
 
     @Override
-    protected void renderBg(PoseStack matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(GuiGraphics matrix, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, display);
 
-        this.blit(matrix, leftPos, topPos, 0, 0, 176, 166);
+        matrix.blit(display, leftPos, topPos, 0, 0, 176, 166);
 
         double log_progress = menu.getLogProgress();
         int progess = (int)Math.ceil(120 * log_progress);
 
-        this.blit(matrix, leftPos + 28, topPos + 36, 0, 166, progess, 16);
+        matrix.blit(display, leftPos + 28, topPos + 36, 0, 166, progess, 16);
 
         int minutes_left = menu.getTimeLeft();
-        this.font.draw(matrix, minutes_left + " minutes left", leftPos + 29, topPos + 55, 4210752);
+        matrix.drawString(font, minutes_left + " minutes left", leftPos + 29, topPos + 55, 4210752, false);
 
     }
 
@@ -79,22 +81,22 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
         }
 
         @Override
-        public void renderWidget(PoseStack matrix, int x, int y, float p_230431_4_) {
+        public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, display);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             if (menu.isEnabled()) {
                 if (isHovered) {
-                    this.blit(matrix, xPos,yPos, 194, 18, 18, 18);
+                    matrix.blit(display, xPos,yPos, 194, 18, 18, 18);
                 }
                 else {
-                    this.blit(matrix, xPos,yPos, 176, 18, 18, 18);
+                    matrix.blit(display, xPos,yPos, 176, 18, 18, 18);
                 }
             }
             else {
                 if (isHovered) {
-                    this.blit(matrix, xPos,yPos, 176, 0, 18, 18);
+                    matrix.blit(display, xPos,yPos, 176, 0, 18, 18);
                 }
                 else {
                     // Render nothing. This is already on the backdrop.
@@ -109,7 +111,7 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
 
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.sendToServer(new MoreMinecartsPacketHandler.ChunkLoaderPacket(!menu.isEnabled()));
+            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.ChunkLoaderPacket(!menu.isEnabled()), ChunkLoaderScreen.this.minecraft.getConnection().getConnection());
         }
 
         @Override

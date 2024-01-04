@@ -1,6 +1,7 @@
 package com.alc.moreminecarts;
 
 import com.alc.moreminecarts.client.*;
+import com.alc.moreminecarts.misc.MMCreativeTabs;
 import com.alc.moreminecarts.proxy.ClientProxy;
 import com.alc.moreminecarts.proxy.IProxy;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
@@ -92,6 +93,7 @@ public class MoreMinecartsMod {
         MMItems.register(bus);
         MMTileEntities.register(bus);
         MMContainers.register(bus);
+        MMCreativeTabs.register(bus);
 
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER = builder.defineInRange("chunk_loader_multiplier", () -> 1.0D, 0, 9999);

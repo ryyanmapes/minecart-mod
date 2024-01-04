@@ -17,11 +17,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -177,10 +176,10 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return fluid_handler.cast();
         }
-        else if (cap == CapabilityEnergy.ENERGY) {
+        else if (cap == ForgeCapabilities.ENERGY) {
             return energy_handler.cast();
         }
         return super.getCapability(cap, side);
@@ -239,14 +238,8 @@ public abstract class AbstractCommonLoader extends ContainerBlockEntity implemen
     }
 
     // Copied from HopperTileEntity
-    protected static boolean canMergeItems(ItemStack p_145894_0_, ItemStack p_145894_1_) {
-        if (p_145894_0_.getItem() != p_145894_1_.getItem()) {
-            return false;
-        } else if (p_145894_0_.getDamageValue() != p_145894_1_.getDamageValue()) {
-            return false;
-        } else {
-            return p_145894_0_.getCount() > p_145894_0_.getMaxStackSize() ? false : ItemStack.tagMatches(p_145894_0_, p_145894_1_);
-        }
+    protected static boolean canMergeItems(ItemStack stack1, ItemStack stack2) {
+        return stack1.getCount() <= stack1.getMaxStackSize() && ItemStack.isSameItemSameTags(stack1, stack2);
     }
 
 
