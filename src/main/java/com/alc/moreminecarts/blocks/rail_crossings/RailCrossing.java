@@ -19,11 +19,6 @@ import javax.annotation.Nullable;
 public class RailCrossing extends BaseRailBlock {
     public static final Property<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
 
-    public static final MapCodec<RailCrossing> CODEC = simpleCodec(RailCrossing::new);
-    public MapCodec<RailCrossing> codec() {
-        return CODEC;
-    }
-
     public RailCrossing(Properties builder) {
         super(false, builder);
     }

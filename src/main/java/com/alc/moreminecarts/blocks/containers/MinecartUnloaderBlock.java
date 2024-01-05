@@ -32,11 +32,6 @@ import javax.annotation.Nullable;
 public class MinecartUnloaderBlock extends BaseEntityBlock {
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
-    public static final MapCodec<ChunkLoaderBlock> CODEC = simpleCodec(ChunkLoaderBlock::new);
-    public MapCodec<ChunkLoaderBlock> codec() {
-        return CODEC;
-    }
-
     public MinecartUnloaderBlock(Properties builder) {
         super(builder);
         this.registerDefaultState(defaultBlockState().setValue(ENABLED, true));

@@ -16,11 +16,6 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 public class ParallelRail extends BaseRailBlock {
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
 
-    public static final MapCodec<ParallelRail> CODEC = simpleCodec(ParallelRail::new);
-    public MapCodec<ParallelRail> codec() {
-        return CODEC;
-    }
-
     public ParallelRail(Properties builder) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(SHAPE, RailShape.NORTH_SOUTH));

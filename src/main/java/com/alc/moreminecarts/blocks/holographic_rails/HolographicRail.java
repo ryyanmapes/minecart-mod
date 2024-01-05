@@ -25,11 +25,6 @@ public class HolographicRail extends BaseRailBlock {
 
     protected static final VoxelShape FULL_BLOCK_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
-    public static final MapCodec<HolographicRail> CODEC = simpleCodec(HolographicRail::new);
-    public MapCodec<HolographicRail> codec() {
-        return CODEC;
-    }
-
     public HolographicRail(Properties builder) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(LENGTH, 0));

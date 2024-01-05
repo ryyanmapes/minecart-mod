@@ -35,11 +35,6 @@ public class ColorDetectorRailBlock extends BaseRailBlock {
 
     public java.util.function.Supplier<Item> detected_item;
 
-    public static final MapCodec<ColorDetectorRailBlock> CODEC = simpleCodec((builder) -> new ColorDetectorRailBlock(builder, MMItems.RAIL_SIGNALS.get(DyeColor.WHITE)));
-    public MapCodec<ColorDetectorRailBlock> codec() {
-        return CODEC;
-    }
-
     public ColorDetectorRailBlock(Properties builder,  java.util.function.Supplier<Item> det) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(POWERED, Boolean.valueOf(false)).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(WATERLOGGED, Boolean.valueOf(false)));

@@ -33,11 +33,6 @@ public class RailTurn extends BaseRailBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty FLIPPED = BooleanProperty.create("flipped");
 
-    public static final MapCodec<RailTurn> CODEC = simpleCodec(RailTurn::new);
-    public MapCodec<RailTurn> codec() {
-        return CODEC;
-    }
-
     public RailTurn(BlockBehaviour.Properties builder) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, RailShape.NORTH_SOUTH)

@@ -26,11 +26,6 @@ public class ProjectorRail extends BaseRailBlock {
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    public static final MapCodec<ProjectorRail> CODEC = simpleCodec(ProjectorRail::new);
-    public MapCodec<ProjectorRail> codec() {
-        return CODEC;
-    }
-
     public ProjectorRail(Properties builder) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH).setValue(POWERED, false));

@@ -33,11 +33,6 @@ public class LockingRailBlock extends BaseRailBlock implements EntityBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty INVERTED = BooleanProperty.create("inverted");
 
-    public static final MapCodec<LockingRailBlock> CODEC = simpleCodec(LockingRailBlock::new);
-    public MapCodec<LockingRailBlock> codec() {
-        return CODEC;
-    }
-
     public LockingRailBlock(Properties builder) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(POWERED, false).setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(INVERTED, true));

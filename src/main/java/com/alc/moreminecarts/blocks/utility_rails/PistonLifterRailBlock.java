@@ -70,11 +70,6 @@ public class PistonLifterRailBlock extends BaseRailBlock {
     public static final EnumProperty EFFECT = EnumProperty.create("effect", PistonLifterEffect.class,
             PistonLifterEffect.lift, PistonLifterEffect.delift, PistonLifterEffect.snap);
 
-    public static final MapCodec<PistonLifterRailBlock> CODEC = simpleCodec(PistonLifterRailBlock::new);
-    public MapCodec<PistonLifterRailBlock> codec() {
-        return CODEC;
-    }
-
     public PistonLifterRailBlock(Properties builder) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(POWERED, false)

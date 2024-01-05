@@ -72,11 +72,6 @@ public class ArithmeticRailBlock extends BaseRailBlock {
             SignalEffect.plus, SignalEffect.minus, SignalEffect.left, SignalEffect.right);
 
 
-    public static final MapCodec<ArithmeticRailBlock> CODEC = simpleCodec(ArithmeticRailBlock::new);
-    public MapCodec<ArithmeticRailBlock> codec() {
-        return CODEC;
-    }
-
     public ArithmeticRailBlock(Properties builder) {
         super(true, builder);
         this.registerDefaultState(defaultBlockState().setValue(POWERED, false).setValue(SHAPE, RailShape.NORTH_SOUTH)

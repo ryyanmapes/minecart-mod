@@ -20,11 +20,6 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 public class LightspeedRail extends BaseRailBlock {
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
 
-    public static final MapCodec<LightspeedRail> CODEC = simpleCodec(LightspeedRail::new);
-    public MapCodec<LightspeedRail> codec() {
-        return CODEC;
-    }
-
     public LightspeedRail(Properties builder) {
         super(true, builder);
         this.registerDefaultState(this.stateDefinition.any().setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(WATERLOGGED, Boolean.valueOf(false)));

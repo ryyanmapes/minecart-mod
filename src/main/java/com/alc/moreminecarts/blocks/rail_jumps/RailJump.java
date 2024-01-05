@@ -26,11 +26,6 @@ public class RailJump extends BaseRailBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final Property<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
 
-    public static final MapCodec<RailJump> CODEC = simpleCodec(RailJump::new);
-    public MapCodec<RailJump> codec() {
-        return CODEC;
-    }
-
     protected static final VoxelShape FULL_BLOCK_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
     public RailJump(Properties builder) {
