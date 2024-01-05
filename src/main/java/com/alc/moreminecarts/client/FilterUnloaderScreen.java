@@ -3,6 +3,7 @@ package com.alc.moreminecarts.client;
 import com.alc.moreminecarts.containers.FilterUnloaderContainer;
 import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
+import com.alc.moreminecarts.tile_entities.AbstractCommonLoader;
 import com.alc.moreminecarts.tile_entities.FilterUnloaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
 import com.google.common.collect.Lists;
@@ -83,8 +84,11 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
     @OnlyIn(Dist.CLIENT)
     class ComparatorOutputButton extends MMButton {
 
+        AbstractCommonLoader.ComparatorOutputType oldValue;
+
         protected ComparatorOutputButton(int x, int y) {
             super(x,y);
+            UpdateTooltip();
         }
 
         public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
@@ -122,6 +126,24 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
                 default:
             }
 
+            var newValue = menu.getComparatorOutputType();
+            if (newValue != oldValue) {
+                oldValue = newValue;
+                UpdateTooltip();
+            }
+        }
+
+        @Override
+        public void onPress() {
+            MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
+            packet.output_type = MinecartLoaderTile.ComparatorOutputType.next(packet.output_type);
+            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
+        }
+
+        @Override
+        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
+
+        public void UpdateTooltip() {
             String text;
             switch (menu.getComparatorOutputType()) {
                 case done_loading:
@@ -140,23 +162,16 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
 
             this.setTooltip(Tooltip.create(Component.translatable(text)));
         }
-
-        @Override
-        public void onPress() {
-            MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
-            packet.output_type = MinecartLoaderTile.ComparatorOutputType.next(packet.output_type);
-            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
-        }
-
-        @Override
-        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
     }
 
     @OnlyIn(Dist.CLIENT)
     class FilterTypeButton extends MMButton {
 
+        FilterUnloaderTile.FilterType oldValue;
+
         protected FilterTypeButton(int x, int y) {
             super(x, y);
+            UpdateTooltip();
         }
 
         public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
@@ -192,6 +207,25 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
                 default:
             }
 
+            FilterUnloaderTile.FilterType newValue = menu.getFilterType();
+            if (newValue != oldValue) {
+                oldValue = newValue;
+                UpdateTooltip();
+            }
+
+        }
+
+        @Override
+        public void onPress() {
+            MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
+            packet.filterType = FilterUnloaderTile.FilterType.next(packet.filterType);
+            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
+        }
+
+        @Override
+        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
+
+        public void UpdateTooltip() {
             String text;
             switch (menu.getFilterType()) {
                 case allow_per_slot:
@@ -209,23 +243,16 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
 
             this.setTooltip(Tooltip.create(Component.translatable(text)));
         }
-
-        @Override
-        public void onPress() {
-            MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
-            packet.filterType = FilterUnloaderTile.FilterType.next(packet.filterType);
-            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
-        }
-
-        @Override
-        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
     }
 
     @OnlyIn(Dist.CLIENT)
     class OnlyLockedButton extends MMButton {
 
+        boolean oldValue;
+
         protected OnlyLockedButton(int x, int y) {
             super(x, y);
+            UpdateTooltip();
         }
 
         public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
@@ -252,11 +279,11 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
                 }
             }
 
-            this.setTooltip(Tooltip.create(Component.translatable(
-                    menu.getLockedMinecartsOnly()
-                    ? "Consider only locked minecarts"
-                    : "Consider all minecarts"
-            )));
+            boolean newValue = menu.getLockedMinecartsOnly();
+            if (newValue != oldValue) {
+                oldValue = newValue;
+                UpdateTooltip();
+            }
         }
 
         @Override
@@ -268,13 +295,24 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
 
         @Override
         protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
+
+        public void UpdateTooltip() {
+            this.setTooltip(Tooltip.create(Component.translatable(
+                    menu.getLockedMinecartsOnly()
+                            ? "Consider only locked minecarts"
+                            : "Consider all minecarts"
+            )));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
     class LeaveOneInStackButton extends MMButton {
 
+        boolean oldValue;
+
         protected LeaveOneInStackButton(int x, int y) {
             super(x, y);
+            UpdateTooltip();
         }
 
         public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
@@ -301,15 +339,12 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
                 }
             }
 
-            this.setTooltip(Tooltip.create(Component.translatable(
-                    menu.getIsUnloader()
-                            ? (menu.getLeaveOneInStack()
-                            ? "Leave one item in minecart slots"
-                            : "Empty minecart slots entirely")
-                            : (menu.getLeaveOneInStack()
-                            ? "Leave one item in loader slots"
-                            : "Empty loader slots entirely")
-            )));
+            boolean newValue = menu.getLeaveOneInStack();
+            if (newValue != oldValue) {
+                oldValue = newValue;
+                UpdateTooltip();
+            }
+
         }
 
         @Override
@@ -321,13 +356,28 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
 
         @Override
         protected void updateWidgetNarration(NarrationElementOutput p_259858_) {}
+
+        public void UpdateTooltip() {
+            this.setTooltip(Tooltip.create(Component.translatable(
+                    menu.getIsUnloader()
+                            ? (menu.getLeaveOneInStack()
+                            ? "Leave one item in minecart slots"
+                            : "Empty minecart slots entirely")
+                            : (menu.getLeaveOneInStack()
+                            ? "Leave one item in loader slots"
+                            : "Empty loader slots entirely")
+            )));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
     class OutputTypeButton extends MMButton {
 
+        boolean oldValue;
+
         protected OutputTypeButton(int x, int y) {
             super(x, y);
+            UpdateTooltip();
         }
 
         public void renderWidget(GuiGraphics matrix, int x, int y, float p_230431_4_) {
@@ -352,6 +402,15 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
                 }
             }
 
+            boolean newValue = menu.getRedstoneOutput();
+            if (newValue != oldValue) {
+                oldValue = newValue;
+                UpdateTooltip();
+            }
+
+        }
+
+        public void UpdateTooltip() {
             this.setTooltip(Tooltip.create(Component.translatable(menu.getRedstoneOutput()
                     ? "Output redstone activation"
                     : "Output to comparator"

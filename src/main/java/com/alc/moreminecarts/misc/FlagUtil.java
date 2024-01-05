@@ -18,7 +18,7 @@ public class FlagUtil {
         }
 
         if(railSignalMap.containsKey(flag)) {
-            return (byte) railSignalMap.get(flag).getId();
+            return (byte) (railSignalMap.get(flag).getId() + 1);
         }
         return 0;
     }

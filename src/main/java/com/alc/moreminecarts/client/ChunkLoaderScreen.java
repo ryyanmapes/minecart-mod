@@ -76,8 +76,11 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
     @OnlyIn(Dist.CLIENT)
     class ChunkLoaderButton extends MMButton {
 
+        boolean oldValue;
+
         protected ChunkLoaderButton(int x, int y) {
             super(x, y);
+            UpdateTooltip();
         }
 
         @Override
@@ -103,10 +106,11 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
                 }
             }
 
-            this.setTooltip(Tooltip.create(Component.translatable(menu.isEnabled()
-                    ? "On"
-                    : "Off"
-            )));
+            var newValue = menu.isEnabled();
+            if (newValue != oldValue) {
+                oldValue = newValue;
+                UpdateTooltip();
+            }
         }
 
         @Override
@@ -117,6 +121,13 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
         @Override
         protected void updateWidgetNarration(NarrationElementOutput p_259858_) {
 
+        }
+
+        public void UpdateTooltip() {
+            this.setTooltip(Tooltip.create(Component.translatable(menu.isEnabled()
+                    ? "On"
+                    : "Off"
+            )));
         }
     }
 }

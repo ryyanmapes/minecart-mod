@@ -89,7 +89,7 @@ public class MMItems {
     // Rail Signal Items
     public static final BiMap<DyeColor, RegistryObject<Item>> RAIL_SIGNALS = HashBiMap.create();
     static {
-        for (DyeColor color : DyeColor.values()) {
+        for (DyeColor color : MoreMinecartsMod.dyeColorsByRainbow) {
             RegistryObject<Item> entry = ITEMS.register("rail_signal_" + color.getName(), () -> new Item(new Item.Properties().stacksTo(1)));
             RAIL_SIGNALS.put(color, entry);
         }
@@ -97,7 +97,7 @@ public class MMItems {
 
     // Color Detector Rail Items
     static {
-        for (DyeColor color : DyeColor.values()) {
+        for (DyeColor color : MoreMinecartsMod.dyeColorsByRainbow) {
             ITEMS.register("color_detector_rail_" + color.getName(), () -> new BlockItem(MMBlocks.COLOR_DETECTOR_RAILS.get(color).get(), modItem()));
         }
     }

@@ -20,10 +20,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -231,5 +228,24 @@ public class MoreMinecartsMod {
         //        map(m->m.getMessageSupplier().get()).
         //        collect(Collectors.toList()));
     }
+    
+    public static DyeColor[] dyeColorsByRainbow = new DyeColor[] {
+        DyeColor.WHITE,
+        DyeColor.LIGHT_GRAY,
+        DyeColor.GRAY,
+        DyeColor.BLACK,
+        DyeColor.BROWN,
+        DyeColor.RED,
+        DyeColor.ORANGE,
+        DyeColor.YELLOW,
+        DyeColor.LIME,
+        DyeColor.GREEN,
+        DyeColor.CYAN,
+        DyeColor.LIGHT_BLUE,
+        DyeColor.BLUE,
+        DyeColor.PURPLE,
+        DyeColor.MAGENTA,
+        DyeColor.PINK
+    };
 
 }

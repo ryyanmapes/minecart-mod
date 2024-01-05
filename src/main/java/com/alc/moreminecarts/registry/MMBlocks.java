@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.registry;
 
 import com.alc.moreminecarts.MMConstants;
+import com.alc.moreminecarts.MoreMinecartsMod;
 import com.alc.moreminecarts.blocks.GlassCactusBlock;
 import com.alc.moreminecarts.blocks.OrbStasisBlock;
 import com.alc.moreminecarts.blocks.PistonDisplayBlock;
@@ -103,7 +104,7 @@ public class MMBlocks {
     // Color Detector Rail Blocks
     public static final Map<DyeColor, RegistryObject<Block>> COLOR_DETECTOR_RAILS = new HashMap<>();
     static {
-        for (DyeColor color : DyeColor.values()) {
+        for (DyeColor color : MoreMinecartsMod.dyeColorsByRainbow) {
             RegistryObject<Block> entry = BLOCKS.register("color_detector_rail_" + color.getName(), () -> new ColorDetectorRailBlock(BlockBehaviour.Properties.of().mapColor(color).noCollission().strength(0.7F).sound(SoundType.METAL), MMItems.RAIL_SIGNALS.get(color)));
             COLOR_DETECTOR_RAILS.put(color, entry);
         }
