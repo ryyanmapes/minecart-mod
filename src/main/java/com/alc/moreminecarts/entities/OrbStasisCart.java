@@ -100,7 +100,7 @@ public class OrbStasisCart extends AbstractMinecart {
         if (entity instanceof ServerPlayer) {
             ServerPlayer player = (ServerPlayer) entity;
             // copied from EnderPearlEntity
-            if (player.connection.getConnection().isConnected() && player.level() == this.level() && !player.isSleeping()) {
+            if (player.connection.connection.isConnected() && player.level() == this.level() && !player.isSleeping()) {
                 EntityTeleportEvent.ChorusFruit event = new EntityTeleportEvent.ChorusFruit(player,
                         this.getX() + 0.5, this.getY() + 1, this.getZ() + 0.5);
                 if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) { // Don't indent to lower patch size

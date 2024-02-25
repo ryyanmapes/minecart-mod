@@ -5,6 +5,7 @@ import com.alc.moreminecarts.entities.PistonPushcartEntity;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,8 +26,8 @@ public class PistonPushcartUpKey extends KeyMapping {
 
         Player player = MoreMinecartsMod.PROXY.getPlayer();
         if (player.getRootVehicle() instanceof PistonPushcartEntity) {
-            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.PistonPushcartPacket(true, pressed), Minecraft.getInstance().getConnection().getConnection());
-            ((PistonPushcartEntity) player.getRootVehicle()).setElevating(true, pressed);
+            MoreMinecartsPacketHandler.PistonPushcartPacket packet = new MoreMinecartsPacketHandler.PistonPushcartPacket(true, pressed);
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
     }

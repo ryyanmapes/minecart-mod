@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.BeaconScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,7 +45,7 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
 
     @Override
     public void render(GuiGraphics p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-        this.renderBackground(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+        this.renderBackground(p_230430_1_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
         for (AbstractButton button : buttons) {
@@ -115,7 +116,8 @@ public class ChunkLoaderScreen extends AbstractContainerScreen<ChunkLoaderContai
 
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.ChunkLoaderPacket(!menu.isEnabled()), ChunkLoaderScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.ChunkLoaderPacket packet = new MoreMinecartsPacketHandler.ChunkLoaderPacket(!menu.isEnabled());
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
         @Override

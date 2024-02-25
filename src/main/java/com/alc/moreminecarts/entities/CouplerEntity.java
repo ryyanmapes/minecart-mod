@@ -1,5 +1,7 @@
 package com.alc.moreminecarts.entities;
 
+import com.alc.moreminecarts.MoreMinecartsMod;
+import com.alc.moreminecarts.client.FlagCartScreen;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.registry.MMItems;
 import net.minecraft.nbt.CompoundTag;
@@ -191,7 +193,8 @@ public class CouplerEntity extends Entity implements IEntityAdditionalSpawnData 
             }
 
             if (this.vehicle1 != null && this.vehicle2 != null) {
-                MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.CouplePacket(this.getId(), this.vehicle1_id , this.vehicle2_id), PacketDistributor.TRACKING_ENTITY.with(this));
+                MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "HERE");
+                MoreMinecartsPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(()->this), new MoreMinecartsPacketHandler.CouplePacket(this.getId(), this.vehicle1_id , this.vehicle2_id));
             }
 
             if (this.tickCount > 100) {

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,7 +45,7 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
 
     @Override
     public void render(GuiGraphics p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-        this.renderBackground(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+        this.renderBackground(p_230430_1_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
         for (AbstractButton button : buttons) {
@@ -102,7 +103,8 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(false, true), FlagCartScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.FlagCartPacket packet = new MoreMinecartsPacketHandler.FlagCartPacket(false, true);
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
     }
@@ -115,7 +117,8 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(true, true), FlagCartScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.FlagCartPacket packet = new MoreMinecartsPacketHandler.FlagCartPacket(true, true);
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
     }
 
@@ -127,7 +130,8 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(true, false), FlagCartScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.FlagCartPacket packet = new MoreMinecartsPacketHandler.FlagCartPacket(true, false);
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
     }
 
@@ -139,7 +143,8 @@ public class FlagCartScreen extends AbstractContainerScreen<FlagCartContainer> {
         }
         @Override
         public void onPress() {
-            MoreMinecartsPacketHandler.INSTANCE.send(new MoreMinecartsPacketHandler.FlagCartPacket(false, false), FlagCartScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.FlagCartPacket packet = new MoreMinecartsPacketHandler.FlagCartPacket(false, false);
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
     }
 

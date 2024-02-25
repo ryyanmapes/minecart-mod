@@ -1,8 +1,8 @@
 package com.alc.moreminecarts.items;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.tags.BlockTags;
@@ -67,14 +67,14 @@ public abstract class AbstractMinecartItem extends Item {
          */
         public ItemStack execute(BlockSource source, ItemStack stack) {
 
-            Direction direction = source.state().getValue(DispenserBlock.FACING);
-            Level world = source.level();
+            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+            Level world = source.getLevel();
 
-            double d0 = source.pos().getX() + (double) direction.getStepX() * 1.125D;
-            double d1 = Math.floor(source.pos().getY()) + (double) direction.getStepY();
-            double d2 = source.pos().getZ() + (double) direction.getStepZ() * 1.125D;
+            double d0 = source.getPos().getX() + (double) direction.getStepX() * 1.125D;
+            double d1 = Math.floor(source.getPos().getY()) + (double) direction.getStepY();
+            double d2 = source.getPos().getZ() + (double) direction.getStepZ() * 1.125D;
 
-            BlockPos blockpos = source.pos().offset(direction.getStepX(), direction.getStepY(), direction.getStepZ());
+            BlockPos blockpos = source.getPos().offset(direction.getStepX(), direction.getStepY(), direction.getStepZ());
             BlockState blockstate = world.getBlockState(blockpos);
             RailShape railshape = blockstate.getBlock() instanceof BaseRailBlock ? ((BaseRailBlock) blockstate.getBlock()).getRailDirection(blockstate, world, blockpos, null) : RailShape.NORTH_SOUTH;
             double d3;

@@ -44,7 +44,6 @@ public class CouplerRenderer extends EntityRenderer<CouplerEntity> {
         Entity vehicle2 = entityIn.getSecondVehicle();
 
         if (vehicle1 != null && vehicle2 != null) {
-            MoreMinecartsMod.LOGGER.log(org.apache.logging.log4j.Level.WARN, "COUPLER RENDER");
 
             this.renderCoupler(entityIn.level(), partialTicks, matrixStackIn, bufferIn, vehicle1, vehicle2);
         }

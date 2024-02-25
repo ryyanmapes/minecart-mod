@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,7 +58,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
     public void render(GuiGraphics p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
 
 
-        this.renderBackground(p_230430_1_,p_230430_2_, p_230430_3_, p_230430_4_);
+        this.renderBackground(p_230430_1_);
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
         for (AbstractButton button : buttons) {
@@ -137,7 +138,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.output_type = MinecartLoaderTile.ComparatorOutputType.next(packet.output_type);
-            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
         @Override
@@ -219,7 +220,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.filterType = FilterUnloaderTile.FilterType.next(packet.filterType);
-            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
         @Override
@@ -290,7 +291,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.locked_minecarts_only = !packet.locked_minecarts_only;
-            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
         @Override
@@ -351,7 +352,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.leave_one_item_in_stack = !packet.leave_one_item_in_stack;
-            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
         @Override
@@ -421,7 +422,7 @@ public class FilterUnloaderScreen extends AbstractContainerScreen<FilterUnloader
         public void onPress() {
             MoreMinecartsPacketHandler.MinecartLoaderPacket packet = menu.getCurrentPacket();
             packet.redstone_output = !packet.redstone_output;
-            MoreMinecartsPacketHandler.INSTANCE.send(packet, FilterUnloaderScreen.this.minecraft.getConnection().getConnection());
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
         }
 
         @Override

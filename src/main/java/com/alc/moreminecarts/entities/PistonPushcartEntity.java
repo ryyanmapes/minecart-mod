@@ -91,8 +91,8 @@ public class PistonPushcartEntity extends IronPushcartEntity {
     }
 
     @Override
-    protected Vector3f getPassengerAttachmentPoint(Entity p_297569_, EntityDimensions p_297882_, float p_300288_) {
-        return new Vector3f(0.0F, 0.65f + getHeight(), 0.0F);
+    public double getPassengersRidingOffset() {
+        return 0.65 + getHeight();
     }
 
     @Override
@@ -246,10 +246,13 @@ public class PistonPushcartEntity extends IronPushcartEntity {
         // Only used when they are too far away for the normal entity interaction packet.
         double distance = this.distanceToSqr(player);
         if (result == InteractionResult.SUCCESS && level().isClientSide && distance >= 36.0D && distance < 175.0) {
-            level().sendPacketToServer(
+
+            MoreMinecartsPacketHandler.ExtendedInteractPacket packet =
                 MoreMinecartsPacketHandler.ExtendedInteractPacket.createExtendedInteractPacket(
                     this, player.isShiftKeyDown(), hand
-                ));
+                );
+            MoreMinecartsPacketHandler.INSTANCE.sendToServer(packet);
+
         }
         return result;
     }
