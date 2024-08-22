@@ -90,6 +90,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -419,6 +420,8 @@ public class MoreMinecartsMod
         builder.comment("Defines what fuels are allowed in the chunk loader. Any item predicate works here.");
         MMConstants.CONFIG_CHUNK_LOADER_FUEL_IDS = builder.defineList("chunk_loader_fuel_ids", Arrays.asList(DEFAULT_FUEL_IDS), (c) -> FuelConfig.ValidateID((String) c));
         MMConstants.CONFIG_CHUNK_LOADER_FUEL_TICKS = builder.defineList("chunk_loader_fuel_ticks", Arrays.asList(DEFAULT_FUEL_TICKS), (c) -> FuelConfig.ValidateTicks((Integer) c));
+        builder.comment("Message lines to show in the chunk loader info. Uses the lang file if empty.");
+        MMConstants.CONFIG_CHUNK_LOADER_MESSAGE = builder.defineList("chunk_loader_message", new ArrayList<String>(), (c) -> true);
         builder.comment("Multiplies all the costs above to buff or nerf. Set to zero to prevent chunk loading completely.");
         MMConstants.CONFIG_CHUNK_LOADER_MULTIPLIER = builder.defineInRange("chunk_loader_multiplier", ()->1.0D, 0, 9999);
         builder.comment("Refund 1 chunkrodite per n leftoever ticks, considering the multiplier. Set to zero to disable chunkrodite drops.");

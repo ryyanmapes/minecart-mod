@@ -1,5 +1,6 @@
 package com.alc.moreminecarts.client;
 
+import com.alc.moreminecarts.MMConstants;
 import com.alc.moreminecarts.containers.ChunkLoaderContainer;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -15,6 +16,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
@@ -23,6 +26,7 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
     private static final ITextComponent ON_LABEL = new TranslationTextComponent("gui.moreminecarts.chunk_loader.on");
     private static final ITextComponent OFF_LABEL = new TranslationTextComponent("gui.moreminecarts.chunk_loader.off");
     private static final ITextComponent INFO_LABEL = new TranslationTextComponent("gui.moreminecarts.chunk_loader.info");
+    private static final ITextComponent MINUTES_LEFT = new TranslationTextComponent("gui.moreminecarts.chunk_loader.minutes_left");
 
     public ChunkLoaderScreen(ChunkLoaderContainer container, PlayerInventory inv, ITextComponent titleIn) {
         super(container, inv, TITLE);
@@ -53,7 +57,7 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
         this.blit(matrix, leftPos + 28, topPos + 36, 0, 166, progess, 16);
 
         int minutes_left = menu.getTimeLeft();
-        this.font.draw(matrix, minutes_left + " minutes left", leftPos + 29, topPos + 55, 4210752);
+        this.font.draw(matrix, minutes_left + " " + MINUTES_LEFT.getString(), leftPos + 29, topPos + 55, 4210752);
 
     }
 
@@ -121,7 +125,12 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer>{
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            ChunkLoaderScreen.this.renderTooltip(p_230443_1_, INFO_LABEL, p_230443_2_, p_230443_3_);
+            List<? extends String> configMessageLines = MMConstants.CONFIG_CHUNK_LOADER_MESSAGE.get();
+            if (!configMessageLines.isEmpty()) {
+                List<ITextComponent> configMessage = configMessageLines.stream().map(StringTextComponent::new).collect(Collectors.toList());
+                ChunkLoaderScreen.this.renderComponentTooltip(p_230443_1_, configMessage, p_230443_2_, p_230443_3_);
+            }
+            else ChunkLoaderScreen.this.renderTooltip(p_230443_1_, INFO_LABEL, p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {

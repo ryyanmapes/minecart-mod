@@ -171,5 +171,6 @@
   "gui.moreminecarts.chunk_loader.title": "Chunk Loader",
   "gui.moreminecarts.chunk_loader.on": "On",
   "gui.moreminecarts.chunk_loader.off": "Off",
-  "gui.moreminecarts.chunk_loader.info": "Quartz: 30 Seconds\nEmeralds: 5 Minutes\nChunkrodite: 15 Minutes\nDiamonds: 1 Hour\nNether Stars: 10 Hours"
+  "gui.moreminecarts.chunk_loader.info": "Quartz: 30 Seconds\nEmeralds: 5 Minutes\nChunkrodite: 15 Minutes\nDiamonds: 1 Hour\nNether Stars: 10 Hours",
+  "gui.moreminecarts.chunk_loader.minutes_left": "minutes left"
 }

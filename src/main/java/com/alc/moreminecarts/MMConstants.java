@@ -32,6 +32,7 @@ public class MMConstants {
     public static ForgeConfigSpec.DoubleValue CONFIG_TURBO_BOOST;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> CONFIG_CHUNK_LOADER_FUEL_IDS;
     public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> CONFIG_CHUNK_LOADER_FUEL_TICKS;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> CONFIG_CHUNK_LOADER_MESSAGE;
     public static ForgeConfigSpec.DoubleValue CONFIG_CHUNK_LOADER_MULTIPLIER;
     public static ForgeConfigSpec.IntValue CONFIG_CHUNK_LOADER_CHUNKRODITE;
 
