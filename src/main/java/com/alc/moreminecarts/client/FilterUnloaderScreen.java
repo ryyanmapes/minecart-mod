@@ -1,6 +1,7 @@
 package com.alc.moreminecarts.client;
 
 import com.alc.moreminecarts.containers.FilterUnloaderContainer;
+import com.alc.moreminecarts.containers.MinecartUnLoaderContainer;
 import com.alc.moreminecarts.proxy.MoreMinecartsPacketHandler;
 import com.alc.moreminecarts.tile_entities.FilterUnloaderTile;
 import com.alc.moreminecarts.tile_entities.MinecartLoaderTile;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,14 +22,19 @@ import java.util.Iterator;
 @OnlyIn(Dist.CLIENT)
 public class FilterUnloaderScreen extends ContainerScreen<FilterUnloaderContainer> {
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/filter_loader_gui.png");
+    private static final ITextComponent TITLE = new TranslationTextComponent("gui.moreminecarts.filter_unloader.title");
+    private static final ITextComponent FILTER_ALLOW_PER_SLOT = new TranslationTextComponent("gui.moreminecarts.filter_unloader.filter.allow_per_slot");
+    private static final ITextComponent FILTER_ALLOW_FOR_ALL = new TranslationTextComponent("gui.moreminecarts.filter_unloader.filter.allow_for_all");
+    private static final ITextComponent FILTER_DISALLOW_FOR_ALL = new TranslationTextComponent("gui.moreminecarts.filter_unloader.filter.disallow_for_all");
+
 
     public FilterUnloaderScreen(FilterUnloaderContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Filter Unloader"));
+        super(container, inv, TITLE);
     }
 
     @Override
     public ITextComponent getTitle() {
-        return new StringTextComponent("Filter Unloader");
+        return TITLE;
     }
 
     @Override
@@ -79,23 +86,23 @@ public class FilterUnloaderScreen extends ContainerScreen<FilterUnloaderContaine
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            String text;
+            ITextComponent text;
             switch (menu.getComparatorOutputType()) {
                 case done_loading:
-                    text = "Activate output during loading inactivity";
+                    text = MinecartUnLoaderScreen.OUTPUT_INACTIVITY;
                     break;
                 case cart_full:
-                    if (menu.getIsUnloader()) text = "Activate output when cart is empty";
-                    else text = "Activate output when cart is full";
+                    if (menu.getIsUnloader()) text = MinecartUnLoaderScreen.OUTPUT_UNLOADER_FULL;
+                    else text = MinecartUnLoaderScreen.OUTPUT_LOADER_FULL;
                     break;
                 case cart_fullness:
-                    text = "Output cart contents";
+                    text = MinecartUnLoaderScreen.OUTPUT_FULLNESS;
                     break;
                 default:
-                    text = "ERROR";
+                    text = new StringTextComponent("ERROR");
             }
 
-            FilterUnloaderScreen.this.renderTooltip(p_230443_1_, new StringTextComponent(text) , p_230443_2_, p_230443_3_);
+            FilterUnloaderScreen.this.renderTooltip(p_230443_1_, text , p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -150,22 +157,22 @@ public class FilterUnloaderScreen extends ContainerScreen<FilterUnloaderContaine
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            String text;
+            ITextComponent text;
             switch (menu.getFilterType()) {
                 case allow_per_slot:
-                    text = "Take items matching respective filter slot";
+                    text = FILTER_ALLOW_PER_SLOT;
                     break;
                 case allow_for_all:
-                    text = "Take items matching any filter slot";
+                    text = FILTER_ALLOW_FOR_ALL;
                     break;
                 case disallow_for_all:
-                    text = "Take items not matching any filter slot";
+                    text = FILTER_DISALLOW_FOR_ALL;
                     break;
                 default:
-                    text = "ERROR";
+                    text = new StringTextComponent("ERROR");
             }
 
-            FilterUnloaderScreen.this.renderTooltip(p_230443_1_, new StringTextComponent(text) , p_230443_2_, p_230443_3_);
+            FilterUnloaderScreen.this.renderTooltip(p_230443_1_, text , p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -219,10 +226,7 @@ public class FilterUnloaderScreen extends ContainerScreen<FilterUnloaderContaine
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             FilterUnloaderScreen.this.renderTooltip(p_230443_1_,
-                    new StringTextComponent(menu.getLockedMinecartsOnly()
-                            ? "Consider only locked minecarts"
-                            : "Consider all minecarts"
-                    ) , p_230443_2_, p_230443_3_);
+                    menu.getLockedMinecartsOnly()? MinecartUnLoaderScreen.ONLY_LOCKED_ON : MinecartUnLoaderScreen.ONLY_LOCKED_OFF, p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -267,15 +271,14 @@ public class FilterUnloaderScreen extends ContainerScreen<FilterUnloaderContaine
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             FilterUnloaderScreen.this.renderTooltip(p_230443_1_,
-                    new StringTextComponent(
-                            menu.getIsUnloader()
-                                ? (menu.getLeaveOneInStack()
-                                    ? "Leave one item in minecart slots"
-                                    : "Empty minecart slots entirely")
-                                : (menu.getLeaveOneInStack()
-                                    ? "Leave one item in loader slots"
-                                    : "Empty loader slots entirely")
-                    ) , p_230443_2_, p_230443_3_);
+                    menu.getIsUnloader()
+                            ? (menu.getLeaveOneInStack()
+                                ? MinecartUnLoaderScreen.LEAVE_ONE_UNLOADER_ON
+                                : MinecartUnLoaderScreen.LEAVE_ONE_UNLOADER_OFF)
+                            : (menu.getLeaveOneInStack()
+                                ? MinecartUnLoaderScreen.LEAVE_ONE_LOADER_ON
+                                : MinecartUnLoaderScreen.LEAVE_ONE_LOADER_OFF)
+                    , p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -319,11 +322,7 @@ public class FilterUnloaderScreen extends ContainerScreen<FilterUnloaderContaine
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            FilterUnloaderScreen.this.renderTooltip(p_230443_1_,
-                    new StringTextComponent(menu.getRedstoneOutput()
-                            ? "Output redstone activation"
-                            : "Output to comparator"
-                    ) , p_230443_2_, p_230443_3_);
+            FilterUnloaderScreen.this.renderTooltip(p_230443_1_, menu.getRedstoneOutput() ? MinecartUnLoaderScreen.REDSTONE_ON : MinecartUnLoaderScreen.REDSTONE_OFF, p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {

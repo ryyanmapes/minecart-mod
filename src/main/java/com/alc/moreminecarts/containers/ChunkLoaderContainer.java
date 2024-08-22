@@ -60,7 +60,7 @@ public class ChunkLoaderContainer extends Container {
         checkContainerSize(inventory, 1);
         checkContainerDataCount(data, 2);
 
-        this.addSlot(new ChunkLoaderSlot(inventory, 0, 112, 15){
+        this.addSlot(new ChunkLoaderSlot(inventory, 0, 80, 15){
             public void setChanged() {
                 super.setChanged();
                 ChunkLoaderContainer.this.slotsChanged(this.container);

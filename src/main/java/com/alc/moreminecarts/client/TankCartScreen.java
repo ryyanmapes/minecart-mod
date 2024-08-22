@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,9 +15,10 @@ import net.minecraftforge.fluids.FluidStack;
 @OnlyIn(Dist.CLIENT)
 public class TankCartScreen extends ContainerScreen<TankCartContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/blank.png");
+    private static final ITextComponent TITLE = new TranslationTextComponent("gui.moreminecarts.tank_cart.title");
 
     public TankCartScreen(TankCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Minecart with Tank"));
+        super(container, inv, TITLE);
     }
 
     @Override
@@ -33,7 +35,7 @@ public class TankCartScreen extends ContainerScreen<TankCartContainer>{
 
         FluidStack fluid_stack = menu.getFluids();
         if (fluid_stack == null || fluid_stack.isEmpty()) {
-            this.font.draw(matrix, "0/40,000 mB fluid", leftPos + 8, topPos + 20, 4210752);
+            this.font.draw(matrix, "0/40,000 mB", leftPos + 8, topPos + 20, 4210752);
         }
         else {
             this.font.draw(matrix, fluid_stack.getAmount() + "/40,000 mB " + fluid_stack.getDisplayName().getString(), leftPos + 8, topPos + 20, 4210752);

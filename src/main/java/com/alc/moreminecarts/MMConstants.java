@@ -1,6 +1,11 @@
 package com.alc.moreminecarts;
 
+import com.alc.moreminecarts.misc.FuelConfig;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 public class MMConstants {
     public static final String modid = "moreminecarts";
@@ -19,12 +24,16 @@ public class MMConstants {
     public static final float PISTON_PUSHCART_AERODYNAMIC_VERTICAL_SPEED = 0.4f;
     public static final float PISTON_PUSHCART_MAX_HEIGHT = 10f;
 
-    public static ForgeConfigSpec.DoubleValue CONFIG_CHUNK_LOADER_MULTIPLIER;
     public static ForgeConfigSpec.IntValue CONFIG_GLASS_CACTUS_SPAWNS;
     public static ForgeConfigSpec.BooleanValue CONFIG_GLASS_CACTUS_DESERT_ONLY;
     public static ForgeConfigSpec.DoubleValue CONFIG_WOOD_RAILS_MAX_SPEED;
     public static ForgeConfigSpec.DoubleValue CONFIG_MAGLEV_RAILS_MAX_SPEED;
     public static ForgeConfigSpec.DoubleValue CONFIG_LIGHTSPEED_RAILS_MAX_SPEED;
     public static ForgeConfigSpec.DoubleValue CONFIG_TURBO_BOOST;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> CONFIG_CHUNK_LOADER_FUEL_IDS;
+    public static ForgeConfigSpec.ConfigValue<List<? extends Integer>> CONFIG_CHUNK_LOADER_FUEL_TICKS;
+    public static ForgeConfigSpec.DoubleValue CONFIG_CHUNK_LOADER_MULTIPLIER;
+    public static ForgeConfigSpec.IntValue CONFIG_CHUNK_LOADER_CHUNKRODITE;
 
+    public static List<Predicate<ItemStack>> CHUNK_LOADER_FUEL_PREDICATES_BAKED = null;
 }

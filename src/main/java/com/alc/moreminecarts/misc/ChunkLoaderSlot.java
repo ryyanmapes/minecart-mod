@@ -14,6 +14,6 @@ public class ChunkLoaderSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack itemstack) {
-        return ChunkLoaderTile.getBurnDuration(itemstack.getItem()) > 0;
+        return ChunkLoaderTile.getBurnDuration(itemstack) > 0;
     }
 }

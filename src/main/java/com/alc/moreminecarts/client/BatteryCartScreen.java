@@ -7,15 +7,17 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class BatteryCartScreen extends ContainerScreen<BatteryCartContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/blank.png");
+    private static final ITextComponent TITLE = new TranslationTextComponent("gui.moreminecarts.battery_cart.title");
 
     public BatteryCartScreen(BatteryCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Minecart with Battery"));
+        super(container, inv, TITLE);
     }
 
     @Override

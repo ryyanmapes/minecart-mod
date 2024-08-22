@@ -9,15 +9,17 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class FlagCartScreen extends ContainerScreen<FlagCartContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/programmable_cart.png");
+    private static final ITextComponent TITLE = new TranslationTextComponent("gui.moreminecarts.flag_cart.title");
 
     public FlagCartScreen(FlagCartContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent("Signal Minecart"));
+        super(container, inv, TITLE);
     }
 
     @Override

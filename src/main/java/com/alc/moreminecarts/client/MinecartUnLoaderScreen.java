@@ -11,6 +11,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -20,9 +21,23 @@ import java.util.Iterator;
 @OnlyIn(Dist.CLIENT)
 public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderContainer>{
     private static final ResourceLocation display = new ResourceLocation("moreminecarts:textures/gui/loader_gui.png");
+    public static final ITextComponent UNLOADER_TITLE = new TranslationTextComponent("gui.moreminecarts.unloader.title");
+    public static final ITextComponent LOADER_TITLE = new TranslationTextComponent("gui.moreminecarts.loader.title");
+    public static final ITextComponent OUTPUT_INACTIVITY = new TranslationTextComponent("gui.moreminecarts.unloader.output.inactivity");
+    public static final ITextComponent OUTPUT_UNLOADER_FULL = new TranslationTextComponent("gui.moreminecarts.unloader.output.cart_full");
+    public static final ITextComponent OUTPUT_LOADER_FULL = new TranslationTextComponent("gui.moreminecarts.loader.output.cart_full");
+    public static final ITextComponent OUTPUT_FULLNESS = new TranslationTextComponent("gui.moreminecarts.unloader.output.cart_fullness");
+    public static final ITextComponent ONLY_LOCKED_ON = new TranslationTextComponent("gui.moreminecarts.unloader.only_locked.on");
+    public static final ITextComponent ONLY_LOCKED_OFF = new TranslationTextComponent("gui.moreminecarts.unloader.only_locked.off");
+    public static final ITextComponent LEAVE_ONE_UNLOADER_ON = new TranslationTextComponent("gui.moreminecarts.unloader.leave_one.on");
+    public static final ITextComponent LEAVE_ONE_UNLOADER_OFF = new TranslationTextComponent("gui.moreminecarts.unloader.leave_one.off");
+    public static final ITextComponent LEAVE_ONE_LOADER_ON = new TranslationTextComponent("gui.moreminecarts.loader.leave_one.on");
+    public static final ITextComponent LEAVE_ONE_LOADER_OFF = new TranslationTextComponent("gui.moreminecarts.loader.leave_one.off");
+    public static final ITextComponent REDSTONE_ON = new TranslationTextComponent("gui.moreminecarts.unloader.redstone.on");
+    public static final ITextComponent REDSTONE_OFF = new TranslationTextComponent("gui.moreminecarts.unloader.redstone.off");
 
     public MinecartUnLoaderScreen(MinecartUnLoaderContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, new StringTextComponent(container.getIsUnloader()? "Minecart Unloader" : "Minecart Loader"));
+        super(container, inv, container.getIsUnloader()? UNLOADER_TITLE : LOADER_TITLE);
     }
 
     @Override
@@ -49,7 +64,7 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
         String contents_text = "";
         FluidStack fluid_stack = menu.getFluids();
         if (fluid_stack == null || fluid_stack.isEmpty()) {
-            contents_text += "0/2,000 mB fluid, ";
+            contents_text += "0/2,000 mB, ";
         }
         else {
             contents_text += fluid_stack.getAmount() + "/2,000 mB " + fluid_stack.getDisplayName().getString() + ", ";
@@ -86,23 +101,23 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            String text;
+            ITextComponent text;
             switch (menu.getComparatorOutputType()) {
                 case done_loading:
-                    text = "Activate output during loading inactivity";
+                    text = OUTPUT_INACTIVITY;
                     break;
                 case cart_full:
-                    if (menu.getIsUnloader()) text = "Activate output when cart is empty";
-                    else text = "Activate output when cart is full";
+                    if (menu.getIsUnloader()) text = OUTPUT_UNLOADER_FULL;
+                    else text = OUTPUT_LOADER_FULL;
                     break;
                 case cart_fullness:
-                    text = "Output cart contents";
+                    text = OUTPUT_FULLNESS;
                     break;
                 default:
-                    text = "ERROR";
+                    text = new StringTextComponent("ERROR");
             }
 
-            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_, new StringTextComponent(text) , p_230443_2_, p_230443_3_);
+            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_, text , p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -158,10 +173,7 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new StringTextComponent(menu.getLockedMinecartsOnly()
-                            ? "Consider only locked minecarts"
-                            : "Consider all minecarts"
-                    ) , p_230443_2_, p_230443_3_);
+                    menu.getLockedMinecartsOnly()? ONLY_LOCKED_ON : ONLY_LOCKED_OFF, p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -206,15 +218,14 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
             MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new StringTextComponent(
                             menu.getIsUnloader()
                                 ? (menu.getLeaveOneInStack()
-                                    ? "Leave one item in minecart slots"
-                                    : "Empty minecart slots entirely")
+                                    ? LEAVE_ONE_UNLOADER_ON
+                                    : LEAVE_ONE_UNLOADER_OFF)
                                 : (menu.getLeaveOneInStack()
-                                    ? "Leave one item in loader slots"
-                                    : "Empty loader slots entirely")
-                    ) , p_230443_2_, p_230443_3_);
+                                    ? LEAVE_ONE_LOADER_ON
+                                    : LEAVE_ONE_LOADER_OFF)
+                     , p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
@@ -258,11 +269,7 @@ public class MinecartUnLoaderScreen extends ContainerScreen<MinecartUnLoaderCont
         }
 
         public void renderToolTip(MatrixStack p_230443_1_, int p_230443_2_, int p_230443_3_) {
-            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_,
-                    new StringTextComponent(menu.getRedstoneOutput()
-                            ? "Output redstone activation"
-                            : "Output to comparator"
-                    ) , p_230443_2_, p_230443_3_);
+            MinecartUnLoaderScreen.this.renderTooltip(p_230443_1_, menu.getRedstoneOutput() ? REDSTONE_ON : REDSTONE_OFF, p_230443_2_, p_230443_3_);
         }
 
         public void renderButton(MatrixStack matrix, int p_230431_2_, int p_230431_3_, float p_230431_4_) {

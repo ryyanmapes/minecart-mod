@@ -141,5 +141,35 @@
   "entity.moreminecarts.high_speed_endfire_minecart": "Aerodynamic Ender Campfire Cart",
   "entity.moreminecarts.high_speed_pushcart": "Aerodynamic Pushcart",
   "entity.moreminecarts.high_speed_piston_pushcart": "Aerodynamic Piston Pushcart",
-  "entity.moreminecarts.high_speed_sticky_piston_pushcart": "Aerodynamic Sticky Piston Pushcart"
+  "entity.moreminecarts.high_speed_sticky_piston_pushcart": "Aerodynamic Sticky Piston Pushcart",
+
+  "gui.moreminecarts.flag_cart.title": "Signal Minecart",
+  "gui.moreminecarts.tank_cart.title": "Minecart with Tank",
+  "gui.moreminecarts.battery_cart.title": "Minecart with Battery",
+
+  "gui.moreminecarts.unloader.title": "Minecart Unloader",
+  "gui.moreminecarts.unloader.output.inactivity": "Activate output during loading inactivity",
+  "gui.moreminecarts.unloader.output.cart_full": "Activate output when cart is empty",
+  "gui.moreminecarts.unloader.output.cart_fullness": "Output cart fullness",
+  "gui.moreminecarts.unloader.only_locked.on": "Consider only locked minecarts",
+  "gui.moreminecarts.unloader.only_locked.off": "Consider all minecarts",
+  "gui.moreminecarts.unloader.leave_one.on": "Leave one item in minecart slots",
+  "gui.moreminecarts.unloader.leave_one.off": "Empty minecart slots entirely",
+  "gui.moreminecarts.unloader.redstone.on": "Output redstone activation",
+  "gui.moreminecarts.unloader.redstone.off": "Output to comparator",
+
+  "gui.moreminecarts.loader.title": "Minecart Loader",
+  "gui.moreminecarts.loader.output.cart_full": "Activate output when cart is full",
+  "gui.moreminecarts.loader.leave_one.on": "Leave one item in loader slots",
+  "gui.moreminecarts.loader.leave_one.off": "Empty loader slots entirely",
+
+  "gui.moreminecarts.filter_unloader.title": "Filter Unloader",
+  "gui.moreminecarts.filter_unloader.filter.allow_per_slot": "Take items matching respective filter slot",
+  "gui.moreminecarts.filter_unloader.filter.allow_for_all": "Take items matching any filter slot",
+  "gui.moreminecarts.filter_unloader.filter.disallow_for_all": "Take items not matching any filter slot",
+
+  "gui.moreminecarts.chunk_loader.title": "Chunk Loader",
+  "gui.moreminecarts.chunk_loader.on": "On",
+  "gui.moreminecarts.chunk_loader.off": "Off",
+  "gui.moreminecarts.chunk_loader.info": "Quartz: 30 Seconds\nEmeralds: 5 Minutes\nChunkrodite: 15 Minutes\nDiamonds: 1 Hour\nNether Stars: 10 Hours"
 }
